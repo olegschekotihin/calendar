@@ -2,17 +2,18 @@
 
 /* Calendar */
 
+var date = new Date();
 var arrEvent = [];
 
 function Calendar() {
 
-    /* Add new event*/
-    this.addEvent = function (event, date) {
+    /* Create new event*/
+    this.createEvent = function (event, date) {
         var newEvent = {date: date, event: event};
         arrEvent.push(newEvent);
     };
 
-    /* Remov event*/
+    /* Remove event*/
     this.removeEvent = function (event) {
         var index = arrEvent.findIndex(function (e) {
             return e.event === event;
@@ -60,9 +61,9 @@ function Calendar() {
 
 var calendar = new Calendar();
 
-calendar.addEvent('1', '12-05-2014');
-calendar.addEvent('2', '12-05-2012');
-calendar.addEvent('3', '12-05-2015');
-calendar.addEvent('4', '12-05-2017');
-calendar.addEvent('5', '12-05-2011');
+calendar.createEvent('1', '12-05-2014');
+calendar.createEvent('2', '12-05-2012');
+calendar.createEvent('3', '12-05-2015');
+calendar.createEvent('4', '12-05-2017');
+calendar.createEvent('5', '12-05-2011');
 
