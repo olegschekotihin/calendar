@@ -1,16 +1,20 @@
 'use strict';
 
 /* Calendar */
-
 var date = new Date();
+var currentDate = date.getTime();
 var arrEvent = [];
 
 function Calendar() {
 
     /* Create new event*/
-    this.createEvent = function (event, date) {
-        var newEvent = {date: date, event: event};
+    this.createEvent = function (event, dateEvent) {
+        var newEvent = {dateEvent: dateEvent, event: event};
         arrEvent.push(newEvent);
+        //TODO
+        var newDate = new Date( Date.parse(dateEvent));
+        var callDate  = newDate - currentDate;
+        setTimeout(console.log(event), callDate);
     };
 
     /* Remove event*/
@@ -32,25 +36,25 @@ function Calendar() {
     };
 
     /* Edit event date */
-    this.editDate = function (date, value) {
+    this.editDate = function (dateEvent, value) {
         for (var key in arrEvent) {
-            if (arrEvent[key].date == date) {
+            if (arrEvent[key].dateEvent == dateEvent) {
                 arrEvent[key].date = value;
             }
         }
     };
 
     //TODO
-    this.editTest = function (event, date, value) {
+    this.editTest = function (event, dateEvent, value) {
         for (var key in arrEvent) {
-            if (event.length == 0 && arrEvent[key].date == date) {
-                arrEvent[key].date = value;
-            } else if (date.length == 0 && arrEvent[key].event == event) {
+            if (event.length == 0 && arrEvent[key].dateEvent == dateEvent) {
+                arrEvent[key].dateEvent = value;
+            } else if (dateEvent.length == 0 && arrEvent[key].event == event) {
                 arrEvent[key].event = value;
-            } else if(arrEvent[key].event == event && arrEvent[key].date == date) {
+            } else if(arrEvent[key].event == event && arrEvent[key].date == dateEvent) {
                 var splitValue = value.split(',');
                 arrEvent[key].event = splitValue[0];
-                arrEvent[key].date = splitValue[1];
+                arrEvent[key].dateEvent = splitValue[1];
             } else {
                 console.log('error');
             }
@@ -61,9 +65,9 @@ function Calendar() {
 
 var calendar = new Calendar();
 
-calendar.createEvent('1', '12-05-2014');
-calendar.createEvent('2', '12-05-2012');
-calendar.createEvent('3', '12-05-2015');
-calendar.createEvent('4', '12-05-2017');
-calendar.createEvent('5', '12-05-2011');
+calendar.createEvent('1', '2019-09-27');
+calendar.createEvent('2', '2017-01-26');
+calendar.createEvent('3', '2017-01-26');
+calendar.createEvent('4', '2017-01-26');
+calendar.createEvent('5', '2017-01-26');
 
