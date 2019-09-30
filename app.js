@@ -9,12 +9,12 @@ function Calendar() {
 
     /* Create new event*/
     this.createEvent = function (event, dateEvent) {
-        var newEvent = {dateEvent: dateEvent, event: event};
+        var newDate = new Date(Date.parse(dateEvent));
+        var callDate = newDate - currentDate;
+        var newEvent = {dateEvent: dateEvent, event: event, id: arrEvent.length, timeToCall: callDate};
         arrEvent.push(newEvent);
         //TODO
-        var newDate = new Date( Date.parse(dateEvent));
-        var callDate  = newDate - currentDate;
-        setTimeout(console.log(event), callDate);
+        //setTimeout(console.log(event), callDate);
     };
 
     /* Remove event*/
@@ -25,33 +25,16 @@ function Calendar() {
         if (index !== -1) arrEvent.splice(index, 1);
     };
 
-    /* Edit event */
-    this.editEvent = function (event, value) {
-        for (var key in arrEvent) {
-            if (arrEvent[key].event == event) {
-                arrEvent[key].value = value;
-                break;
-            }
-        }
-    };
-
-    /* Edit event date */
-    this.editDate = function (dateEvent, value) {
-        for (var key in arrEvent) {
-            if (arrEvent[key].dateEvent == dateEvent) {
-                arrEvent[key].date = value;
-            }
-        }
-    };
-
     //TODO
     this.editTest = function (event, dateEvent, value) {
+
+
         for (var key in arrEvent) {
             if (event.length == 0 && arrEvent[key].dateEvent == dateEvent) {
                 arrEvent[key].dateEvent = value;
             } else if (dateEvent.length == 0 && arrEvent[key].event == event) {
                 arrEvent[key].event = value;
-            } else if(arrEvent[key].event == event && arrEvent[key].date == dateEvent) {
+            } else if (arrEvent[key].event == event && arrEvent[key].date == dateEvent) {
                 var splitValue = value.split(',');
                 arrEvent[key].event = splitValue[0];
                 arrEvent[key].dateEvent = splitValue[1];
@@ -60,6 +43,28 @@ function Calendar() {
             }
             break;
         }
+    };
+
+    //TODO
+    this.returnEventslist = function (dateToStart, dateToStop) {
+        if (dateToStop === undefined) {
+            dateToStop = dateToStart;
+        }
+
+        var newDateStart = new Date(Date.parse(dateToStart));
+        var newDateStop = new Date(Date.parse(dateToStop));
+
+        var resultArray = arrEvent.filter(x => (x.dateEvent));
+
+        arrEvent.forEach(function (dateEvent) {
+
+            var dateEvent = new Date(Data.parse(dateEvent));
+
+            if ((dateEvent >= newDateStart) && (dateEvent <= newDateStop)) {
+                console.log()
+            }
+        });
+
     }
 }
 
