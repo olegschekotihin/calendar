@@ -11,7 +11,7 @@ function Calendar() {
     this.createEvent = function (event, dateEvent) {
         var newDate = new Date(Date.parse(dateEvent));
         var callDate = newDate - currentDate;
-        var newEvent = {dateEvent: dateEvent, event: event, id: arrEvent.length, timeToCall: callDate};
+        var newEvent = {dateEvent: dateEvent, event: event, id: arrEvent.length, timeToCall: callDate, date: newDate.getTime()};
         arrEvent.push(newEvent);
         //TODO
         //setTimeout(console.log(event), callDate);
@@ -46,7 +46,7 @@ function Calendar() {
     };
 
     //TODO
-    this.returnEventslist = function (dateToStart, dateToStop) {
+    this.returnEventsList = function (dateToStart, dateToStop) {
         if (dateToStop === undefined) {
             dateToStop = dateToStart;
         }
@@ -54,14 +54,12 @@ function Calendar() {
         var newDateStart = new Date(Date.parse(dateToStart));
         var newDateStop = new Date(Date.parse(dateToStop));
 
-        var resultArray = arrEvent.filter(x => (x.dateEvent));
+        arrEvent.forEach(function (e) {
 
-        arrEvent.forEach(function (dateEvent) {
-
-            var dateEvent = new Date(Data.parse(dateEvent));
+            var dateEvent = new Date(Date.parse(e.dateEvent));
 
             if ((dateEvent >= newDateStart) && (dateEvent <= newDateStop)) {
-                console.log()
+                console.log(e.event);
             }
         });
 
