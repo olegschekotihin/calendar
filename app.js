@@ -14,7 +14,7 @@ function Calendar() {
         var newEvent = {dateEvent: dateEvent, event: event, id: arrEvent.length, timeToCall: callDate, date: newDate.getTime()};
         arrEvent.push(newEvent);
         //TODO
-        setTimeout(console.log(event), callDate);
+        //setTimeout(console.log(event), callDate);
     };
 
     /* Remove event*/
@@ -30,23 +30,18 @@ function Calendar() {
     };
 
     //TODO
-    this.editTest = function (event, dateEvent, value) {
+    this.editEvent = function (event, newEvent) {
+        //TODO
+        var duplicateEvents = arrEvent.reduce(function(acc, el, i, arr) {
+            if (arr.indexOf(el.event) !== i && acc.indexOf(el.event) < 0) acc.push(el.event); return acc;
+        }, []);
+        console.log(duplicateEvents);
 
-
-        for (var key in arrEvent) {
-            if (event.length == 0 && arrEvent[key].dateEvent == dateEvent) {
-                arrEvent[key].dateEvent = value;
-            } else if (dateEvent.length == 0 && arrEvent[key].event == event) {
-                arrEvent[key].event = value;
-            } else if (arrEvent[key].event == event && arrEvent[key].date == dateEvent) {
-                var splitValue = value.split(',');
-                arrEvent[key].event = splitValue[0];
-                arrEvent[key].dateEvent = splitValue[1];
-            } else {
-                console.log('error');
+        arrEvent.forEach( function (currentEvent) {
+            if(currentEvent.event === event) {
+                currentEvent.event = newEvent;
             }
-            break;
-        }
+        });
     };
 
     //TODO
@@ -66,15 +61,15 @@ function Calendar() {
                 console.log(e.event);
             }
         });
-
     }
 }
 
 var calendar = new Calendar();
 
-calendar.createEvent('1', '2019-09-27');
-calendar.createEvent('2', '2017-01-26');
-calendar.createEvent('3', '2017-01-26');
-calendar.createEvent('4', '2017-01-26');
-calendar.createEvent('5', '2017-01-26');
+calendar.createEvent('test1', '2019-09-27');
+calendar.createEvent('test12', '2017-01-26');
+calendar.createEvent('test13', '2017-01-26');
+calendar.createEvent('test13', '2017-01-26');
+calendar.createEvent('test14', '2017-01-26');
+calendar.createEvent('test15', '2017-01-26');
 
