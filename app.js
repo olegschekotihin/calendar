@@ -14,7 +14,7 @@ function Calendar() {
         var newEvent = {dateEvent: dateEvent, event: event, id: arrEvent.length, timeToCall: callDate, date: newDate.getTime()};
         arrEvent.push(newEvent);
         //TODO
-        //setTimeout(console.log(event), callDate);
+        setTimeout(console.log(event), callDate);
     };
 
     /* Remove event*/
@@ -23,6 +23,10 @@ function Calendar() {
             return e.event === event;
         });
         if (index !== -1) arrEvent.splice(index, 1);
+    };
+
+    this.findNearestEvent = function () {
+
     };
 
     //TODO
