@@ -11,7 +11,13 @@ function Calendar() {
     this.createEvent = function (event, dateEvent) {
         var newDate = new Date(Date.parse(dateEvent));
         var callDate = newDate - currentDate;
-        var newEvent = {dateEvent: dateEvent, event: event, id: arrEvent.length, timeToCall: callDate, date: newDate.getTime()};
+        var newEvent = {
+            dateEvent: dateEvent,
+            event: event,
+            id: arrEvent.length,
+            timeToCall: callDate,
+            date: newDate.getTime()
+        };
         arrEvent.push(newEvent);
         //TODO
         //setTimeout(console.log(event), callDate);
@@ -25,20 +31,25 @@ function Calendar() {
         if (index !== -1) arrEvent.splice(index, 1);
     };
 
+    /* Find nearest event*/
     this.findNearestEvent = function () {
 
     };
 
     //TODO
     this.editEvent = function (event, newEvent) {
+
         //TODO
-        var duplicateEvents = arrEvent.reduce(function(acc, el, i, arr) {
-            if (arr.indexOf(el.event) !== i && acc.indexOf(el.event) < 0) acc.push(el.event); return acc;
+        var duplicateEvents = arrEvent.reduce(function (accumulator, currentValue) {
+            if (currentValue.event === event) {
+                accumulator.push(currentValue.event);
+            }
+            return accumulator;
         }, []);
         console.log(duplicateEvents);
 
-        arrEvent.forEach( function (currentEvent) {
-            if(currentEvent.event === event) {
+        arrEvent.forEach(function (currentEvent) {
+            if (currentEvent.event === event) {
                 currentEvent.event = newEvent;
             }
         });
