@@ -7,7 +7,7 @@ var arrEvent = [];
 
 function Calendar() {
 
-    /* Create new event*/
+    /* Create new event */
     this.createEvent = function (event, dateEvent) {
         var newDate = new Date(Date.parse(dateEvent));
         var callDate = newDate - currentDate;
@@ -23,7 +23,7 @@ function Calendar() {
         //setTimeout(console.log(event), callDate);
     };
 
-    /* Remove event*/
+    /* Remove event */
     this.removeEvent = function (event) {
         var index = arrEvent.findIndex(function (e) {
             return e.event === event;
@@ -31,26 +31,38 @@ function Calendar() {
         if (index !== -1) arrEvent.splice(index, 1);
     };
 
-    /* Find nearest event*/
+    /* Find nearest event */
     this.findNearestEvent = function () {
 
+        var currentTime = Date.now();
+        var timeToCallEvent = null;
+
+        arrEvent.forEach( function (el) {
+            if(timeToCallEvent === null && currentTime < el.date) {
+                timeToCallEvent = el.date;
+            }
+            if(currentTime < el.date && timeToCallEvent > el.date) {
+                timeToCallEvent = el.date
+            }
+        });
+        return timeToCallEvent;
+        console.log(timeToCallEvent);
     };
 
-    //TODO
-    this.editEvent = function (event, newEvent) {
-
-        //TODO
-        var duplicateEvents = arrEvent.reduce(function (accumulator, currentValue) {
-            if (currentValue.event === event) {
-                accumulator.push(currentValue.event);
+    /* Edit event */
+    this.editEvent = function(id, newEvent) {
+        arrEvent.forEach(function (el) {
+            if (el.id === id) {
+                el.event = newEvent
             }
-            return accumulator;
-        }, []);
-        console.log(duplicateEvents);
+        });
+    };
 
-        arrEvent.forEach(function (currentEvent) {
-            if (currentEvent.event === event) {
-                currentEvent.event = newEvent;
+    /* Edit date */
+    this.editDate = function (id, newDate) {
+        arrEvent.forEach(function (el) {
+            if (el.id === id) {
+                el.dateEvent = newDate
             }
         });
     };
@@ -77,7 +89,7 @@ function Calendar() {
 
 var calendar = new Calendar();
 
-calendar.createEvent('test1', '2019-09-27');
+calendar.createEvent('test1', '2019-10-05');
 calendar.createEvent('test12', '2017-01-26');
 calendar.createEvent('test13', '2017-01-26');
 calendar.createEvent('test13', '2017-01-26');
