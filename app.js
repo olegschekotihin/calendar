@@ -19,19 +19,26 @@ function Calendar() {
             date: newDate.getTime()
         };
         arrEvent.push(newEvent);
+        // this.findNearestEvent();
+        // console.log(timeToCallEvent);
+        //
+        // if(timeToCallEvent === timeToCall) {
+        //     setTimeout(console.log(event), timeToCallEvent)
+        // }
         //TODO
-        //setTimeout(console.log(event), callDate);
+        setTimeout(console.log(event), this.findNearestEvent);
     };
 
     /* Remove event */
-    this.removeEvent = function (event) {
+    this.removeEvent = function (id) {
         var index = arrEvent.findIndex(function (e) {
-            return e.event === event;
+            return e.id === id;
         });
         if (index !== -1) arrEvent.splice(index, 1);
     };
 
     /* Find nearest event */
+
     this.findNearestEvent = function () {
 
         var currentTime = Date.now();
@@ -46,7 +53,6 @@ function Calendar() {
             }
         });
         return timeToCallEvent;
-        console.log(timeToCallEvent);
     };
 
     /* Edit event */
@@ -84,14 +90,14 @@ function Calendar() {
                 console.log(e.event);
             }
         });
-    }
+    };
 }
 
 var calendar = new Calendar();
 
-calendar.createEvent('test1', '2019-10-05');
-calendar.createEvent('test12', '2017-01-26');
-calendar.createEvent('test13', '2017-01-26');
+calendar.createEvent('test13', '2019-10-07');
+calendar.createEvent('test12', '2019-10-08');
+calendar.createEvent('test13', '2019-10-09');
 calendar.createEvent('test13', '2017-01-26');
 calendar.createEvent('test14', '2017-01-26');
 calendar.createEvent('test15', '2017-01-26');
