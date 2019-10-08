@@ -23,8 +23,7 @@ function Calendar() {
         var dateToCall = nearestEvent - currentDate;
         console.log(dateToCall);
         if (dateCall === nearestEvent) {
-            console.log(nearestEvent);
-            setTimeout(alert('currentEvent ' + event), dateToCall);
+            setTimeout( function (){console.log('currentEvent ' + event)}, dateToCall);
         }
     };
 
