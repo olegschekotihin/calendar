@@ -21,7 +21,7 @@ function Calendar() {
         //TODO
         var nearestEvent = this.findNearestEvent();
         var dateToCall = nearestEvent - currentDate;
-        console.log(dateToCall);
+
         if (dateCall === nearestEvent) {
             setTimeout( function (){console.log('currentEvent ' + event)}, dateToCall);
         }
@@ -30,10 +30,28 @@ function Calendar() {
     /* Remove event */
 
     this.removeEvent = function (id) {
+        var nearestEvent = this.findNearestEvent();
+
         var index = arrEvent.findIndex(function (e) {
             return e.id === id;
         });
-        if (index !== -1) arrEvent.splice(index, 1);
+
+        // console.log(arrEvent[index]);
+
+        // if(arrEvent[index].dateCall === nearestEvent) {
+        //     console.log(arrEvent[index].dateCall);
+        // }
+        //TODO
+        var removedEventIndex = arrEvent.forEach(function (el) {
+            if(el.id === id) {
+                if(el.date === nearestEvent) {
+                    this.findNearestEvent();
+                }
+                return el.id;
+            }
+        });
+
+        if (removedEventIndex !== -1) arrEvent.splice(removedEventIndex, 1);
     };
 
     /* Find nearest event */
@@ -98,5 +116,3 @@ var calendar = new Calendar();
 calendar.createEvent('test13', '2019-10-09');
 calendar.createEvent('test12', '2019-10-09');
 calendar.createEvent('test13', '2019-10-10');
-
-
