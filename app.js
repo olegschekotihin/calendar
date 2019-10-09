@@ -31,33 +31,27 @@ function Calendar() {
 
     this.removeEvent = function (id) {
         var nearestEvent = this.findNearestEvent();
-
         var index = arrEvent.findIndex(function (e) {
             return e.id === id;
         });
 
-        // console.log(arrEvent[index]);
-
-        // if(arrEvent[index].dateCall === nearestEvent) {
-        //     console.log(arrEvent[index].dateCall);
-        // }
-        //TODO
-        var removedEventIndex = arrEvent.forEach(function (el) {
-            if(el.id === id) {
-                if(el.date === nearestEvent) {
-                    this.findNearestEvent();
-                }
-                return el.id;
+        var isClosestEvent = function () {
+            if((arrEvent[index].date) === nearestEvent) {
+                return true;
             }
-        });
+        }();
 
-        if (removedEventIndex !== -1) arrEvent.splice(removedEventIndex, 1);
+        if (index !== -1) arrEvent.splice(index, 1);
+
+        if(isClosestEvent) {
+            this.findNearestEvent();
+        }
     };
 
     /* Find nearest event */
 
     this.findNearestEvent = function () {
-
+        console.log(arrEvent);
         var currentTime = Date.now();
         var timeToCallEvent = null;
 
@@ -113,6 +107,6 @@ function Calendar() {
 
 var calendar = new Calendar();
 
-calendar.createEvent('test13', '2019-10-09');
-calendar.createEvent('test12', '2019-10-09');
-calendar.createEvent('test13', '2019-10-10');
+calendar.createEvent('test11', '2019-10-11');
+calendar.createEvent('test12', '2019-10-10');
+calendar.createEvent('test13', '2019-10-13');
