@@ -8,6 +8,7 @@ var arrEvent = [];
 function Calendar() {
 
     /* Create new event */
+
     this.createEvent = function (event, dateEvent) {
         var newDate = new Date(Date.parse(dateEvent));
         var dateCall = newDate.getTime();
@@ -18,12 +19,12 @@ function Calendar() {
             date: newDate.getTime()
         };
         arrEvent.push(newEvent);
-        //TODO
+
         var nearestEvent = this.findNearestEvent();
         var dateToCall = nearestEvent - currentDate;
 
         if (dateCall === nearestEvent) {
-            setTimeout( function (){console.log('currentEvent ' + event)}, dateToCall);
+            setTimeout(this.showEvent(), dateToCall);
         }
     };
 
@@ -36,14 +37,14 @@ function Calendar() {
         });
 
         var isClosestEvent = function () {
-            if((arrEvent[index].date) === nearestEvent) {
+            if ((arrEvent[index].date) === nearestEvent) {
                 return true;
             }
         }();
 
         if (index !== -1) arrEvent.splice(index, 1);
 
-        if(isClosestEvent) {
+        if (isClosestEvent) {
             this.findNearestEvent();
         }
     };
@@ -64,6 +65,18 @@ function Calendar() {
             }
         });
         return timeToCallEvent;
+    };
+
+    /* Show Event */
+
+    this.showEvent = function () {
+        console.log('currentEvent ' + event);
+
+        if (nearestEvent === dateToCall) {
+            setTimeout(this.findNearestEvent(), 300)
+        } else {
+            this.findNearestEvent();
+        }
     };
 
     /* Edit event */
