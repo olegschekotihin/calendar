@@ -2,8 +2,9 @@
 
 /* Calendar */
 var date = new Date();
-var currentDate = date.getTime();
+var currentTime = date.getTime();
 var arrEvent = [];
+var timer;
 
 function Calendar() {
 
@@ -20,10 +21,10 @@ function Calendar() {
         };
         arrEvent.push(newEvent);
 
-        var nearestEvent = this.findNearestEvent();
-        var dateToCall = nearestEvent - currentDate;
+        var timeToNearestEvent = this.findTimeToNearestEvent();
+        var dateToCall = timeToNearestEvent - currentTime;
 
-        if (dateCall === nearestEvent) {
+        if (dateCall === timeToNearestEvent) {
             setTimeout(this.showEvent(), dateToCall);
         }
     };
@@ -31,13 +32,13 @@ function Calendar() {
     /* Remove event */
 
     this.removeEvent = function (id) {
-        var nearestEvent = this.findNearestEvent();
+        var timeToNearestEvent = this.findTimeToNearestEvent();
         var index = arrEvent.findIndex(function (e) {
             return e.id === id;
         });
 
         var isClosestEvent = function () {
-            if ((arrEvent[index].date) === nearestEvent) {
+            if ((arrEvent[index].date) === timeToNearestEvent) {
                 return true;
             }
         }();
@@ -45,13 +46,13 @@ function Calendar() {
         if (index !== -1) arrEvent.splice(index, 1);
 
         if (isClosestEvent) {
-            this.findNearestEvent();
+            this.findTimeToNearestEvent();
         }
     };
 
     /* Find nearest event */
 
-    this.findNearestEvent = function () {
+    this.findTimeToNearestEvent = function () {
         console.log(arrEvent);
         var currentTime = Date.now();
         var timeToCallEvent = null;
@@ -68,14 +69,28 @@ function Calendar() {
     };
 
     /* Show Event */
+    //TODO
+    this.findNearestEventAndShow = function () {
+        var currentTime = Date.now();
+        var timeToCallEvent =  findTimeToNearestEvent() || null;
+        var delay = timeToCallEvent - currentTime;
+
+        timer = setInterval(function () {
+            arrEvent.forEach(function (el) {
+                if(dateCall === timeToCallEvent){
+                    console.log(el.event);
+                }
+            });
+        }, delay)
+    };
 
     this.showEvent = function () {
         console.log('currentEvent ' + event);
 
         if (nearestEvent === dateToCall) {
-            setTimeout(this.findNearestEvent(), 300)
+            setTimeout(this.findTimeToNearestEvent(), 300)
         } else {
-            this.findNearestEvent();
+            this.findTimeToNearestEvent();
         }
     };
 
