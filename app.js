@@ -20,13 +20,7 @@ function Calendar() {
             date: newDate.getTime()
         };
         arrEvent.push(newEvent);
-
-        var timeToNearestEvent = this.findTimeToNearestEvent();
-        var dateToCall = timeToNearestEvent - currentTime;
-
-        if (dateCall === timeToNearestEvent) {
-            setTimeout(this.showEvent(), dateToCall);
-        }
+        this.findNearestEventAndShow();
     };
 
     /* Remove event */
@@ -53,7 +47,6 @@ function Calendar() {
     /* Find nearest event */
 
     this.findTimeToNearestEvent = function () {
-        console.log(arrEvent);
         var currentTime = Date.now();
         var timeToCallEvent = null;
 
@@ -72,27 +65,29 @@ function Calendar() {
     //TODO
     this.findNearestEventAndShow = function () {
         var currentTime = Date.now();
-        var timeToCallEvent =  findTimeToNearestEvent() || null;
+        var timeToCallEvent =  this.findTimeToNearestEvent() || null;
         var delay = timeToCallEvent - currentTime;
 
         timer = setInterval(function () {
             arrEvent.forEach(function (el) {
-                if(dateCall === timeToCallEvent){
-                    console.log(el.event);
+                if(el.date === timeToCallEvent){
+                    console.log('событие' + el.event);
                 }
             });
-        }, delay)
+            timeToCallEvent;
+        }, delay);
+        //clearInterval(timer);
     };
 
-    this.showEvent = function () {
-        console.log('currentEvent ' + event);
-
-        if (nearestEvent === dateToCall) {
-            setTimeout(this.findTimeToNearestEvent(), 300)
-        } else {
-            this.findTimeToNearestEvent();
-        }
-    };
+    // this.showEvent = function () {
+    //     console.log('currentEvent ' + event);
+    //
+    //     if (nearestEvent === dateToCall) {
+    //         setTimeout(this.findTimeToNearestEvent(), 300)
+    //     } else {
+    //         this.findTimeToNearestEvent();
+    //     }
+    // };
 
     /* Edit event */
 
@@ -135,6 +130,6 @@ function Calendar() {
 
 var calendar = new Calendar();
 
-calendar.createEvent('test11', '2019-10-11');
-calendar.createEvent('test12', '2019-10-10');
-calendar.createEvent('test13', '2019-10-13');
+calendar.createEvent('test11', '2019-10-16');
+calendar.createEvent('test12', '2019-10-17');
+calendar.createEvent('test13', '2019-10-18');
