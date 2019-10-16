@@ -1,8 +1,7 @@
 'use strict';
 
 /* Calendar */
-var date = new Date();
-var currentTime = date.getTime();
+var currentTime = Date.now();
 var arrEvent = [];
 var timer;
 
@@ -11,14 +10,21 @@ function Calendar() {
     /* Create new event */
 
     this.createEvent = function (event, dateEvent) {
+        if (event === undefined || event.length <= 0) {
+            console.log('Please set an correct event');
+        }
+        if (dateEvent === undefined || dateEvent.length <= 0) {
+            console.log('Please set a correct date');
+        }
+
         var newDate = new Date(Date.parse(dateEvent));
-        var dateCall = newDate.getTime();
         var newEvent = {
             dateEvent: dateEvent,
             event: event,
             id: arrEvent.length,
             date: newDate.getTime()
         };
+
         arrEvent.push(newEvent);
         this.findNearestEventAndShow();
     };
@@ -26,6 +32,10 @@ function Calendar() {
     /* Remove event */
 
     this.removeEvent = function (id) {
+        if (id === undefined || id.length < 0) {
+            console.log('Enter the correct id');
+        }
+
         var timeToNearestEvent = this.findTimeToNearestEvent();
         var index = arrEvent.findIndex(function (e) {
             return e.id === id;
@@ -47,7 +57,6 @@ function Calendar() {
     /* Find nearest event */
 
     this.findTimeToNearestEvent = function () {
-        var currentTime = Date.now();
         var timeToCallEvent = null;
 
         arrEvent.forEach(function (el) {
@@ -64,34 +73,35 @@ function Calendar() {
     /* Show Event */
     //TODO
     this.findNearestEventAndShow = function () {
-        var currentTime = Date.now();
-        var timeToCallEvent =  this.findTimeToNearestEvent() || null;
+        var timeToCallEvent = this.findTimeToNearestEvent() || null;
         var delay = timeToCallEvent - currentTime;
 
         timer = setInterval(function () {
             arrEvent.forEach(function (el) {
-                if(el.date === timeToCallEvent){
-                    console.log('событие' + el.event);
+                if (el.date === timeToCallEvent) {
+                    var isTimerShowEvent = true;
+                    console.log(el.id);
+                    console.log('событие ' + el.event);
+                }
+                if (isTimerShowEvent) {
+                    clearInterval(timer);
                 }
             });
-            timeToCallEvent;
         }, delay);
-        //clearInterval(timer);
-    };
 
-    // this.showEvent = function () {
-    //     console.log('currentEvent ' + event);
-    //
-    //     if (nearestEvent === dateToCall) {
-    //         setTimeout(this.findTimeToNearestEvent(), 300)
-    //     } else {
-    //         this.findTimeToNearestEvent();
-    //     }
-    // };
+        timeToCallEvent;
+    };
 
     /* Edit event */
 
     this.editEvent = function (id, newEvent) {
+        if (id === undefined || id <= 0) {
+            console.log('Enter the correct id');
+        }
+        if (newEvent === undefined || newEvent.length <= 0) {
+            console.log('Please set an correct event');
+        }
+
         arrEvent.forEach(function (el) {
             if (el.id === id) {
                 el.event = newEvent
@@ -100,12 +110,22 @@ function Calendar() {
     };
 
     /* Edit date */
+
     this.editDate = function (id, newDate) {
+        if (id === undefined || id <= 0) {
+            console.log('Enter the correct id');
+        }
+        if (newEvent === undefined || newDate.length <= 0) {
+            console.log('Please set an correct date');
+        }
+
         arrEvent.forEach(function (el) {
             if (el.id === id) {
                 el.dateEvent = newDate
             }
         });
+
+        this.findNearestEventAndShow();
     };
 
     //TODO
