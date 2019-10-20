@@ -9,7 +9,7 @@ function Calendar() {
 
     /* Create new event */
 
-    this.createEvent = function (event, dateEvent) {
+    Calendar.prototype.createEvent = function (event, dateEvent) {
         if (event === undefined || event.length <= 0) {
             console.log('Please set an correct event');
         }
@@ -31,7 +31,7 @@ function Calendar() {
 
     /* Remove event */
 
-    this.removeEvent = function (id) {
+    Calendar.prototype.removeEvent = function (id) {
         if (id === undefined || id.length < 0) {
             console.log('Enter the correct id');
         }
@@ -50,13 +50,13 @@ function Calendar() {
         if (index !== -1) arrEvent.splice(index, 1);
 
         if (isClosestEvent) {
-            this.findTimeToNearestEvent();
+            this.findNearestEventAndShow();
         }
     };
 
-    /* Find nearest event */
+    /* Find time to nearest event */
 
-    this.findTimeToNearestEvent = function () {
+    Calendar.prototype.findTimeToNearestEvent = function () {
         var timeToCallEvent = null;
 
         arrEvent.forEach(function (el) {
@@ -70,11 +70,15 @@ function Calendar() {
         return timeToCallEvent;
     };
 
-    /* Show Event */
+    /* Show nearest event */
     //TODO
-    this.findNearestEventAndShow = function () {
+    Calendar.prototype.findNearestEventAndShow = function () {
         var timeToCallEvent = this.findTimeToNearestEvent() || null;
         var delay = timeToCallEvent - currentTime;
+        //
+        // if (timer) {
+        //     clearInterval(timer);
+        // }
 
         timer = setInterval(function () {
             arrEvent.forEach(function (el) {
@@ -88,13 +92,11 @@ function Calendar() {
                 }
             });
         }, delay);
-
-        timeToCallEvent;
     };
 
     /* Edit event */
 
-    this.editEvent = function (id, newEvent) {
+    Calendar.prototype.editEvent = function (id, newEvent) {
         if (id === undefined || id <= 0) {
             console.log('Enter the correct id');
         }
@@ -111,7 +113,7 @@ function Calendar() {
 
     /* Edit date */
 
-    this.editDate = function (id, newDate) {
+    Calendar.prototype.editDate = function (id, newDate) {
         if (id === undefined || id <= 0) {
             console.log('Enter the correct id');
         }
@@ -128,8 +130,9 @@ function Calendar() {
         this.findNearestEventAndShow();
     };
 
-    //TODO
-    this.returnEventsList = function (dateToStart, dateToStop) {
+    /* Show event list*/
+
+    Calendar.prototype.showEventsList = function (dateToStart, dateToStop) {
         if (dateToStop === undefined) {
             dateToStop = dateToStart;
         }
@@ -142,7 +145,11 @@ function Calendar() {
             var dateEvent = new Date(Date.parse(e.dateEvent));
 
             if ((dateEvent >= newDateStart) && (dateEvent <= newDateStop)) {
-                console.log(e.event);
+                console.group();
+                console.log('Event ID - ' + e.id);
+                console.log('Event - ' + e.event);
+                console.log('Event date - ' + e.dateEvent);
+                console.groupEnd();
             }
         });
     };
