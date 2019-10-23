@@ -1,26 +1,44 @@
 'use strict';
 
 /* Calendar */
-var currentTime = Date.now();
-var arrEvent = [];
-var timer;
 
 function Calendar() {
+    var currentTime = Date.now();
+    var arrEvent = [];
+    var timer;
+    //
+    // Calendar.prototype.timer = function() {
+    //     var timeToCallEvent = this.findTimeToNearestEvent() || null;
+    //     var delay = timeToCallEvent - currentTime;
+    //
+    //     setInterval(function () {
+    //         arrEvent.forEach(function (el) {
+    //             if (el.date === timeToCallEvent) {
+    //                 var isTimerShowEvent = true;
+    //                 console.log(el.id);
+    //                 console.log('событие ' + el.event);
+    //             }
+    //             if (isTimerShowEvent) {
+    //                 clearInterval(timer);
+    //             }
+    //         });
+    //     }, delay);
+    // } ();
 
     /* Create new event */
 
-    Calendar.prototype.createEvent = function (event, dateEvent) {
-        if (event === undefined || event.length <= 0) {
+    Calendar.prototype.createEvent = function (eventName, eventDate) {
+        if (!eventName) {
             console.log('Please set an correct event');
         }
-        if (dateEvent === undefined || dateEvent.length <= 0) {
+        if (!eventDate) {
             console.log('Please set a correct date');
         }
 
-        var newDate = new Date(Date.parse(dateEvent));
+        var newDate = new Date(Date.parse(eventDate));
         var newEvent = {
-            dateEvent: dateEvent,
-            event: event,
+            eventDate: eventDate,
+            eventName: eventName,
             id: arrEvent.length,
             date: newDate.getTime()
         };
@@ -32,7 +50,7 @@ function Calendar() {
     /* Remove event */
 
     Calendar.prototype.removeEvent = function (id) {
-        if (id === undefined || id.length < 0) {
+        if (!id) {
             console.log('Enter the correct id');
         }
 
@@ -42,7 +60,7 @@ function Calendar() {
         });
 
         var isClosestEvent = function () {
-            if ((arrEvent[index].date) === timeToNearestEvent) {
+            if ((arrEvent[index].eventDate) === timeToNearestEvent) {
                 return true;
             }
         }();
@@ -60,11 +78,11 @@ function Calendar() {
         var timeToCallEvent = null;
 
         arrEvent.forEach(function (el) {
-            if (timeToCallEvent === null && currentTime < el.date) {
-                timeToCallEvent = el.date;
+            if (timeToCallEvent === null && currentTime < el.eventDate) {
+                timeToCallEvent = el.eventDate;
             }
-            if (currentTime < el.date && timeToCallEvent > el.date) {
-                timeToCallEvent = el.date
+            if (currentTime < el.eventDate && timeToCallEvent > el.eventDate) {
+                timeToCallEvent = el.eventDate
             }
         });
         return timeToCallEvent;
@@ -73,40 +91,26 @@ function Calendar() {
     /* Show nearest event */
     //TODO
     Calendar.prototype.findNearestEventAndShow = function () {
-        var timeToCallEvent = this.findTimeToNearestEvent() || null;
-        var delay = timeToCallEvent - currentTime;
+
         //
         // if (timer) {
         //     clearInterval(timer);
         // }
-
-        timer = setInterval(function () {
-            arrEvent.forEach(function (el) {
-                if (el.date === timeToCallEvent) {
-                    var isTimerShowEvent = true;
-                    console.log(el.id);
-                    console.log('событие ' + el.event);
-                }
-                if (isTimerShowEvent) {
-                    clearInterval(timer);
-                }
-            });
-        }, delay);
     };
 
     /* Edit event */
 
     Calendar.prototype.editEvent = function (id, newEvent) {
-        if (id === undefined || id <= 0) {
+        if (!id) {
             console.log('Enter the correct id');
         }
-        if (newEvent === undefined || newEvent.length <= 0) {
+        if (!newEvent) {
             console.log('Please set an correct event');
         }
 
         arrEvent.forEach(function (el) {
             if (el.id === id) {
-                el.event = newEvent
+                el.eventName = newEvent
             }
         });
     };
@@ -114,16 +118,16 @@ function Calendar() {
     /* Edit date */
 
     Calendar.prototype.editDate = function (id, newDate) {
-        if (id === undefined || id <= 0) {
+        if (!id) {
             console.log('Enter the correct id');
         }
-        if (newEvent === undefined || newDate.length <= 0) {
+        if (!newDate) {
             console.log('Please set an correct date');
         }
 
         arrEvent.forEach(function (el) {
             if (el.id === id) {
-                el.dateEvent = newDate
+                el.eventDate = newDate
             }
         });
 
@@ -140,15 +144,14 @@ function Calendar() {
         var newDateStart = new Date(Date.parse(dateToStart));
         var newDateStop = new Date(Date.parse(dateToStop));
 
-        arrEvent.forEach(function (e) {
+        arrEvent.map(function (value) {
+            var eventDate = new Date(Date.parse(value.eventDate));
 
-            var dateEvent = new Date(Date.parse(e.dateEvent));
-
-            if ((dateEvent >= newDateStart) && (dateEvent <= newDateStop)) {
+            if ((eventDate >= newDateStart) && (eventDate <= newDateStop)) {
                 console.group();
-                console.log('Event ID - ' + e.id);
-                console.log('Event - ' + e.event);
-                console.log('Event date - ' + e.dateEvent);
+                console.log('Event ID - ' + value.id);
+                console.log('Event - ' + value.eventName);
+                console.log('Event date - ' + value.eventDate);
                 console.groupEnd();
             }
         });
