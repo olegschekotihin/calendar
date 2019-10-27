@@ -1,180 +1,181 @@
-'use strict';
-
-/* Calendar */
-
-function Calendar() {
-    var currentTime = Date.now();
-    var arrEvent = [];
-    var timer;
-    var generateId = function () {
-        return Math.random().toString(36).substr(2, 9);
-    };
-
-    /* Find and run closest event */
-
-    (function findAndRunClosestEvent() {
-        var sec = 1000;
-
-        if (timer) {
-            clearInterval(timer);
-        }
-
-        if (!arrEvent.length) {
-            console.log('events list is empty');
-        }
-
+(function () {
+    var Calendar = (function () {
         var currentTime = Date.now();
-        var closestTimeToEvent = this.Calendar.findTimeToNearestEvent() || null;
+        var arrEvent = [];
+        var timer = null;
 
-        if (!closestTimeToEvent) {
-            console.log('date is empty');
+        function generateId() {
+            return Math.random().toString(36).substr(2, 9);
         }
 
-        var closestEventList = this.Calendar.findNearestEvent(closestTimeToEvent);
+        function Calendar() {
+            timerToRunClosestEvent();
+        }
 
-        //calculate the delay and start timer
-        var delay = (closestTimeToEvent - currentTime);
-        var isStartEvent = delay < sec;
-        var timeToDelayTimer = isStartEvent ?  delay : sec;
-        timer = setInterval(function () {
-            if (isStartEvent) {
-                closestEventList.forEach(function (event) {
-                    event.callback();
-                });
-                findAndRunClosestEvent();
-            } else {
-                findAndRunClosestEvent();
+        /* Find and run closest event */
+
+        function timerToRunClosestEvent() {
+            var sec = 1000;
+
+            if (timer) {
+                clearInterval(timer);
             }
-        }, timeToDelayTimer);
-    }());
 
-    /* Create new event */
+            if (!arrEvent.length) {
+                return console.log('events list is empty');
+            }
 
-    Calendar.prototype.createEvent = function (eventName, eventDate, callback) {
-        if (!eventName) {
-            return console.log('Please set an correct event');
+            var currentTime = Date.now();
+            console.log(findTimeToNearestEvent());
+            var closestTimeToEvent = findTimeToNearestEvent();
+
+            console.log('closestTimeToEvent is ' + closestTimeToEvent);
+
+            if (!closestTimeToEvent) {
+                console.log('date is empty');
+            }
+
+            var closestEventList = findNearestEvent(closestTimeToEvent);
+            console.log('closestEventList is ' + closestEventList);
+
+            //calculate the delay and start timer
+            var delay = (closestTimeToEvent - currentTime);
+            var isStartEvent = delay < sec;
+            var timeToDelayTimer = isStartEvent ? delay : sec;
+            timer = setInterval(function () {
+                if (isStartEvent) {
+                    closestEventList.forEach(function (event) {
+                        event.callback();
+                    });
+                    timerToRunClosestEvent();
+                } else {
+                    timerToRunClosestEvent();
+                }
+            }, timeToDelayTimer);
         }
-        if (!eventDate) {
-            return console.log('Please set a correct date');
+
+        /* Find time to nearest event */
+
+        function findTimeToNearestEvent() {
+            var timeToCallEvent = null;
+
+            arrEvent.forEach(function (el) {
+                if (timeToCallEvent === null && currentTime < el.date) {
+                    timeToCallEvent = el.date;
+                }
+                if (currentTime < el.date && timeToCallEvent > el.date) {
+                    timeToCallEvent = el.date
+                }
+            });
+            return timeToCallEvent;
         }
 
-        var newDate = new Date(Date.parse(eventDate));
-        var newEvent = {
-            eventDate: eventDate,
-            eventName: eventName,
-            id: generateId(),
-            date: newDate.getTime(),
-            callback: callback
+        /* Find nearest event */
+
+        function findNearestEvent(closestTime) {
+            var nearestEventList = arrEvent.map(function (event) {
+                if (closestTime === event.date) {
+                    console.log(event);
+                    return event;
+                }
+            });
+            console.log(nearestEventList);
+        }
+
+        /* Create new event */
+
+        Calendar.prototype.createEvent = function (eventName, eventDate, callback) {
+            if (!eventName) {
+                return console.log('Please set an correct event');
+            }
+            if (!eventDate) {
+                return console.log('Please set a correct date');
+            }
+
+            var newDate = new Date(Date.parse(eventDate));
+            var newEvent = {
+                eventDate: eventDate,
+                eventName: eventName,
+                id: generateId(),
+                date: newDate.getTime(),
+                callback: callback
+            };
+
+            arrEvent.push(newEvent);
+            timerToRunClosestEvent();
         };
 
-        arrEvent.push(newEvent);
-    };
+        /* Remove event */
 
-    /* Remove event */
-
-    Calendar.prototype.removeEvent = function (id) {
-        if (!id) {
-            return console.log('Enter the correct id');
-        }
-
-        var index = arrEvent.findIndex(function (e) {
-            return e.id === id;
-        });
-
-        if (index !== -1) arrEvent.splice(index, 1);
-    };
-
-    /* Find time to nearest event */
-
-    var findTimeToNearestEvent = function () {
-        var timeToCallEvent = null;
-
-        arrEvent.forEach(function (el) {
-            if (timeToCallEvent === null && currentTime < el.eventDate) {
-                timeToCallEvent = el.eventDate;
+        Calendar.prototype.removeEvent = function (id) {
+            if (!id) {
+                return console.log('Enter the correct id');
             }
-            if (currentTime < el.eventDate && timeToCallEvent > el.eventDate) {
-                timeToCallEvent = el.eventDate
+
+            var index = arrEvent.findIndex(function (e) {
+                return e.id === id;
+            });
+
+            if (index !== -1) arrEvent.splice(index, 1);
+        };
+
+        /* Edit event */
+
+        Calendar.prototype.editEvent = function (id, newEvent) {
+            if (!id) {
+                return console.log('Enter the correct id');
             }
-        });
-        return timeToCallEvent;
-    };
-
-    /* Find nearest event */
-
-    var findNearestEvent = function (closestTime) {
-        var nearestEventList = arrEvent.map(function (event) {
-            if(closestTime === event.eventDate) {
-                return event.eventDate;
+            if (!newEvent) {
+                return console.log('Please set an correct event');
             }
-        });
-        console.log(nearestEventList);
-    };
 
-    /* Edit event */
+            arrEvent.map(function (el) {
+                if (el.id === id) {
+                    el.eventName = newEvent
+                }
+            });
+        };
 
-    Calendar.prototype.editEvent = function (id, newEvent) {
-        if (!id) {
-            return console.log('Enter the correct id');
-        }
-        if (!newEvent) {
-            return console.log('Please set an correct event');
-        }
+        /* Edit date */
 
-        arrEvent.map(function (el) {
-            if (el.id === id) {
-                el.eventName = newEvent
+        Calendar.prototype.editDate = function (id, newDate) {
+            if (!id) {
+                return console.log('Enter the correct id');
             }
-        });
-    };
-
-    /* Edit date */
-
-    Calendar.prototype.editDate = function (id, newDate) {
-        if (!id) {
-            return console.log('Enter the correct id');
-        }
-        if (!newDate) {
-            return console.log('Please set an correct date');
-        }
-
-        arrEvent.forEach(function (el) {
-            if (el.id === id) {
-                el.eventDate = newDate
+            if (!newDate) {
+                return console.log('Please set an correct date');
             }
-        });
-    };
 
-    /* Show event list*/
+            arrEvent.forEach(function (el) {
+                if (el.id === id) {
+                    el.eventDate = newDate
+                }
+            });
+        };
 
-    Calendar.prototype.showEventsListForPeriod = function (startDate, stopDate) {
-        if (stopDate === undefined) {
-            stopDate = startDate;
-        }
+        /* Show event list*/
 
-        var newDateStart = new Date(Date.parse(startDate));
-        var newDateStop = new Date(Date.parse(stopDate));
-
-        var eventList = arrEvent.filter(function (value) {
-            var eventDate = new Date(Date.parse(value.eventDate));
-
-            if ((eventDate >= newDateStart) && (eventDate <= newDateStop)) {
-                return value.eventName;
+        Calendar.prototype.showEventsListForPeriod = function (startDate, stopDate) {
+            if (stopDate === undefined) {
+                stopDate = startDate;
             }
-        });
 
-        console.log(eventList);
-    };
+            var newDateStart = new Date(Date.parse(startDate));
+            var newDateStop = new Date(Date.parse(stopDate));
 
-//TODO
-    Calendar.prototype.showEventsListForDay = function (searchEventForDay) {
-        var searchDay = searchEventForDay
-    };
+            var eventList = arrEvent.filter(function (value) {
+                var eventDate = new Date(Date.parse(value.eventDate));
 
-}
+                if ((eventDate >= newDateStart) && (eventDate <= newDateStop)) {
+                    return value.eventName;
+                }
+            });
 
-var calendar = new Calendar();
+            console.log(eventList);
+        };
 
-calendar.createEvent('test11', '2019-10-26');
-calendar.createEvent('test12', '2019-10-27');
-calendar.createEvent('test13', '2019-10-28');
+        return new Calendar();
+    })();
+
+    window.Calendar = Calendar;
+})();
