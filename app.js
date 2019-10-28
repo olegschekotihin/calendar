@@ -15,7 +15,7 @@
         /* Find and run closest event */
 
         function timerToRunClosestEvent() {
-            var sec = 1000;
+            var sec = 10000;
 
             if (timer) {
                 clearInterval(timer);
@@ -27,26 +27,28 @@
 
             var currentTime = Date.now();
 
-            console.log(findTimeToNearestEvent());
             var closestTimeToEvent = findTimeToNearestEvent();
-
-            console.log('closestTimeToEvent is ' + closestTimeToEvent);
 
             if (!closestTimeToEvent) {
                 return console.log('date is empty');
             }
 
             var closestEventList = findNearestEvent(closestTimeToEvent);
-            console.log('closestEventList is ' + closestEventList);
 
             //calculate the delay and start timer
             var delay = (closestTimeToEvent - currentTime);
-            var isStartEvent = delay < sec;
+            var isStartEvent = delay < sec && delay >= 0;
             var timeToDelayTimer = isStartEvent ? delay : sec;
             timer = setInterval(function () {
                 if (isStartEvent) {
                     closestEventList.forEach(function (event) {
-                        event.callback();
+                        console.log(event);
+                        if(event.done == false) {
+                            event.callback();
+                            event.done = true;
+                        } else {
+                            timerToRunClosestEvent();
+                        }
                     });
                     timerToRunClosestEvent();
                 } else {
@@ -76,11 +78,9 @@
         function findNearestEvent(closestTime) {
             var nearestEventList = arrEvent.map(function (event) {
                 if (closestTime === event.date) {
-                    console.log(event);
                     return event;
                 }
             });
-            console.log(nearestEventList);
             return nearestEventList;
         }
 
@@ -100,6 +100,7 @@
                 eventName: eventName,
                 id: generateId(),
                 date: newDate.getTime(),
+                done: false,
                 callback: callback
             };
 
