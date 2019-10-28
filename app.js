@@ -26,13 +26,14 @@
             }
 
             var currentTime = Date.now();
+
             console.log(findTimeToNearestEvent());
             var closestTimeToEvent = findTimeToNearestEvent();
 
             console.log('closestTimeToEvent is ' + closestTimeToEvent);
 
             if (!closestTimeToEvent) {
-                console.log('date is empty');
+                return console.log('date is empty');
             }
 
             var closestEventList = findNearestEvent(closestTimeToEvent);
@@ -80,6 +81,7 @@
                 }
             });
             console.log(nearestEventList);
+            return nearestEventList;
         }
 
         /* Create new event */
