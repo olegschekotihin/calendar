@@ -1,7 +1,9 @@
 (function () {
     var Calendar = (function () {
-        var arrEvent = [];
+        var eventList = [];
         var timer = null;
+
+        /* Generate random id*/
 
         function generateId() {
             return Math.random().toString(36).substr(2, 9);
@@ -20,7 +22,7 @@
                 clearInterval(timer);
             }
 
-            if (!arrEvent.length) {
+            if (!eventList.length) {
                 return console.log('events list is empty');
             }
 
@@ -33,8 +35,6 @@
             }
 
             var closestEventList = findNearestEvent(closestTimeToEvent);
-
-            //calculate the delay and start timer
             var delay = (closestTimeToEvent - currentTime);
             var isStartEvent = delay < sec && delay >= 0;
             var timeToDelayTimer = isStartEvent ? delay : sec;
@@ -42,7 +42,7 @@
                 if (isStartEvent) {
                     closestEventList.forEach(function (event) {
                         console.log(event);
-                        if(event.done === false) {
+                        if (event.done === false) {
                             event.callback();
                             event.done = true;
                         } else {
@@ -61,12 +61,12 @@
         function findTimeToNearestEvent() {
             var timeToCallEvent = null;
             var currentTime = Date.now();
-            arrEvent.forEach(function (el) {
-                if (timeToCallEvent === null && currentTime < el.date) {
-                    timeToCallEvent = el.date;
+            eventList.forEach(function (el) {
+                if (timeToCallEvent === null && currentTime < el.time) {
+                    timeToCallEvent = el.time;
                 }
-                if (currentTime < el.date && timeToCallEvent > el.date) {
-                    timeToCallEvent = el.date
+                if (currentTime < el.time && timeToCallEvent > el.time) {
+                    timeToCallEvent = el.time
                 }
             });
             return timeToCallEvent;
@@ -75,9 +75,9 @@
         /* Find nearest event */
 
         function findNearestEvent(closestTime) {
-            console.log(arrEvent);
-            var nearestEventList = arrEvent.filter(function (event) {
-                return closestTime === event.date;
+            console.log(eventList);
+            var nearestEventList = eventList.filter(function (event) {
+                return closestTime === event.time;
             });
             return nearestEventList;
         }
@@ -93,16 +93,22 @@
             }
 
             var newDate = new Date(Date.parse(eventDate));
+
+            if(isNaN(newDate)) {
+                return console.log('date is wrong');
+            }
+
             var newEvent = {
                 eventDate: eventDate,
                 eventName: eventName,
                 id: generateId(),
-                date: newDate.getTime(),
+                date: newDate,
+                time: newDate.getTime(),
                 done: false,
                 callback: callback
             };
 
-            arrEvent.push(newEvent);
+            eventList.push(newEvent);
             timerToRunClosestEvent();
         };
 
@@ -113,11 +119,11 @@
                 return console.log('Enter the correct id');
             }
 
-            var index = arrEvent.findIndex(function (e) {
+            var index = eventList.findIndex(function (e) {
                 return e.id === id;
             });
 
-            if (index !== -1) arrEvent.splice(index, 1);
+            if (index !== -1) eventList.splice(index, 1);
         };
 
         /* Edit event */
@@ -130,7 +136,7 @@
                 return console.log('Please set an correct event');
             }
 
-            arrEvent.map(function (el) {
+            eventList.map(function (el) {
                 if (el.id === id) {
                     el.eventName = newEvent
                 }
@@ -147,14 +153,14 @@
                 return console.log('Please set an correct date');
             }
 
-            arrEvent.forEach(function (el) {
+            eventList.forEach(function (el) {
                 if (el.id === id) {
                     el.eventDate = newDate
                 }
             });
         };
 
-        /* Show event list*/
+        /* Show event list for period*/
 
         Calendar.prototype.showEventsListForPeriod = function (startDate, stopDate) {
             if (stopDate === undefined) {
@@ -164,7 +170,7 @@
             var newDateStart = new Date(Date.parse(startDate));
             var newDateStop = new Date(Date.parse(stopDate));
 
-            var eventList = arrEvent.filter(function (value) {
+            var eventListForPeriod = eventList.filter(function (value) {
                 var eventDate = new Date(Date.parse(value.eventDate));
 
                 if ((eventDate >= newDateStart) && (eventDate <= newDateStop)) {
@@ -172,7 +178,51 @@
                 }
             });
 
-            console.log(eventList);
+            return eventListForPeriod;
+        };
+
+        /* Show event list for month*/
+
+        Calendar.prototype.showEventsListForMonth = function () {
+            var currentDate = new Date();
+            var eventsByMonth = eventList.filter(function (event) {
+                if (event.date.getMonth() === currentDate.getMonth() &&
+                    event.date.getFullYear() === currentDate.getFullYear()) {
+                    return event;
+                }
+            });
+            return eventsByMonth;
+        };
+
+        /* Show event list for day*/
+
+        Calendar.prototype.showEventsListForDay = function () {
+            var currentDate = new Date();
+            var eventsByDay = eventList.filter(function (event) {
+                if (event.date.getDate() === currentDate.getDate() &&
+                    event.date.getMonth() === currentDate.getMonth() &&
+                    event.date.getFullYear() === currentDate.getFullYear()) {
+                    return event;
+                }
+            });
+            return eventsByDay;
+        };
+
+        /* Show event list for week*/
+
+        Calendar.prototype.showEventsListForWeek = function () {
+            var currentDate = new Date();
+            var startDayOfAWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+                currentDate.getDate() - currentDate.getDay() + 1);
+            var endDayOfAWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+                currentDate.getDate() - currentDate.getDay() + 7, 23, 59, 59, 999);
+
+            var eventsByWeek = eventList.filter(function (event) {
+                if (event.date >= startDayOfAWeek && event.date <= endDayOfAWeek) {
+                   return event;
+                }
+            });
+            return eventsByWeek;
         };
 
         return new Calendar();
@@ -180,3 +230,4 @@
 
     window.Calendar = Calendar;
 })();
+
