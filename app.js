@@ -1,6 +1,5 @@
 (function () {
     var Calendar = (function () {
-        var currentTime = Date.now();
         var arrEvent = [];
         var timer = null;
 
@@ -43,7 +42,7 @@
                 if (isStartEvent) {
                     closestEventList.forEach(function (event) {
                         console.log(event);
-                        if(event.done == false) {
+                        if(event.done === false) {
                             event.callback();
                             event.done = true;
                         } else {
@@ -61,7 +60,7 @@
 
         function findTimeToNearestEvent() {
             var timeToCallEvent = null;
-
+            var currentTime = Date.now();
             arrEvent.forEach(function (el) {
                 if (timeToCallEvent === null && currentTime < el.date) {
                     timeToCallEvent = el.date;
@@ -76,10 +75,9 @@
         /* Find nearest event */
 
         function findNearestEvent(closestTime) {
-            var nearestEventList = arrEvent.map(function (event) {
-                if (closestTime === event.date) {
-                    return event;
-                }
+            console.log(arrEvent);
+            var nearestEventList = arrEvent.filter(function (event) {
+                return closestTime === event.date;
             });
             return nearestEventList;
         }
