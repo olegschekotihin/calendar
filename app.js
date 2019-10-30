@@ -1,233 +1,215 @@
-(function () {
-    var Calendar = (function () {
-        var eventList = [];
-        var timer = null;
+'use strict';
+var Calendar = (function () {
+    var eventList = [];
+    var sec = 1000;
+    var NOT_CORRECT_EVENT = 'Please set an correct event';
+    var NOT_CORRECT_DATE = 'Please set a correct date';
+    var NOT_CORRECT_ID = 'Enter the correct id';
 
-        /* Generate random id*/
+    /* Generate random id*/
+    //TODO
+    function generateId() {
+        return Math.random().toString(36).substr(2, 9);
+    }
 
-        function generateId() {
-            return Math.random().toString(36).substr(2, 9);
+    function Calendar() {
+        timerToRunClosestEvent();
+    }
+
+    /* Find and run closest event */
+
+    function timerToRunClosestEvent() {
+        setInterval(function () {
+            runClosestEvent();
+        }, sec);
+    }
+
+    function runClosestEvent() {
+        var currentTime = new Date();
+        // var closestTimeToEvent = findTimeToNearestEvent();
+        // var closestEventList = findNearestEvent(closestTimeToEvent);
+
+        eventList.forEach(function (event) {
+            if (currentTime.getFullYear() === event.eventDate.getFullYear() && currentTime.getMonth() === event.eventDate.getMonth()
+                && currentTime.getDay() === event.eventDate.getDay() && currentTime.getMinutes() === event.eventDate.getMinutes()
+                && currentTime.getSeconds() === event.eventDate.getSeconds()) {
+                return event.callback();
+            }
+        });
+    }
+
+    /* Find time to nearest event */
+
+    // function findTimeToNearestEvent() {
+    //     var timeToCallEvent = null;
+    //     var currentTime = Date.now();
+    //     eventList.forEach(function (event) {
+    //         if (timeToCallEvent === null && currentTime < event.eventDate.getTime()) {
+    //             timeToCallEvent = event.eventDate.getTime();
+    //         }
+    //         if (currentTime < event.eventDate.getTime() && timeToCallEvent > event.eventDate.getTime()) {
+    //             timeToCallEvent = event.eventDate.getTime();
+    //         }
+    //     });
+    //     return timeToCallEvent;
+    // }
+
+    /* Find nearest event */
+
+    // function findNearestEvent(closestTime) {
+    //     var nearestEventList = eventList.filter(function (event) {
+    //         return closestTime === event.eventDate.getTime();
+    //     });
+    //     return nearestEventList;
+    // }
+
+    /* Create new event */
+
+    Calendar.prototype.createEvent = function (eventName, eventDate, callback) {
+        if (!eventName) {
+            return console.log(NOT_CORRECT_EVENT);
+        }
+        if (!eventDate) {
+            return console.log(NOT_CORRECT_DATE);
         }
 
-        function Calendar() {
-            timerToRunClosestEvent();
+        var date = new Date(Date.parse(eventDate));
+
+        if (isNaN(date)) {
+            return console.log(NOT_CORRECT_DATE);
         }
 
-        /* Find and run closest event */
+        var newEvent = {
+            eventDate: date,
+            eventName: eventName,
+            id: generateId(),
+            done: false,
+            callback: callback
+        };
 
-        function timerToRunClosestEvent() {
-            var sec = 10000;
+        eventList.push(newEvent);
+        timerToRunClosestEvent();
+    };
 
-            if (timer) {
-                clearInterval(timer);
-            }
+    /* Remove event */
 
-            if (!eventList.length) {
-                return console.log('events list is empty');
-            }
-
-            var currentTime = Date.now();
-
-            var closestTimeToEvent = findTimeToNearestEvent();
-
-            if (!closestTimeToEvent) {
-                return console.log('date is empty');
-            }
-
-            var closestEventList = findNearestEvent(closestTimeToEvent);
-            var delay = (closestTimeToEvent - currentTime);
-            var isStartEvent = delay < sec && delay >= 0;
-            var timeToDelayTimer = isStartEvent ? delay : sec;
-            timer = setInterval(function () {
-                if (isStartEvent) {
-                    closestEventList.forEach(function (event) {
-                        console.log(event);
-                        if (event.done === false) {
-                            event.callback();
-                            event.done = true;
-                        } else {
-                            timerToRunClosestEvent();
-                        }
-                    });
-                    timerToRunClosestEvent();
-                } else {
-                    timerToRunClosestEvent();
-                }
-            }, timeToDelayTimer);
+    Calendar.prototype.removeEvent = function (id) {
+        if (!id) {
+            return console.log(NOT_CORRECT_ID);
         }
 
-        /* Find time to nearest event */
+        var index = eventList.findIndex(function (event) {
+            return event.id === id;
+        });
 
-        function findTimeToNearestEvent() {
-            var timeToCallEvent = null;
-            var currentTime = Date.now();
-            eventList.forEach(function (el) {
-                if (timeToCallEvent === null && currentTime < el.time) {
-                    timeToCallEvent = el.time;
-                }
-                if (currentTime < el.time && timeToCallEvent > el.time) {
-                    timeToCallEvent = el.time
-                }
-            });
-            return timeToCallEvent;
+        if (index !== -1) eventList.splice(index, 1);
+    };
+
+    /* Edit event */
+
+    Calendar.prototype.editEvent = function (id, newEvent) {
+        if (!id) {
+            return console.log(NOT_CORRECT_ID);
+        }
+        if (!newEvent) {
+            return console.log(NOT_CORRECT_EVENT);
+        }
+        //TODO
+        eventList.forEach(function (event) {
+            if (event.id === id) {
+                event.eventName = newEvent
+            }
+        });
+    };
+
+    /* Edit date */
+
+    Calendar.prototype.editDate = function (id, newEventDate) {
+        if (!id) {
+            return console.log(NOT_CORRECT_ID);
+        }
+        var parseNewEventDay = new Date(Date.parse(newEventDate));
+
+        if (!newEventDate || isNaN(parseNewEventDay)) {
+            return console.log(NOT_CORRECT_DATE);
         }
 
-        /* Find nearest event */
+        eventList.forEach(function (event) {
+            if (event.id === id) {
+                event.eventDate = parseNewEventDay
+            }
+        });
+    };
 
-        function findNearestEvent(closestTime) {
-            console.log(eventList);
-            var nearestEventList = eventList.filter(function (event) {
-                return closestTime === event.time;
-            });
-            return nearestEventList;
+    /* Show event list for period*/
+
+    Calendar.prototype.showEventsListForPeriod = function (startDate, stopDate) {
+        if (!stopDate) {
+            stopDate = startDate;
         }
 
-        /* Create new event */
+        var newDateStart = new Date(Date.parse(startDate));
+        var newDateStop = new Date(Date.parse(stopDate));
 
-        Calendar.prototype.createEvent = function (eventName, eventDate, callback) {
-            if (!eventName) {
-                return console.log('Please set an correct event');
+        if (isNaN(newDateStart && newDateStop)) {
+            return console.log(NOT_CORRECT_DATE);
+        }
+
+        var eventListForPeriod = eventList.filter(function (event) {
+            if ((event.eventDate >= newDateStart) && (event.eventDate <= newDateStop)) {
+                return event.eventName;
             }
-            if (!eventDate) {
-                return console.log('Please set a correct date');
+        });
+
+        return eventListForPeriod;
+    };
+
+    /* Show event list for month*/
+
+    Calendar.prototype.showEventsListForMonth = function () {
+        var currentDate = new Date();
+        var eventsByMonth = eventList.filter(function (event) {
+            if (event.eventDate.getMonth() === currentDate.getMonth() &&
+                event.eventDate.getFullYear() === currentDate.getFullYear()) {
+                return event;
             }
+        });
+        return eventsByMonth;
+    };
 
-            var newDate = new Date(Date.parse(eventDate));
+    /* Show event list for day*/
 
-            if(isNaN(newDate)) {
-                return console.log('date is wrong');
+    Calendar.prototype.showEventsListForDay = function () {
+        var currentDate = new Date();
+        var eventsByDay = eventList.filter(function (event) {
+            if (event.eventDate.getDate() === currentDate.getDate() &&
+                event.eventDate.getMonth() === currentDate.getMonth() &&
+                event.eventDate.getFullYear() === currentDate.getFullYear()) {
+                return event;
             }
+        });
+        return eventsByDay;
+    };
 
-            var newEvent = {
-                eventDate: eventDate,
-                eventName: eventName,
-                id: generateId(),
-                date: newDate,
-                time: newDate.getTime(),
-                done: false,
-                callback: callback
-            };
+    /* Show event list for week*/
 
-            eventList.push(newEvent);
-            timerToRunClosestEvent();
-        };
+    Calendar.prototype.showEventsListForWeek = function () {
+        var currentDate = new Date();
+        var startDayOfAWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+            currentDate.getDate() - currentDate.getDay() + 1);
+        var endDayOfAWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+            currentDate.getDate() - currentDate.getDay() + 7, 23, 59, 59, 999);
 
-        /* Remove event */
-
-        Calendar.prototype.removeEvent = function (id) {
-            if (!id) {
-                return console.log('Enter the correct id');
+        var eventsByWeek = eventList.filter(function (event) {
+            if (event.eventDate >= startDayOfAWeek && event.eventDate <= endDayOfAWeek) {
+                return event;
             }
+        });
+        return eventsByWeek;
+    };
 
-            var index = eventList.findIndex(function (e) {
-                return e.id === id;
-            });
-
-            if (index !== -1) eventList.splice(index, 1);
-        };
-
-        /* Edit event */
-
-        Calendar.prototype.editEvent = function (id, newEvent) {
-            if (!id) {
-                return console.log('Enter the correct id');
-            }
-            if (!newEvent) {
-                return console.log('Please set an correct event');
-            }
-
-            eventList.map(function (el) {
-                if (el.id === id) {
-                    el.eventName = newEvent
-                }
-            });
-        };
-
-        /* Edit date */
-
-        Calendar.prototype.editDate = function (id, newDate) {
-            if (!id) {
-                return console.log('Enter the correct id');
-            }
-            if (!newDate) {
-                return console.log('Please set an correct date');
-            }
-
-            eventList.forEach(function (el) {
-                if (el.id === id) {
-                    el.eventDate = newDate
-                }
-            });
-        };
-
-        /* Show event list for period*/
-
-        Calendar.prototype.showEventsListForPeriod = function (startDate, stopDate) {
-            if (stopDate === undefined) {
-                stopDate = startDate;
-            }
-
-            var newDateStart = new Date(Date.parse(startDate));
-            var newDateStop = new Date(Date.parse(stopDate));
-
-            var eventListForPeriod = eventList.filter(function (value) {
-                var eventDate = new Date(Date.parse(value.eventDate));
-
-                if ((eventDate >= newDateStart) && (eventDate <= newDateStop)) {
-                    return value.eventName;
-                }
-            });
-
-            return eventListForPeriod;
-        };
-
-        /* Show event list for month*/
-
-        Calendar.prototype.showEventsListForMonth = function () {
-            var currentDate = new Date();
-            var eventsByMonth = eventList.filter(function (event) {
-                if (event.date.getMonth() === currentDate.getMonth() &&
-                    event.date.getFullYear() === currentDate.getFullYear()) {
-                    return event;
-                }
-            });
-            return eventsByMonth;
-        };
-
-        /* Show event list for day*/
-
-        Calendar.prototype.showEventsListForDay = function () {
-            var currentDate = new Date();
-            var eventsByDay = eventList.filter(function (event) {
-                if (event.date.getDate() === currentDate.getDate() &&
-                    event.date.getMonth() === currentDate.getMonth() &&
-                    event.date.getFullYear() === currentDate.getFullYear()) {
-                    return event;
-                }
-            });
-            return eventsByDay;
-        };
-
-        /* Show event list for week*/
-
-        Calendar.prototype.showEventsListForWeek = function () {
-            var currentDate = new Date();
-            var startDayOfAWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(),
-                currentDate.getDate() - currentDate.getDay() + 1);
-            var endDayOfAWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(),
-                currentDate.getDate() - currentDate.getDay() + 7, 23, 59, 59, 999);
-
-            var eventsByWeek = eventList.filter(function (event) {
-                if (event.date >= startDayOfAWeek && event.date <= endDayOfAWeek) {
-                   return event;
-                }
-            });
-            return eventsByWeek;
-        };
-
-        return new Calendar();
-    })();
-
-    window.Calendar = Calendar;
+    return new Calendar();
 })();
+
+
 
