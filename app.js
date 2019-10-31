@@ -9,7 +9,7 @@ var Calendar = (function () {
     /* Generate random id*/
     //TODO
     function generateId() {
-        return Math.random().toString(36).substr(2, 9);
+        return new Date().getMilliseconds();
     }
 
     function Calendar() {
@@ -32,9 +32,6 @@ var Calendar = (function () {
         var currentMinutes = currentTime.getMinutes();
         var currentSeconds = currentTime.getSeconds();
 
-        // var closestTimeToEvent = findTimeToNearestEvent();
-        // var closestEventList = findNearestEvent(closestTimeToEvent);
-
         eventList.forEach(function (event) {
             if (currentYear === event.eventDate.getFullYear() && currentMonth === event.eventDate.getMonth()
                 && currentDay === event.eventDate.getDay() && currentMinutes === event.eventDate.getMinutes()
@@ -43,31 +40,6 @@ var Calendar = (function () {
             }
         });
     }
-
-    /* Find time to nearest event */
-
-    // function findTimeToNearestEvent() {
-    //     var timeToCallEvent = null;
-    //     var currentTime = Date.now();
-    //     eventList.forEach(function (event) {
-    //         if (timeToCallEvent === null && currentTime < event.eventDate.getTime()) {
-    //             timeToCallEvent = event.eventDate.getTime();
-    //         }
-    //         if (currentTime < event.eventDate.getTime() && timeToCallEvent > event.eventDate.getTime()) {
-    //             timeToCallEvent = event.eventDate.getTime();
-    //         }
-    //     });
-    //     return timeToCallEvent;
-    // }
-
-    /* Find nearest event */
-
-    // function findNearestEvent(closestTime) {
-    //     var nearestEventList = eventList.filter(function (event) {
-    //         return closestTime === event.eventDate.getTime();
-    //     });
-    //     return nearestEventList;
-    // }
 
     /* Create new event */
 
@@ -100,15 +72,15 @@ var Calendar = (function () {
     /* Remove event */
 
     Calendar.prototype.removeEvent = function (id) {
-        if (!id) {
+        if (!id || isNaN(id)) {
             return console.log(NOT_CORRECT_ID);
         }
 
-        var index = eventList.findIndex(function (event) {
-            return event.id === id;
-        });
-
-        if (index !== -1) eventList.splice(index, 1);
+        // var index = eventList.findIndex(function (event) {
+        //     return event.id === id;
+        // });
+        //
+        // if (index !== -1) eventList.splice(index, 1);
 
         eventList = eventList.filter(function(event) {
             return event.id !== id
