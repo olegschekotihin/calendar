@@ -26,13 +26,19 @@ var Calendar = (function () {
 
     function runClosestEvent() {
         var currentTime = new Date();
+        var currentYear = currentTime.getFullYear();
+        var currentMonth = currentTime.getMonth();
+        var currentDay = currentTime.getDay();
+        var currentMinutes = currentTime.getMinutes();
+        var currentSeconds = currentTime.getSeconds();
+
         // var closestTimeToEvent = findTimeToNearestEvent();
         // var closestEventList = findNearestEvent(closestTimeToEvent);
 
         eventList.forEach(function (event) {
-            if (currentTime.getFullYear() === event.eventDate.getFullYear() && currentTime.getMonth() === event.eventDate.getMonth()
-                && currentTime.getDay() === event.eventDate.getDay() && currentTime.getMinutes() === event.eventDate.getMinutes()
-                && currentTime.getSeconds() === event.eventDate.getSeconds()) {
+            if (currentYear === event.eventDate.getFullYear() && currentMonth === event.eventDate.getMonth()
+                && currentDay === event.eventDate.getDay() && currentMinutes === event.eventDate.getMinutes()
+                && currentSeconds === event.eventDate.getSeconds()) {
                 return event.callback();
             }
         });
@@ -103,6 +109,10 @@ var Calendar = (function () {
         });
 
         if (index !== -1) eventList.splice(index, 1);
+
+        eventList = eventList.filter(function(event) {
+            return event.id !== id
+        });
     };
 
     /* Edit event */
@@ -114,11 +124,11 @@ var Calendar = (function () {
         if (!newEvent) {
             return console.log(NOT_CORRECT_EVENT);
         }
-        //TODO
-        eventList.forEach(function (event) {
+        eventList = eventList.map(function (event) {
             if (event.id === id) {
-                event.eventName = newEvent
+                return Object.assign({}, event, { eventName: newEvent });
             }
+            return event;
         });
     };
 
@@ -134,10 +144,11 @@ var Calendar = (function () {
             return console.log(NOT_CORRECT_DATE);
         }
 
-        eventList.forEach(function (event) {
+        eventList = eventList.map(function (event) {
             if (event.id === id) {
-                event.eventDate = parseNewEventDay
+                return Object.assign({}, event, {eventDate: parseNewEventDay});
             }
+            return event;
         });
     };
 
@@ -156,9 +167,7 @@ var Calendar = (function () {
         }
 
         var eventListForPeriod = eventList.filter(function (event) {
-            if ((event.eventDate >= newDateStart) && (event.eventDate <= newDateStop)) {
-                return event.eventName;
-            }
+            return (event.eventDate >= newDateStart) && (event.eventDate <= newDateStop);
         });
 
         return eventListForPeriod;
