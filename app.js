@@ -35,7 +35,8 @@ var Calendar = (function () {
         eventList.forEach(function (event) {
             if (currentYear === event.eventDate.getFullYear() && currentMonth === event.eventDate.getMonth()
                 && currentDay === event.eventDate.getDay() && currentMinutes === event.eventDate.getMinutes()
-                && currentSeconds === event.eventDate.getSeconds()) {
+                && currentSeconds === event.eventDate.getSeconds() && event.done === false) {
+                event.done = true;
                 return event.callback();
             }
         });
@@ -66,7 +67,6 @@ var Calendar = (function () {
         };
 
         eventList.push(newEvent);
-        timerToRunClosestEvent();
     };
 
     /* Remove event */
@@ -75,12 +75,6 @@ var Calendar = (function () {
         if (!id || isNaN(id)) {
             return console.log(NOT_CORRECT_ID);
         }
-
-        // var index = eventList.findIndex(function (event) {
-        //     return event.id === id;
-        // });
-        //
-        // if (index !== -1) eventList.splice(index, 1);
 
         eventList = eventList.filter(function(event) {
             return event.id !== id
@@ -134,7 +128,7 @@ var Calendar = (function () {
         var newDateStart = new Date(Date.parse(startDate));
         var newDateStop = new Date(Date.parse(stopDate));
 
-        if (isNaN(newDateStart && newDateStop)) {
+        if (!(newDateStart && newDateStop)) {
             return console.log(NOT_CORRECT_DATE);
         }
 
@@ -149,27 +143,11 @@ var Calendar = (function () {
 
     Calendar.prototype.showEventsListForMonth = function () {
         var currentDate = new Date();
-        var eventsByMonth = eventList.filter(function (event) {
-            if (event.eventDate.getMonth() === currentDate.getMonth() &&
-                event.eventDate.getFullYear() === currentDate.getFullYear()) {
-                return event;
-            }
+        var eventListsByMonth = eventList.filter(function (event) {
+            return (event.eventDate.getMonth() === currentDate.getMonth() &&
+                event.eventDate.getFullYear() === currentDate.getFullYear());
         });
-        return eventsByMonth;
-    };
-
-    /* Show event list for day*/
-
-    Calendar.prototype.showEventsListForDay = function () {
-        var currentDate = new Date();
-        var eventsByDay = eventList.filter(function (event) {
-            if (event.eventDate.getDate() === currentDate.getDate() &&
-                event.eventDate.getMonth() === currentDate.getMonth() &&
-                event.eventDate.getFullYear() === currentDate.getFullYear()) {
-                return event;
-            }
-        });
-        return eventsByDay;
+        return eventListsByMonth;
     };
 
     /* Show event list for week*/
@@ -181,12 +159,22 @@ var Calendar = (function () {
         var endDayOfAWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(),
             currentDate.getDate() - currentDate.getDay() + 7, 23, 59, 59, 999);
 
-        var eventsByWeek = eventList.filter(function (event) {
-            if (event.eventDate >= startDayOfAWeek && event.eventDate <= endDayOfAWeek) {
-                return event;
-            }
+        var eventListByWeek = eventList.filter(function (event) {
+            return (event.eventDate >= startDayOfAWeek && event.eventDate <= endDayOfAWeek);
         });
-        return eventsByWeek;
+        return eventListByWeek;
+    };
+
+    /* Show event list for day*/
+
+    Calendar.prototype.showEventsListForDay = function () {
+        var currentDate = new Date();
+        var eventListByDay = eventList.filter(function (event) {
+            return (event.eventDate.getDate() === currentDate.getDate() &&
+                event.eventDate.getMonth() === currentDate.getMonth() &&
+                event.eventDate.getFullYear() === currentDate.getFullYear());
+        });
+        return eventListByDay;
     };
 
     return new Calendar();
