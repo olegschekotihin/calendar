@@ -7,6 +7,7 @@ var Calendar = (function () {
     var NOT_CORRECT_ID = 'Enter the correct id';
 
     /* Generate random id*/
+
     //TODO
     function generateId() {
         return new Date().getMilliseconds();
@@ -76,7 +77,7 @@ var Calendar = (function () {
             return console.log(NOT_CORRECT_ID);
         }
 
-        eventList = eventList.filter(function(event) {
+        eventList = eventList.filter(function (event) {
             return event.id !== id
         });
     };
@@ -90,9 +91,10 @@ var Calendar = (function () {
         if (!newEvent) {
             return console.log(NOT_CORRECT_EVENT);
         }
+
         eventList = eventList.map(function (event) {
             if (event.id === id) {
-                return Object.assign({}, event, { eventName: newEvent });
+                return Object.assign({}, event, {eventName: newEvent});
             }
             return event;
         });
@@ -118,6 +120,22 @@ var Calendar = (function () {
         });
     };
 
+    /* Find event by id */
+
+    Calendar.prototype.findById = function (id) {
+      var eventListId = eventList.filter(function (event) {
+          return (event.id === id);
+      });
+
+      return eventListId;
+    };
+
+    /* Show all event */
+
+    Calendar.prototype.showAllEvent = function showAllEvent() {
+        return eventList;
+    };
+
     /* Show event list for period*/
 
     Calendar.prototype.showEventsListForPeriod = function (startDate, stopDate) {
@@ -128,7 +146,7 @@ var Calendar = (function () {
         var newDateStart = new Date(Date.parse(startDate));
         var newDateStop = new Date(Date.parse(stopDate));
 
-        if (!(newDateStart && newDateStop)) {
+        if (!newDateStart) {
             return console.log(NOT_CORRECT_DATE);
         }
 
