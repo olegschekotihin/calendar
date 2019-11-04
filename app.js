@@ -8,7 +8,6 @@ var Calendar = (function () {
 
     /* Generate random id*/
 
-    //TODO
     function generateId() {
         return new Date().getMilliseconds();
     }
@@ -34,9 +33,15 @@ var Calendar = (function () {
         var currentSeconds = currentTime.getSeconds();
 
         eventList.forEach(function (event) {
-            if (currentYear === event.eventDate.getFullYear() && currentMonth === event.eventDate.getMonth()
-                && currentDay === event.eventDate.getDay() && currentMinutes === event.eventDate.getMinutes()
-                && currentSeconds === event.eventDate.getSeconds() && event.done === false) {
+            var eventYear = event.eventDate.getFullYear();
+            var eventMonth = event.eventDate.getMonth();
+            var eventDay = event.eventDate.getDay();
+            var eventMinutes = event.eventDate.getMinutes();
+            var eventSeconds = event.eventDate.getSeconds();
+
+            if (currentYear === eventYear && currentMonth === eventMonth
+                && currentDay === eventDay && currentMinutes === eventMinutes
+                && currentSeconds === eventSeconds && event.done === false) {
                 event.done = true;
                 return event.callback();
             }
