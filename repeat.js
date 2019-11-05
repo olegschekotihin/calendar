@@ -3,10 +3,8 @@ var Repeat = (function (Calendar) {
     var NOT_CORRECT_DATE = 'Please set a correct date';
     var NOT_CORRECT_ID = 'Enter the correct id';
 
-    Calendar.repeatEventEveryday = function(id) {
+    Calendar.repeatEventEveryday = function (id) {
         var day = 86400000;
-
-
         var repeatEventId = Calendar.findById(id);
 
         repeatEventId.forEach(function (event) {
@@ -17,26 +15,25 @@ var Repeat = (function (Calendar) {
     };
 
     Calendar.callbackEventEveryDay = function () {
-      this.callback();
-      repeatEventEveryday();
+        this.callback();
+        repeatEventEveryday();
     };
 
-    Calendar.createRepeatEvent = function(id) {
+    Calendar.createRepeatEvent = function (id) {
         var currentDate = new Date();
         var day = 86400000;
 
-        if(!id) {
+        if (!id) {
             return console.log(NOT_CORRECT_ID);
         }
-
         var repeatEventId = Calendar.findById(id);
 
-        if(!repeatEventId) {
+        if (!repeatEventId) {
             return console.log(NOT_CORRECT_ID);
         }
 
         repeatEventId.forEach(function (event) {
-            if(event) {
+            if (event) {
                 console.log(event);
                 Calendar.removeEvent(event.id);
 
@@ -64,6 +61,30 @@ var Repeat = (function (Calendar) {
     //         }
     //     });
     // };
+
+    function newDateRepeatEvent() {
+        console.log('ads ' + this.repeatEventListById);
+        var day = 86400000;
+        return repeatEventListById.date = repeatEventListById.date + day
+    };
+
+    function newCallback() {
+        this.callback = function () {
+            this.callback;
+            Calendar.createEvent(this.eventName, newDateRepeatEvent(), newCallback())
+        }
+    };
+
+    Calendar.testF = function (id) {
+        var currentDate = new Date();
+        var repeatEventListById = Calendar.findById(id);
+
+        if (currentDate > repeatEventListById.eventDate) {
+            return Calendar.createEvent(repeatEventListById.eventName, newDateRepeatEvent(), newCallback())
+        }
+
+        return Calendar.createEvent(repeatEventListById.eventName, repeatEventListById.eventDate, newCallback())
+    };
 
     return Calendar;
 })(Calendar);
