@@ -2,6 +2,7 @@ var Repeat = (function (Calendar) {
     var NOT_CORRECT_EVENT = 'Please set an correct event';
     var NOT_CORRECT_DATE = 'Please set a correct date';
     var NOT_CORRECT_ID = 'Enter the correct id';
+    var callbackList = [];
 
     Calendar.repeatEventEveryday = function (id) {
         var day = 86400000;
@@ -84,6 +85,32 @@ var Repeat = (function (Calendar) {
         }
 
         return Calendar.createEvent(repeatEventListById.eventName, repeatEventListById.eventDate, newCallback())
+    };
+
+
+
+    Calendar.repeat = function (id) {
+        var currentDate = new Date();
+        var repeatEventListById = Calendar.findById(id);
+        var day = 86400000;
+        var eventDateById = repeatEventListById.forEach(function (event) {
+            return event.eventDate;
+        });
+        console.log(repeatEventListById);
+        console.log(eventDateById);
+
+        var newCallback = function () {
+            Calendar.removeEvent(this.id);
+            return(repeatEventListById.callback, Calendar.createEvent(repeatEventListById.eventName, repeatEventListById.eventDate.getTime() + day, newCallback()))
+        };
+
+        if (currentDate.getTime() > eventDateById) {
+            Calendar.removeEvent(id);
+            return Calendar.createEvent(repeatEventListById.eventName, repeatEventListById.eventDate.getTime() + day, newCallback());
+        }
+
+        Calendar.removeEvent(id);
+        return Calendar.createEvent(repeatEventListById.eventName, repeatEventListById.eventDate.getTime(), newCallback());
     };
 
     return Calendar;
