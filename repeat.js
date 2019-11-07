@@ -1,116 +1,146 @@
 var Repeat = (function (Calendar) {
-    var NOT_CORRECT_EVENT = 'Please set an correct event';
-    var NOT_CORRECT_DATE = 'Please set a correct date';
-    var NOT_CORRECT_ID = 'Enter the correct id';
     var callbackList = [];
 
-    Calendar.repeatEventEveryday = function (id) {
-        var day = 86400000;
-        var repeatEventId = Calendar.findById(id);
+    var dayMileseconds = 86400000;
 
-        repeatEventId.forEach(function (event) {
-            var eventNewRepeatDate = new Date(event.eventDate.getTime() + day);
-            event.done = false;
-            event.eventDate = eventNewRepeatDate;
+    var NOT_CORRECT_ID = 'Enter the correct id';
+    var ARRAY_IS_EMPTY = 'days array is empty';
+    var EVENT_NOT_FOUND = 'event not found';
+    var INPUT_DATA_IS_NOT_VALID = 'input data is not valid';
+    var DAY_IS_NOT_ARRAY = 'The days must be in array!';
+    var MAX_LENGTH_IS_NOT_CORRECT = 'Max length of days array is 7 and values from 0 to 7!';
+
+    /* Run callback events */
+
+    var runCallbacksRepeatsEvents = function () {
+        callbackList.forEach(function (callbackItem) {
+            callbackItem();
         });
     };
 
-    Calendar.callbackEventEveryDay = function () {
-        this.callback();
-        repeatEventEveryday();
-    };
+    /* Check array */
 
-    Calendar.createRepeatEvent = function (id) {
-        var currentDate = new Date();
-        var day = 86400000;
+    function isValidArray(arr) {
+        return Object.prototype.toString.call(arr) === '[object Array]'
+    }
 
-        if (!id) {
-            return console.log(NOT_CORRECT_ID);
-        }
-        var repeatEventId = Calendar.findById(id);
+    /* Check array of days */
 
-        if (!repeatEventId) {
-            return console.log(NOT_CORRECT_ID);
+    function checkArrayDays(days) {
+        if (!isValidArray(days)) {
+            console.log(DAY_IS_NOT_ARRAY);
+            return false;
         }
 
-        repeatEventId.forEach(function (event) {
-            if (event) {
-                console.log(event);
-                Calendar.removeEvent(event.id);
+        if (!days.length) {
+            console.log(ARRAY_IS_EMPTY);
+            return false;
+        }
 
-                return Calendar.createEvent(event.eventName, event.eventDate, Calendar.callbackEventEveryDay());
+        days.forEach(function (days) {
+            if (days > 6 || days < 0 || days > 7) {
+                console.log(MAX_LENGTH_IS_NOT_CORRECT);
+                return false;
             }
         });
-    };
 
-    // Calendar.repeatEventByWeekDay = function (id, dayOfWeek) {
-    //     var repeatEventId = Calendar.findById(id);
-    //     var repeatDayOfWeek = dayOfWeek
-    //
-    //     if(!repeatEventId) {
-    //         return console.log(NOT_CORRECT_ID);
-    //     }
-    //
-    //     repeatEventId.forEach(function (event) {
-    //         if(event) {
-    //             console.log(event);
-    //             Calendar.removeEvent(event.id);
-    //
-    //             var eventNewRepeatDate = new Date(event.eventDate.getTime() + day);
-    //
-    //             return Calendar.createEvent(event.eventName, eventNewRepeatDate, event.callback);
-    //         }
-    //     });
-    // };
+        return true;
+    }
 
-    function newDateRepeatEvent() {
-        console.log('ads ' + this.repeatEventListById);
-        var day = 86400000;
-        return repeatEventListById.date = repeatEventListById.date + day
-    };
+    /* Find closest day on number */
 
-    function newCallback() {
-        this.callback = function () {
-            this.callback;
-            Calendar.createEvent(this.eventName, newDateRepeatEvent(), newCallback())
-        }
-    };
-
-    Calendar.testF = function (id) {
+    function findClosestDay(days) {
         var currentDate = new Date();
-        var repeatEventListById = Calendar.findById(id);
+        var currentDay = new Date().getDay();
+        var closestEventDay = null;
+        currentDay = currentDay === 0 ? 7 : currentDay;
+        days.sort();
 
-        if (currentDate > repeatEventListById.eventDate) {
-            return Calendar.createEvent(repeatEventListById.eventName, newDateRepeatEvent(), newCallback())
-        }
-
-        return Calendar.createEvent(repeatEventListById.eventName, repeatEventListById.eventDate, newCallback())
-    };
-
-
-
-    Calendar.repeat = function (id) {
-        var currentDate = new Date();
-        var repeatEventListById = Calendar.findById(id);
-        var day = 86400000;
-        var eventDateById = repeatEventListById.forEach(function (event) {
-            return event.eventDate;
+        days.forEach(function (day) {
+            if (!closestEventDay && currentDay < day) {
+                closestEventDay = day;
+            }
         });
-        console.log(repeatEventListById);
-        console.log(eventDateById);
 
-        var newCallback = function () {
-            Calendar.removeEvent(this.id);
-            return(repeatEventListById.callback, Calendar.createEvent(repeatEventListById.eventName, repeatEventListById.eventDate.getTime() + day, newCallback()))
-        };
+        if (closestEventDay) {
+            return currentDate.setDate(currentDate.getDate() + (closestEventDay - currentDay));
+        }
+        closestEventDay = days[0];
 
-        if (currentDate.getTime() > eventDateById) {
-            Calendar.removeEvent(id);
-            return Calendar.createEvent(repeatEventListById.eventName, repeatEventListById.eventDate.getTime() + day, newCallback());
+        return currentDate.setDate(currentDate.getDate() - currentDay + closestEventDay + 7);
+    }
+
+    /* New repeat callback */
+
+    function newRepeatCallback(days, eventName) {
+
+        if (days) {
+            return function () {
+                var stringDate = new Date(findClosestDay(days)).toISOString();
+                console.log(stringDate);
+                return Calendar.createEvent(eventName, stringDate, runCallbacksRepeatsEvents);
+            };
         }
 
-        Calendar.removeEvent(id);
-        return Calendar.createEvent(repeatEventListById.eventName, repeatEventListById.eventDate.getTime(), newCallback());
+        return function () {
+            var stringDate = new Date(Date.now() + dayMileseconds).toISOString();
+            console.log(stringDate);
+            return Calendar.createEvent(eventName, stringDate, runCallbacksRepeatsEvents);
+        };
+    }
+
+    /* Search event by id */
+
+    function searchEventByID(id) {
+        var allEventsList = Calendar.showAllEvent();
+        if (Array.isArray(allEventsList)) {
+            console.log(Calendar.findById(id)[0]);
+            return Calendar.findById(id)[0];
+        }
+
+        return null;
+    }
+
+    /* Create repeat event */
+
+    Calendar.addRepeatsEvent = function (eventName, eventDate, callback, days) {
+
+        if (!name || !date || !callback) {
+            console.log(INPUT_DATA_IS_NOT_VALID);
+            return;
+        }
+
+        if (days && !checkArrayDays(days)) {
+            return console.log(MAX_LENGTH_IS_NOT_CORRECT);
+        }
+
+        callbackList = [].concat(callback, newRepeatCallback(days, eventName));
+        return Calendar.createEvent(eventName, eventDate, runCallbacksRepeatsEvents);
+    };
+
+    /* Add repeats for event */
+
+    Calendar.addRepeatsEventByID = function (id, days) {
+
+        if (!id) {
+            console.log(INPUT_DATA_IS_NOT_VALID);
+            return console.log(NOT_CORRECT_ID);
+        }
+
+        if (days && !checkArrayDays(days)) {
+            return console.log(MAX_LENGTH_IS_NOT_CORRECT);
+        }
+
+        var event = searchEventByID(id);
+        console.log(event);
+        if (event) {
+            callbackList = [].concat(event.callback, newRepeatCallback(days, event.eventName));
+            Calendar.removeEvent(id);
+
+            return Calendar.createEvent(event.eventName, event.eventDate, runCallbacksRepeatsEvents);
+        }
+
+        console.log(EVENT_NOT_FOUND);
     };
 
     return Calendar;
