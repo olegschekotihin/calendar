@@ -92,13 +92,8 @@ var Repeat = (function (Calendar) {
     /* Search event by id */
 
     function searchEventByID(id) {
-        var allEventsList = Calendar.showAllEvent();
-        if (Array.isArray(allEventsList)) {
-            console.log(Calendar.findById(id)[0]);
-            return Calendar.findById(id)[0];
-        }
-
-        return null;
+        console.log(Calendar.findById(id)[0]);
+        return Calendar.findById(id)[0];
     }
 
     /* Create repeat event */
