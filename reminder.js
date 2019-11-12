@@ -60,8 +60,6 @@ var Reminder = (function (Calendar) {
         return console.log(NOT_CORRECT_TIMEFLAG);
     }
 
-
-
     function findTimeToAllEvent(valueTime, timeFlag) {
         var eventList = Calendar.showAllEvent();
 
@@ -70,7 +68,7 @@ var Reminder = (function (Calendar) {
             var remindTimeToAllEvents = getTimeToRemind(valueTime, timeFlag);
             var parseTimeToEvent = new Date(timeToEvent - remindTimeToAllEvents);
             var timeToRemind = parseTimeToEvent.toString();
-            return Calendar.createEvent('Remind to event: ' + this.eventName, timeToRemind, remindCallback())
+            return Calendar.createEvent('Remind to event: ' + event.eventName, timeToRemind, remindCallback)
         })
     }
 
