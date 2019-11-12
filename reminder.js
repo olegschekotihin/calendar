@@ -24,19 +24,16 @@ var Reminder = (function (Calendar) {
     /* Get time to remind*/
 
     function getTimeToRemind(valueTime, timeFlag) {
-        if(isNaN(valueTime)) {
+        if (isNaN(valueTime)) {
             return console.log(NOT_CORRECT_TIMEVALUE);
         }
 
-        if(timeFlag === dayTimeFlag) {
-            var timeToRemindDay;
-            return timeToRemindDay = valueTime * dayMileseconds;
-        } else if(timeFlag === hourTimeFlag) {
-            var timeToRemindHour;
-            return timeToRemindHour = valueTime * hourMileseconds;
-        } else if(timeFlag === minuteTimeFlag) {
-            var timeToRemindMinute;
-            return timeToRemindMinute = valueTime * minuteMileseconds;
+        if (timeFlag === dayTimeFlag) {
+            return valueTime * dayMileseconds;
+        } else if (timeFlag === hourTimeFlag) {
+            return valueTime * hourMileseconds;
+        } else if (timeFlag === minuteTimeFlag) {
+            return valueTime * minuteMileseconds;
         }
 
         return console.log(INPUT_DATA_IS_NOT_VALID);
@@ -44,20 +41,37 @@ var Reminder = (function (Calendar) {
 
     /* Find time to remind */
 
-    function findTimeToRemind(id, timeFlag) {
+    function findTimeToRemind(id, valueTime, timeFlag) {
         var eventForId = searchEventByID(id);
-        var timeToRemind;
-        var parsEeventForIdTime = (eventForId.eventDate).getTime();
+        var parsEventForIdTime = (eventForId.eventDate).getTime();
 
-        if(timeFlag === dayTimeFlag) {
-            return timeToRemind = parsEeventForIdTime - timeToRemindDay;
-        } else if(timeFlag === hourTimeFlag) {
-            return timeToRemind = parsEeventForIdTime - timeToRemindHour;
-        } else if(timeFlag === minuteTimeFlag) {
-            return timeToRemind = parsEeventForIdTime - timeToRemindMinute;
+        var timeToRemindToEvent = getTimeToRemind(valueTime, timeFlag);
+
+        console.log(getTimeToRemind(valueTime, timeFlag));
+
+        if (timeFlag === dayTimeFlag) {
+            return parsEventForIdTime - timeToRemindToEvent;
+        } else if (timeFlag === hourTimeFlag) {
+            return parsEventForIdTime - timeToRemindToEvent;
+        } else if (timeFlag === minuteTimeFlag) {
+            return parsEventForIdTime - timeToRemindToEvent;
         }
 
         return console.log(NOT_CORRECT_TIMEFLAG);
+    }
+
+
+
+    function findTimeToAllEvent(valueTime, timeFlag) {
+        var eventList = Calendar.showAllEvent();
+
+        eventList.forEach(function (event) {
+            var timeToEvent = (event.eventDate).getTime();
+            var remindTimeToAllEvents = getTimeToRemind(valueTime, timeFlag);
+            var parseTimeToEvent = new Date(timeToEvent - remindTimeToAllEvents);
+            var timeToRemind = parseTimeToEvent.toString();
+            return Calendar.createEvent('Remind to event: ' + this.eventName, timeToRemind, remindCallback())
+        })
     }
 
     /* Remind callback */
@@ -66,18 +80,28 @@ var Reminder = (function (Calendar) {
         return console.log('Remind to ' + this.eventName);
     }
 
-    /*Remind event for id*/
+    /* Remind event for id */
 
     Calendar.remindEvent = function (id, valueTime, timeFlag) {
-        if (!id || !valueTime || !timeFlag || !remindCallback) {
+        if (!id || !valueTime || !timeFlag) {
             return console.log(INPUT_DATA_IS_NOT_VALID);
         }
 
         var eventForId = searchEventByID(id);
-        var timeToRemind = new Date(findTimeToRemind());
+        var timeToRemind = new Date(findTimeToRemind(id, valueTime, timeFlag));
         var parseTimeToRemind = timeToRemind.toString();
 
         Calendar.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
+    };
+
+    /* Remind for all event */
+
+    Calendar.remindToAllEvent = function (valueTime, timeFlag) {
+        if (!valueTime || !timeFlag) {
+            return console.log(INPUT_DATA_IS_NOT_VALID);
+        }
+
+        findTimeToAllEvent(valueTime, timeFlag);
     };
 
     return Calendar;
