@@ -1,7 +1,4 @@
 var Reminder = (function (Calendar) {
-    var NOT_CORRECT_EVENT = 'Please set an correct event';
-    var NOT_CORRECT_DATE = 'Please set a correct date';
-    var NOT_CORRECT_ID = 'Enter the correct id';
     var NOT_CORRECT_TIMEVALUE = 'Time value must be number'
     var INPUT_DATA_IS_NOT_VALID = 'input data is not valid';
     var NOT_CORRECT_TIMEFLAG = 'time flag is not correct, please use "d" or "h" or "m"';
@@ -60,7 +57,7 @@ var Reminder = (function (Calendar) {
         return console.log(NOT_CORRECT_TIMEFLAG);
     }
 
-    function findTimeToAllEvent(valueTime, timeFlag) {
+    function runRemindToAllEvent(valueTime, timeFlag) {
         var eventList = Calendar.showAllEvent();
 
         eventList.forEach(function (event) {
@@ -68,6 +65,7 @@ var Reminder = (function (Calendar) {
             var remindTimeToAllEvents = getTimeToRemind(valueTime, timeFlag);
             var parseTimeToEvent = new Date(timeToEvent - remindTimeToAllEvents);
             var timeToRemind = parseTimeToEvent.toString();
+
             return Calendar.createEvent('Remind to event: ' + event.eventName, timeToRemind, remindCallback)
         })
     }
@@ -99,7 +97,7 @@ var Reminder = (function (Calendar) {
             return console.log(INPUT_DATA_IS_NOT_VALID);
         }
 
-        findTimeToAllEvent(valueTime, timeFlag);
+        runRemindToAllEvent(valueTime, timeFlag);
     };
 
     return Calendar;

@@ -100,9 +100,8 @@ var Repeat = (function (Calendar) {
 
     Calendar.addRepeatsEvent = function (eventName, eventDate, callback, days) {
 
-        if (!name || !date || !callback) {
-            console.log(INPUT_DATA_IS_NOT_VALID);
-            return;
+        if (!eventName || !eventDate || !callback) {
+            throw INPUT_DATA_IS_NOT_VALID;
         }
 
         if (days && !checkArrayDays(days)) {
@@ -110,32 +109,9 @@ var Repeat = (function (Calendar) {
         }
 
         callbackList = [].concat(callback, newRepeatCallback(days, eventName));
+
+        console.log(1, callbackList);
         return Calendar.createEvent(eventName, eventDate, runCallbacksRepeatsEvents);
-    };
-
-    /* Add repeats for event */
-
-    Calendar.addRepeatsEventByID = function (id, days) {
-
-        if (!id) {
-            console.log(INPUT_DATA_IS_NOT_VALID);
-            return console.log(NOT_CORRECT_ID);
-        }
-
-        if (days && !checkArrayDays(days)) {
-            return console.log(MAX_LENGTH_IS_NOT_CORRECT);
-        }
-
-        var event = searchEventByID(id);
-        console.log(event);
-        if (event) {
-            callbackList = [].concat(event.callback, newRepeatCallback(days, event.eventName));
-            Calendar.removeEvent(id);
-
-            return Calendar.createEvent(event.eventName, event.eventDate, runCallbacksRepeatsEvents);
-        }
-
-        console.log(EVENT_NOT_FOUND);
     };
 
     return Calendar;

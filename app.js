@@ -13,16 +13,21 @@ var Calendar = (function () {
     }
 
     function Calendar() {
-        timerToRunClosestEvent();
-    }
-
-    /* Find and run closest event */
-
-    function timerToRunClosestEvent() {
         setInterval(function () {
+            /* Find and run closest event */
             runClosestEvent();
         }, sec);
     }
+
+    Calendar.prototype.eventTriggered = function (event) {
+        console.log(event);
+    };
+
+    const oldOne = Calendar.prototype.eventTriggered;
+    Calendar.prototype.eventTriggered = function() {
+        /////
+        oldOne();
+    };
 
     function runClosestEvent() {
         var currentTime = new Date();
@@ -43,6 +48,7 @@ var Calendar = (function () {
                 && currentDay === eventDay && currentMinutes === eventMinutes
                 && currentSeconds === eventSeconds && event.done === false) {
                 event.done = true;
+                Calendar.prototype.eventTriggered(event);
                 return event.callback();
             }
         });
@@ -138,7 +144,10 @@ var Calendar = (function () {
     /* Show all event */
 
     Calendar.prototype.showAllEvent = function showAllEvent() {
-        return eventList;
+        return eventList.map(event => {
+             return Object.assign({}, event);
+        });
+
     };
 
     /* Show event list for period*/
