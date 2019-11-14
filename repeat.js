@@ -21,7 +21,7 @@ var Repeat = (function (Calendar) {
     /* Check array */
 
     function isValidArray(arr) {
-        return Object.prototype.toString.call(arr) === '[object Array]'
+        return Array.isArray(arr);
     }
 
     /* Check array of days */
