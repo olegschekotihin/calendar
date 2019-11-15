@@ -19,6 +19,12 @@ var Calendar = (function () {
         }, sec);
     }
 
+    /* Check array */
+
+    function isValidArray(arr) {
+        return Array.isArray(arr);
+    }
+
     Calendar.prototype.eventTriggered = function (event) {
         console.log(event);
     };
@@ -29,7 +35,7 @@ var Calendar = (function () {
         oldOne();
     };
 
-    function runClosestEvent() {
+    function findClosestEvent() {
         var currentTime = new Date();
         var currentYear = currentTime.getFullYear();
         var currentMonth = currentTime.getMonth();
@@ -37,7 +43,7 @@ var Calendar = (function () {
         var currentMinutes = currentTime.getMinutes();
         var currentSeconds = currentTime.getSeconds();
 
-        eventList.forEach(function (event) {
+        var closestEventList = eventList.filter(function (event) {
             var eventYear = event.eventDate.getFullYear();
             var eventMonth = event.eventDate.getMonth();
             var eventDay = event.eventDate.getDay();
@@ -48,10 +54,41 @@ var Calendar = (function () {
                 && currentDay === eventDay && currentMinutes === eventMinutes
                 && currentSeconds === eventSeconds && event.done === false) {
                 event.done = true;
-                Calendar.prototype.eventTriggered(event);
-                return event.callback();
+                return event;
             }
         });
+
+        return closestEventList;
+    }
+
+    function runClosestEvent() {
+        var closestEventList = findClosestEvent();
+
+        if(closestEventList.length) {
+            console.log(closestEventList);
+            closestEventList.forEach(function (event) {
+                return event.callback();
+            })
+        }
+        // if(isValidArray(closestEventList)) {
+        //
+        // }
+        //
+        // eventList.forEach(function (event) {
+        //     var eventYear = event.eventDate.getFullYear();
+        //     var eventMonth = event.eventDate.getMonth();
+        //     var eventDay = event.eventDate.getDay();
+        //     var eventMinutes = event.eventDate.getMinutes();
+        //     var eventSeconds = event.eventDate.getSeconds();
+        //
+        //     if (currentYear === eventYear && currentMonth === eventMonth
+        //         && currentDay === eventDay && currentMinutes === eventMinutes
+        //         && currentSeconds === eventSeconds && event.done === false) {
+        //         event.done = true;
+        //         Calendar.prototype.eventTriggered(event);
+        //         return event.callback();
+        //     }
+        // });
     }
 
     /* Create new event */
