@@ -67,6 +67,8 @@ var Calendar = (function () {
         if(closestEventList.length) {
             console.log(closestEventList);
             closestEventList.forEach(function (event) {
+                console.log('event is', event);
+                console.log('event.callback is ', event.callback)
                 return event.callback();
             })
         }
@@ -184,7 +186,6 @@ var Calendar = (function () {
         return eventList.map(event => {
              return Object.assign({}, event);
         });
-
     };
 
     /* Show event list for period*/

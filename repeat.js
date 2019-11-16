@@ -1,5 +1,5 @@
 var Repeat = (function (Calendar) {
-    var callbackList = [];
+    //var callbackList = [];
 
     var dayMileseconds = 86400000;
 
@@ -12,7 +12,7 @@ var Repeat = (function (Calendar) {
 
     /* Run callback events */
 
-    var runCallbacksRepeatsEvents = function () {
+    var runCallbacksRepeatsEvents = function (callbackList) {
         callbackList.forEach(function (callbackItem) {
             callbackItem();
         });
@@ -108,10 +108,10 @@ var Repeat = (function (Calendar) {
             return console.log(MAX_LENGTH_IS_NOT_CORRECT);
         }
 
-        callbackList = [].concat(callback, newRepeatCallback(days, eventName));
+        var callbackList = [].push(callback, newRepeatCallback(days, eventName));
 
         console.log(1, callbackList);
-        return Calendar.createEvent(eventName, eventDate, runCallbacksRepeatsEvents);
+        return Calendar.createEvent(eventName, eventDate, runCallbacksRepeatsEvents.call(addRepeatsEvent));
     };
 
     return Calendar;
