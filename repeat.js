@@ -1,4 +1,6 @@
 var Repeat = (function (Calendar) {
+    var callbackList = [];
+
     var dayMileseconds = 86400000;
 
     var NOT_CORRECT_ID = 'Enter the correct id';
@@ -106,7 +108,7 @@ var Repeat = (function (Calendar) {
             return console.log(MAX_LENGTH_IS_NOT_CORRECT);
         }
 
-        var callbackList = [].concat(callback, newRepeatCallback(days, eventName));
+        callbackList = [].concat(callback, newRepeatCallback(days, eventName));
 
         console.log(1, callbackList);
         return Calendar.createEvent(eventName, eventDate, runCallbacksRepeatsEvents);
