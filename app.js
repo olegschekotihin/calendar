@@ -65,10 +65,10 @@ var Calendar = (function () {
         var closestEventList = findClosestEvent();
 
         if(closestEventList.length) {
-            console.log(closestEventList);
+            //console.log(closestEventList);
             closestEventList.forEach(function (event) {
-                console.log('event is', event);
-                console.log('event.callback is ', event.callback)
+                //console.log('event is', event);
+                //console.log('event.callback is ', event.callback)
                 return event.callback();
             })
         }
@@ -114,6 +114,7 @@ var Calendar = (function () {
             eventName: eventName,
             id: generateId(),
             done: false,
+            isRepited: false,
             callback: callback
         };
 

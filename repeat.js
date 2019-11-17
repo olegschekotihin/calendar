@@ -14,6 +14,7 @@ var Repeat = (function (Calendar) {
 
     var runCallbacksRepeatsEvents = function () {
         callbackList.forEach(function (callbackItem) {
+            isRepited = true;
             callbackItem();
         });
     };
@@ -108,7 +109,7 @@ var Repeat = (function (Calendar) {
             return console.log(MAX_LENGTH_IS_NOT_CORRECT);
         }
 
-        callbackList = [].concat(callback, newRepeatCallback(days, eventName));
+        callbackList.push(callback, newRepeatCallback(days, eventName));
 
         console.log(1, callbackList);
         return Calendar.createEvent(eventName, eventDate, runCallbacksRepeatsEvents);
