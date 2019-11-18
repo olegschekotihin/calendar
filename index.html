@@ -8,8 +8,31 @@
   <script src="app.js"></script>
   <script src="repeat.js"></script>
   <script src="reminder.js"></script>
+  <script>
+      function startTime() {
+        var time = new Date();
+        var y = time.getFullYear();
+        var mon = time.getMonth() + 1;
+        var d = time.getDay();
+        var h = time.getHours();
+        var m = time.getMinutes();
+        var s = time.getSeconds();
+        d = checkTime(d);
+        m = checkTime(m);
+        s = checkTime(s);
+        document.getElementById('time-now').innerHTML =
+            y + ":" + mon + ":" + d + "<br/>" + h + ":" + m + ":" + s;
+        var t = setTimeout(startTime, 500);
+    }
+    function checkTime(i) {
+        if (i < 10) {i = "0" + i};
+        return i;
+    }
+  </script>
 </head>
-<body>
-
+<body onload="startTime()">
+  <section>
+    <p id="time-now"></p>
+  </section>
 </body>
 </html>

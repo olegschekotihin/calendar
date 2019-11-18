@@ -114,7 +114,6 @@ var Calendar = (function () {
             eventName: eventName,
             id: generateId(),
             done: false,
-            isRepited: false,
             callback: callback
         };
 

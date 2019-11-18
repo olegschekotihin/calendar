@@ -1,8 +1,6 @@
 var Repeat = (function (Calendar) {
-    //var callbackList = [];
 
     var dayMileseconds = 86400000;
-
     var NOT_CORRECT_ID = 'Enter the correct id';
     var ARRAY_IS_EMPTY = 'days array is empty';
     var EVENT_NOT_FOUND = 'event not found';
@@ -72,18 +70,24 @@ var Repeat = (function (Calendar) {
 
     /* New repeat callback */
 
-    function newRepeatCallback(days, eventName) {
+    function newRepeatCallback(days, eventName, callbackList) {
 
         if (days) {
             return function () {
                 var stringDate = new Date(findClosestDay(days)).toISOString();
-                return Calendar.createEvent(eventName, stringDate, runCallbacksRepeatsEvents);
+                return Calendar.createEvent(eventName, stringDate,  function() {
+                    return runCallbacksRepeatsEvents(callbackList);
+                });
             };
         }
 
         return function () {
             var stringDate = new Date(Date.now() + dayMileseconds).toISOString();
-            return Calendar.createEvent(eventName, stringDate, runCallbacksRepeatsEvents);
+            console.log('eventName ' + this.eventName);
+            console.log('eventDate ' + this.eventDate);
+            return Calendar.createEvent(eventName, stringDate,  function() {
+                return runCallbacksRepeatsEvents(callbackList);
+            });
         };
     }
 
@@ -106,7 +110,7 @@ var Repeat = (function (Calendar) {
             return console.log(MAX_LENGTH_IS_NOT_CORRECT);
         }
         var callbackList = [];
-        callbackList.push(callback, newRepeatCallback(days, eventName));
+        callbackList.push(callback, newRepeatCallback(days, eventName, callbackList));
 
         console.log('callbackList is ', callbackList);
         return Calendar.createEvent(eventName, eventDate, function() {
