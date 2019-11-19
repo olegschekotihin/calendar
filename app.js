@@ -53,7 +53,6 @@ var Calendar = (function () {
             if (currentYear === eventYear && currentMonth === eventMonth
                 && currentDay === eventDay && currentMinutes === eventMinutes
                 && currentSeconds === eventSeconds && event.done === false) {
-                event.done = true;
                 return event;
             }
         });
@@ -65,32 +64,11 @@ var Calendar = (function () {
         var closestEventList = findClosestEvent();
 
         if(closestEventList.length) {
-            //console.log(closestEventList);
             closestEventList.forEach(function (event) {
-                //console.log('event is', event);
-                //console.log('event.callback is ', event.callback)
+                event.done = true;
                 return event.callback();
             })
         }
-        // if(isValidArray(closestEventList)) {
-        //
-        // }
-        //
-        // eventList.forEach(function (event) {
-        //     var eventYear = event.eventDate.getFullYear();
-        //     var eventMonth = event.eventDate.getMonth();
-        //     var eventDay = event.eventDate.getDay();
-        //     var eventMinutes = event.eventDate.getMinutes();
-        //     var eventSeconds = event.eventDate.getSeconds();
-        //
-        //     if (currentYear === eventYear && currentMonth === eventMonth
-        //         && currentDay === eventDay && currentMinutes === eventMinutes
-        //         && currentSeconds === eventSeconds && event.done === false) {
-        //         event.done = true;
-        //         Calendar.prototype.eventTriggered(event);
-        //         return event.callback();
-        //     }
-        // });
     }
 
     /* Create new event */
