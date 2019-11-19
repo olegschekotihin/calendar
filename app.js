@@ -118,6 +118,7 @@ var Calendar = (function () {
         };
 
         eventList.push(newEvent);
+        return newEvent;
     };
 
     /* Remove event */

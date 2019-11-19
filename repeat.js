@@ -70,24 +70,33 @@ var Repeat = (function (Calendar) {
 
     /* New repeat callback */
 
-    function newRepeatCallback(days, eventName, callbackList) {
+    function newRepeatCallback(days, newRepeatEventId, callbackList) {
+        var event = Calendar.findById(newRepeatEventId)[0];
 
         if (days) {
             return function () {
                 var stringDate = new Date(findClosestDay(days)).toISOString();
-                return Calendar.createEvent(eventName, stringDate,  function() {
-                    return runCallbacksRepeatsEvents(callbackList);
-                });
+                // return Calendar.createEvent(event.eventName, stringDate,  function() {
+                //     return runCallbacksRepeatsEvents(callbackList);
+                // });
+                return function () {
+                    Calendar.editDate(event.id, stringDate);
+                    console.log('event is', event);
+                    event.done = false;
+                    return event;
+                }
             };
         }
 
         return function () {
             var stringDate = new Date(Date.now() + dayMileseconds).toISOString();
-            console.log('eventName ' + this.eventName);
-            console.log('eventDate ' + this.eventDate);
-            return Calendar.createEvent(eventName, stringDate,  function() {
-                return runCallbacksRepeatsEvents(callbackList);
-            });
+            console.log(newRepeatEventId);
+            event.done = false;
+            Calendar.editDate(event.id, stringDate);
+            return function () {
+                console.log('event is', event);
+                return event;
+            }
         };
     }
 
@@ -109,13 +118,26 @@ var Repeat = (function (Calendar) {
         if (days && !checkArrayDays(days)) {
             return console.log(MAX_LENGTH_IS_NOT_CORRECT);
         }
-        var callbackList = [];
-        callbackList.push(callback, newRepeatCallback(days, eventName, callbackList));
+        // var callbackList = [];
+        // callbackList.push(callback, newRepeatCallback(days, eventName, callbackList));
 
         console.log('callbackList is ', callbackList);
-        return Calendar.createEvent(eventName, eventDate, function() {
-            return runCallbacksRepeatsEvents(callbackList);
-        });
+
+        // return Calendar.createEvent(eventName, eventDate, function() {
+        //     return runCallbacksRepeatsEvents(callbackList);
+        // });
+        var newRepeatEvent = Calendar.createEvent(eventName, eventDate);
+        console.log('newRepeatEvent is', newRepeatEvent);
+
+        var callbackList = [];
+        callbackList.push(callback, newRepeatCallback(days, newRepeatEvent.id, callbackList));
+
+        newRepeatEvent.callback = function() {
+            return  runCallbacksRepeatsEvents(callbackList);
+        };
+
+        console.log('newRepeatEvent is' , newRepeatEvent);
+        return newRepeatEvent;
     };
 
     return Calendar;
