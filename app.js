@@ -46,8 +46,8 @@ var Calendar = (function () {
             var eventSeconds = event.eventDate.getSeconds();
 
             if (currentYear === eventYear && currentMonth === eventMonth
-                && currentDay === eventDay && currentMinutes === eventMinutes
-                && currentSeconds === eventSeconds && event.done === false) {
+                && currentDay === eventDay && currentMinutes >= eventMinutes
+                && event.done === false) {
                 return event;
             }
         });
@@ -182,7 +182,9 @@ var Calendar = (function () {
         }
 
         var eventListForPeriod = eventList.filter(function (event) {
-            return (event.eventDate >= newDateStart) && (event.eventDate <= newDateStop);
+            if ((event.eventDate >= newDateStart) && (event.eventDate <= newDateStop)) {
+                return Object.assign({}, event)
+            }
         });
 
         return eventListForPeriod;
@@ -193,8 +195,10 @@ var Calendar = (function () {
     Calendar.prototype.showEventsListForMonth = function () {
         var currentDate = new Date();
         var eventListsByMonth = eventList.filter(function (event) {
-            return (event.eventDate.getMonth() === currentDate.getMonth() &&
-                event.eventDate.getFullYear() === currentDate.getFullYear());
+            if ((event.eventDate.getMonth() === currentDate.getMonth() &&
+                event.eventDate.getFullYear() === currentDate.getFullYear())) {
+                return Object.assign({}, event);
+            }
         });
         return eventListsByMonth;
     };
@@ -209,7 +213,9 @@ var Calendar = (function () {
             currentDate.getDate() - currentDate.getDay() + 7, 23, 59, 59, 999);
 
         var eventListByWeek = eventList.filter(function (event) {
-            return (event.eventDate >= startDayOfAWeek && event.eventDate <= endDayOfAWeek);
+            if ((event.eventDate >= startDayOfAWeek && event.eventDate <= endDayOfAWeek)) {
+                return Object.assign({}, event)
+            }
         });
         return eventListByWeek;
     };
@@ -219,9 +225,11 @@ var Calendar = (function () {
     Calendar.prototype.showEventsListForDay = function () {
         var currentDate = new Date();
         var eventListByDay = eventList.filter(function (event) {
-            return (event.eventDate.getDate() === currentDate.getDate() &&
+            if ((event.eventDate.getDate() === currentDate.getDate() &&
                 event.eventDate.getMonth() === currentDate.getMonth() &&
-                event.eventDate.getFullYear() === currentDate.getFullYear());
+                event.eventDate.getFullYear() === currentDate.getFullYear())) {
+                return Object.assign({}, event)
+            }
         });
         return eventListByDay;
     };

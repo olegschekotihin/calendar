@@ -98,8 +98,8 @@ var Repeat = (function (Calendar) {
         };
     }
 
-    const oldOne = Calendar.prototype.eventTriggered;
-    Calendar.prototype.eventTriggered = function (event) {
+    const oldOne = Calendar.eventTriggered();
+    Calendar.eventTriggered = function (event) {
         /////
         arr[event.id]
         oldOne();
@@ -114,7 +114,7 @@ var Repeat = (function (Calendar) {
 
     /* Create repeat event */
 
-    Calendar.createEvent = function (eventName, eventDate, callback, days) {
+    Calendar.createRepeatEvent = function (eventName, eventDate, callback, days) {
 
         if (!eventName || !eventDate || !callback) {
             throw INPUT_DATA_IS_NOT_VALID;
