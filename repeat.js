@@ -71,13 +71,13 @@ var Repeat = (function (Calendar) {
     /* New repeat callback */
 
     function newRepeatCallback(days, newRepeatEventId) {
-        var event = Calendar.findById(newRepeatEventId)[0];
-        console.log(event);
+        var event = Calendar.findById(newRepeatEventId);
 
         if (days) {
             return function () {
                 var stringDate = new Date(findClosestDay(days)).toISOString();
                 Calendar.editDate(event.id, stringDate);
+
                 console.log('event is', event);
 
                 if(event.done === true) {
@@ -90,13 +90,20 @@ var Repeat = (function (Calendar) {
             var stringDate = new Date(Date.now() + dayMileseconds).toISOString();
             console.log(newRepeatEventId);
             console.log(event.done);
-            Calendar.editDate(event.id, stringDate);
-
             if(event.done === true) {
                 event.done = false;
             }
+            console.log(event.done);
+            Calendar.editDate(event.id, stringDate);
         };
     }
+
+    const oldOne = Calendar.prototype.eventTriggered;
+    Calendar.prototype.eventTriggered = function (event) {
+        /////
+        arr[event.id]
+        oldOne();
+    };
 
     /* Search event by id */
 
@@ -107,7 +114,7 @@ var Repeat = (function (Calendar) {
 
     /* Create repeat event */
 
-    Calendar.createRepeatsEvent = function (eventName, eventDate, callback, days) {
+    Calendar.createEvent = function (eventName, eventDate, callback, days) {
 
         if (!eventName || !eventDate || !callback) {
             throw INPUT_DATA_IS_NOT_VALID;
@@ -117,7 +124,11 @@ var Repeat = (function (Calendar) {
             return console.log(MAX_LENGTH_IS_NOT_CORRECT);
         }
 
+        const arr = {};
+
         var newRepeatEvent = Calendar.createEvent(eventName, eventDate);
+
+        arr[newRepeatEvent.id] = days;
         var callbackList = [];
         callbackList.push(callback, newRepeatCallback(days, newRepeatEvent.id));
 

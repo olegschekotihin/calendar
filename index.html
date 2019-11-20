@@ -13,11 +13,11 @@
         var time = new Date();
         var y = time.getFullYear();
         var mon = time.getMonth() + 1;
-        var d = time.getDay();
+        var d = time.getDate();
         var h = time.getHours();
         var m = time.getMinutes();
         var s = time.getSeconds();
-        d = checkTime(d);
+        //d = checkTime(d);
         m = checkTime(m);
         s = checkTime(s);
         document.getElementById('time-now').innerHTML =

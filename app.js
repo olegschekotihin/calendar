@@ -5,6 +5,7 @@ var Calendar = (function () {
     var NOT_CORRECT_EVENT = 'Please set an correct event';
     var NOT_CORRECT_DATE = 'Please set a correct date';
     var NOT_CORRECT_ID = 'Enter the correct id';
+    var NOT_CORRECT_CALLBACK = 'Callback must be a function';
 
     /* Generate random id*/
 
@@ -27,12 +28,6 @@ var Calendar = (function () {
 
     Calendar.prototype.eventTriggered = function (event) {
         console.log(event);
-    };
-
-    const oldOne = Calendar.prototype.eventTriggered;
-    Calendar.prototype.eventTriggered = function() {
-        /////
-        oldOne();
     };
 
     function findClosestEvent() {
@@ -63,8 +58,9 @@ var Calendar = (function () {
     function runClosestEvent() {
         var closestEventList = findClosestEvent();
 
-        if(closestEventList.length) {
+        if (closestEventList.length) {
             closestEventList.forEach(function (event) {
+                Calendar.prototype.eventTriggered(Object.assign({}, event));
                 event.done = true;
                 return event.callback();
             })
@@ -85,6 +81,10 @@ var Calendar = (function () {
 
         if (isNaN(date)) {
             return console.log(NOT_CORRECT_DATE);
+        }
+
+        if (typeof callback !== "function") {
+            return console.log(NOT_CORRECT_CALLBACK);
         }
 
         var newEvent = {
@@ -143,7 +143,7 @@ var Calendar = (function () {
 
         eventList = eventList.map(function (event) {
             if (event.id === id) {
-                return Object.assign({}, event, {eventDate: parseNewEventDay});
+                return Object.assign({}, event, {eventDate: parsedNewEventDay});
             }
             return event;
         });
@@ -152,18 +152,18 @@ var Calendar = (function () {
     /* Find event by id */
 
     Calendar.prototype.findById = function (id) {
-      var eventListId = eventList.filter(function (event) {
-          return (event.id === id);
-      });
+        var eventListId = eventList.find(function (event) {
+            return (event.id === id);
+        });
 
-      return eventListId;
+        return eventListId;
     };
 
     /* Show all event */
 
     Calendar.prototype.showAllEvent = function showAllEvent() {
         return eventList.map(event => {
-             return Object.assign({}, event);
+            return Object.assign({}, event);
         });
     };
 
@@ -228,6 +228,3 @@ var Calendar = (function () {
 
     return new Calendar();
 })();
-
-
-
