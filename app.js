@@ -135,9 +135,9 @@ var Calendar = (function () {
         if (!id) {
             return console.log(NOT_CORRECT_ID);
         }
-        var parseNewEventDay = new Date(Date.parse(newEventDate));
+        var parsedNewEventDay = new Date(Date.parse(newEventDate));
 
-        if (!newEventDate || isNaN(parseNewEventDay)) {
+        if (!newEventDate || isNaN(parsedNewEventDay)) {
             return console.log(NOT_CORRECT_DATE);
         }
 
@@ -162,7 +162,7 @@ var Calendar = (function () {
     /* Show all event */
 
     Calendar.prototype.showAllEvent = function showAllEvent() {
-        return eventList.map(event => {
+        return eventList.map(function(event) {
             return Object.assign({}, event);
         });
     };
@@ -197,10 +197,10 @@ var Calendar = (function () {
         var eventListsByMonth = eventList.filter(function (event) {
             if ((event.eventDate.getMonth() === currentDate.getMonth() &&
                 event.eventDate.getFullYear() === currentDate.getFullYear())) {
-                return Object.assign({}, event);
+                return event;
             }
         });
-        return eventListsByMonth;
+        return Object.assign({}, eventListsByMonth);
     };
 
     /* Show event list for week*/
@@ -224,14 +224,13 @@ var Calendar = (function () {
 
     Calendar.prototype.showEventsListForDay = function () {
         var currentDate = new Date();
-        var eventListByDay = eventList.filter(function (event) {
+        return eventList.map(function (event) {
             if ((event.eventDate.getDate() === currentDate.getDate() &&
                 event.eventDate.getMonth() === currentDate.getMonth() &&
                 event.eventDate.getFullYear() === currentDate.getFullYear())) {
-                return Object.assign({}, event)
+                return Object.assign({}, event);
             }
         });
-        return eventListByDay;
     };
 
     return new Calendar();

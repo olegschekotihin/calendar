@@ -114,7 +114,7 @@ var Repeat = (function (Calendar) {
 
     /* Create repeat event */
 
-    Calendar.createRepeatEvent = function (eventName, eventDate, callback, days) {
+    Calendar.createEvent = function (eventName, eventDate, callback, days) {
 
         if (!eventName || !eventDate || !callback) {
             throw INPUT_DATA_IS_NOT_VALID;
@@ -125,6 +125,10 @@ var Repeat = (function (Calendar) {
         }
 
         const arr = {};
+
+        if(days) {
+
+        }
 
         var newRepeatEvent = Calendar.createEvent(eventName, eventDate);
 
