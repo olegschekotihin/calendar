@@ -70,35 +70,28 @@ var Repeat = (function (Calendar) {
 
     /* New repeat callback */
 
-    function newRepeatCallback(days, newRepeatEventId) {
-        var event = Calendar.findById(newRepeatEventId);
+    function newRepeatCallback(days, eventName, callbackList) {
 
         if (days) {
             return function () {
                 var stringDate = new Date(findClosestDay(days)).toISOString();
-                Calendar.editDate(event.id, stringDate);
-
-                console.log('event is', event);
-
-                if(event.done === true) {
-                    event.done = false;
-                }
+                return Calendar.createEvent(eventName, stringDate,  function() {
+                    return runCallbacksRepeatsEvents(callbackList);
+                });
             };
         }
 
         return function () {
             var stringDate = new Date(Date.now() + dayMileseconds).toISOString();
-            console.log(newRepeatEventId);
-            console.log(event.done);
-            if(event.done === true) {
-                event.done = false;
-            }
-            console.log(event.done);
-            Calendar.editDate(event.id, stringDate);
+            console.log('eventName ' + this.eventName);
+            console.log('eventDate ' + this.eventDate);
+            return Calendar.createEvent(eventName, stringDate,  function() {
+                return runCallbacksRepeatsEvents(callbackList);
+            });
         };
     }
 
-    const oldOne = Calendar.eventTriggered();
+    const oldOne = Calendar.eventTriggered;
     Calendar.eventTriggered = function (event) {
         /////
         arr[event.id]
@@ -114,33 +107,32 @@ var Repeat = (function (Calendar) {
 
     /* Create repeat event */
 
-    Calendar.createEvent = function (eventName, eventDate, callback, days) {
+    Calendar.createEvensdt = function (eventName, eventDate, callback, days) {
 
         if (!eventName || !eventDate || !callback) {
             throw INPUT_DATA_IS_NOT_VALID;
         }
 
         if (days && !checkArrayDays(days)) {
-            return console.log(MAX_LENGTH_IS_NOT_CORRECT);
+            throw MAX_LENGTH_IS_NOT_CORRECT;
         }
-
-        const arr = {};
+        const repeatedEventId = {};
 
         if(days) {
 
         }
 
-        var newRepeatEvent = Calendar.createEvent(eventName, eventDate);
-
-        arr[newRepeatEvent.id] = days;
         var callbackList = [];
-        callbackList.push(callback, newRepeatCallback(days, newRepeatEvent.id));
+        callbackList.push(callback, newRepeatCallback(days, eventName, callbackList));
 
-        newRepeatEvent.callback = function() {
-            return  runCallbacksRepeatsEvents(callbackList);
-        };
+        console.log('callbackList is ', callbackList);
 
-        console.log('newRepeatEvent is' , newRepeatEvent);
+        var newRepeatEvent = Calendar.createEvent(eventName, eventDate,function() {
+            return runCallbacksRepeatsEvents(callbackList);
+        });
+
+        repeatedEventId[newRepeatEvent.id] = days;
+
         return newRepeatEvent;
     };
 

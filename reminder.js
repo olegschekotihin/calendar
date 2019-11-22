@@ -22,7 +22,7 @@ var Reminder = (function (Calendar) {
 
     function getTimeToRemind(valueTime, timeFlag) {
         if (isNaN(valueTime)) {
-            return console.log(NOT_CORRECT_TIMEVALUE);
+            throw NOT_CORRECT_TIMEVALUE;
         }
 
         if (timeFlag === dayTimeFlag) {
@@ -33,7 +33,7 @@ var Reminder = (function (Calendar) {
             return valueTime * minuteMileseconds;
         }
 
-        return console.log(INPUT_DATA_IS_NOT_VALID);
+        throw INPUT_DATA_IS_NOT_VALID;
     }
 
     /* Find time to remind */
@@ -54,7 +54,7 @@ var Reminder = (function (Calendar) {
             return parsEventForIdTime - timeToRemindToEvent;
         }
 
-        return console.log(NOT_CORRECT_TIMEFLAG);
+        throw NOT_CORRECT_TIMEFLAG;
     }
 
     function runRemindToAllEvent(valueTime, timeFlag) {
@@ -80,7 +80,7 @@ var Reminder = (function (Calendar) {
 
     Calendar.remindEvent = function (id, valueTime, timeFlag) {
         if (!id || !valueTime || !timeFlag) {
-            return console.log(INPUT_DATA_IS_NOT_VALID);
+            throw INPUT_DATA_IS_NOT_VALID;
         }
 
         var eventForId = searchEventByID(id);
@@ -94,7 +94,7 @@ var Reminder = (function (Calendar) {
 
     Calendar.remindToAllEvent = function (valueTime, timeFlag) {
         if (!valueTime || !timeFlag) {
-            return console.log(INPUT_DATA_IS_NOT_VALID);
+            throw INPUT_DATA_IS_NOT_VALID;
         }
 
         runRemindToAllEvent(valueTime, timeFlag);

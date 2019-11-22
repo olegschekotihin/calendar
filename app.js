@@ -71,20 +71,20 @@ var Calendar = (function () {
 
     Calendar.prototype.createEvent = function (eventName, eventDate, callback) {
         if (!eventName) {
-            return console.log(NOT_CORRECT_EVENT);
+            throw NOT_CORRECT_EVENT;
         }
         if (!eventDate) {
-            return console.log(NOT_CORRECT_DATE);
+            throw NOT_CORRECT_DATE;
         }
 
         var date = new Date(Date.parse(eventDate));
 
         if (isNaN(date)) {
-            return console.log(NOT_CORRECT_DATE);
+            throw NOT_CORRECT_DATE;
         }
 
         if (typeof callback !== "function") {
-            return console.log(NOT_CORRECT_CALLBACK);
+            throw NOT_CORRECT_CALLBACK;
         }
 
         var newEvent = {
@@ -103,7 +103,7 @@ var Calendar = (function () {
 
     Calendar.prototype.removeEvent = function (id) {
         if (!id || isNaN(id)) {
-            return console.log(NOT_CORRECT_ID);
+            throw NOT_CORRECT_ID;
         }
 
         eventList = eventList.filter(function (event) {
@@ -115,10 +115,10 @@ var Calendar = (function () {
 
     Calendar.prototype.editEvent = function (id, newEvent) {
         if (!id) {
-            return console.log(NOT_CORRECT_ID);
+            throw NOT_CORRECT_ID;
         }
         if (!newEvent) {
-            return console.log(NOT_CORRECT_EVENT);
+            throw NOT_CORRECT_EVENT;
         }
 
         eventList = eventList.map(function (event) {
@@ -133,12 +133,12 @@ var Calendar = (function () {
 
     Calendar.prototype.editDate = function (id, newEventDate) {
         if (!id) {
-            return console.log(NOT_CORRECT_ID);
+            throw NOT_CORRECT_ID;
         }
         var parsedNewEventDay = new Date(Date.parse(newEventDate));
 
         if (!newEventDate || isNaN(parsedNewEventDay)) {
-            return console.log(NOT_CORRECT_DATE);
+            throw NOT_CORRECT_DATE;
         }
 
         eventList = eventList.map(function (event) {
@@ -178,7 +178,7 @@ var Calendar = (function () {
         var newDateStop = new Date(Date.parse(stopDate));
 
         if (!newDateStart) {
-            return console.log(NOT_CORRECT_DATE);
+            throw NOT_CORRECT_DATE;
         }
 
         var eventListForPeriod = eventList.filter(function (event) {
@@ -197,10 +197,10 @@ var Calendar = (function () {
         var eventListsByMonth = eventList.filter(function (event) {
             if ((event.eventDate.getMonth() === currentDate.getMonth() &&
                 event.eventDate.getFullYear() === currentDate.getFullYear())) {
-                return event;
+                return Object.assign({}, event);
             }
         });
-        return Object.assign({}, eventListsByMonth);
+        return eventListsByMonth;
     };
 
     /* Show event list for week*/
@@ -217,6 +217,7 @@ var Calendar = (function () {
                 return Object.assign({}, event)
             }
         });
+
         return eventListByWeek;
     };
 
