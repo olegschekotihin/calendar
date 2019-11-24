@@ -60,7 +60,9 @@ var Calendar = (function () {
 
         if (closestEventList.length) {
             closestEventList.forEach(function (event) {
-                Calendar.prototype.eventTriggered(Object.assign({}, event));
+                //Calendar.prototype.eventTriggered(Object.assign({}, event));
+                Calendar.prototype.observer.subscribe(Object.assign({}, event));
+                console.log('broadcast is ', Calendar.prototype.observer.broadcast(event));
                 event.done = true;
                 return event.callback();
             })
@@ -233,6 +235,40 @@ var Calendar = (function () {
             }
         });
     };
+
+
+    function Observer() {
+        this.events = {};
+
+        this.subscribe = function (event) {
+            this.events[event.id] = this.events[event.id] || [];
+            this.events[event.id].push(event);
+            console.log('this.events[event.id]', this.events[event.id])
+        };
+
+        this.broadcast = function (event) {
+            console.log('this.events is', this.events);
+
+            // for(var event in this.events[event]) {
+            //     console.log(event);
+            //     return event;
+            // }
+
+
+            // if (this.events[event]) {
+            //     this.events[event].forEach(function (event) {
+            //         console.log(event);
+            //         return event;
+            //     });
+            // }
+
+            this.events[event.id].forEach(function (event) {
+                return event;
+            });
+        }
+    };
+
+    Calendar.prototype.observer = new Observer();
 
     return new Calendar();
 })();

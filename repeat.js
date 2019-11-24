@@ -83,8 +83,7 @@ var Repeat = (function (Calendar) {
 
         return function () {
             var stringDate = new Date(Date.now() + dayMileseconds).toISOString();
-            console.log('eventName ' + this.eventName);
-            console.log('eventDate ' + this.eventDate);
+            console.log('broadcast is ', Calendar.observer.broadcast(event));
             return Calendar.createEvent(eventName, stringDate,  function() {
                 return runCallbacksRepeatsEvents(callbackList);
             });
@@ -94,20 +93,13 @@ var Repeat = (function (Calendar) {
     const oldOne = Calendar.eventTriggered;
     Calendar.eventTriggered = function (event) {
         /////
-        arr[event.id]
+        repeatedEventId[event.id];
         oldOne();
     };
 
-    /* Search event by id */
-
-    function searchEventByID(id) {
-        console.log(Calendar.findById(id)[0]);
-        return Calendar.findById(id)[0];
-    }
-
     /* Create repeat event */
 
-    Calendar.createEvensdt = function (eventName, eventDate, callback, days) {
+    Calendar.createRepeatEvent = function (eventName, eventDate, callback, days) {
 
         if (!eventName || !eventDate || !callback) {
             throw INPUT_DATA_IS_NOT_VALID;
