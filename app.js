@@ -60,9 +60,8 @@ var Calendar = (function () {
 
         if (closestEventList.length) {
             closestEventList.forEach(function (event) {
-                //Calendar.prototype.eventTriggered(Object.assign({}, event));
-                Calendar.prototype.observer.subscribe(Object.assign({}, event));
-                console.log('broadcast is ', Calendar.prototype.observer.broadcast(event));
+                Calendar.prototype.eventTriggered(Object.assign({}, event));
+                //Calendar.prototype.observer.subscribe(Object.assign({}, event));
                 event.done = true;
                 return event.callback();
             })
@@ -164,7 +163,7 @@ var Calendar = (function () {
     /* Show all event */
 
     Calendar.prototype.showAllEvent = function showAllEvent() {
-        return eventList.map(function(event) {
+        return eventList.map(function (event) {
             return Object.assign({}, event);
         });
     };
@@ -238,33 +237,26 @@ var Calendar = (function () {
 
 
     function Observer() {
-        this.events = {};
+        this.events = [];
 
         this.subscribe = function (event) {
-            this.events[event.id] = this.events[event.id] || [];
-            this.events[event.id].push(event);
-            console.log('this.events[event.id]', this.events[event.id])
+            //this.events[event.id] = this.events[event.id] || [];
+            this.events.push(event);
         };
 
-        this.broadcast = function (event) {
-            console.log('this.events is', this.events);
+        this.broadcast = function (id) {
+            console.log('this.events in broadcast is', this.events);
 
-            // for(var event in this.events[event]) {
-            //     console.log(event);
-            //     return event;
-            // }
-
-
-            // if (this.events[event]) {
-            //     this.events[event].forEach(function (event) {
-            //         console.log(event);
-            //         return event;
-            //     });
-            // }
-
-            this.events[event.id].forEach(function (event) {
-                return event;
-            });
+            if (this.events) {
+                this.events.forEach(function (event) {
+                    console.log('broadcast event id is ', event.id);
+                    console.log('id broadcast is' , id);
+                    if (event.id === id) {
+                        console.log('broadcast events is ', event);
+                        return event;
+                    }
+                });
+            }
         }
     };
 

@@ -70,7 +70,7 @@ var Repeat = (function (Calendar) {
 
     /* New repeat callback */
 
-    function newRepeatCallback(days, eventName, callbackList) {
+    function newRepeatCallback(days, eventName, repeatEventId, callbackList) {
 
         if (days) {
             return function () {
@@ -82,18 +82,19 @@ var Repeat = (function (Calendar) {
         }
 
         return function () {
+            var currentEvent = Calendar.observer.broadcast(repeatEventId);
+            console.log('currentEvent broadcast', currentEvent);
             var stringDate = new Date(Date.now() + dayMileseconds).toISOString();
-            console.log('broadcast is ', Calendar.observer.broadcast(event));
             return Calendar.createEvent(eventName, stringDate,  function() {
                 return runCallbacksRepeatsEvents(callbackList);
             });
         };
     }
 
-    const oldOne = Calendar.eventTriggered;
-    Calendar.eventTriggered = function (event) {
-        /////
-        repeatedEventId[event.id];
+    const oldOne = Calendar.__proto__.eventTriggered;
+    Calendar.__proto__.eventTriggered = function (event) {
+
+        console.log('event triggered', event);
         oldOne();
     };
 
@@ -108,22 +109,19 @@ var Repeat = (function (Calendar) {
         if (days && !checkArrayDays(days)) {
             throw MAX_LENGTH_IS_NOT_CORRECT;
         }
-        const repeatedEventId = {};
-
-        if(days) {
-
-        }
-
-        var callbackList = [];
-        callbackList.push(callback, newRepeatCallback(days, eventName, callbackList));
-
-        console.log('callbackList is ', callbackList);
 
         var newRepeatEvent = Calendar.createEvent(eventName, eventDate,function() {
             return runCallbacksRepeatsEvents(callbackList);
         });
 
-        repeatedEventId[newRepeatEvent.id] = days;
+        var repeatEventId = newRepeatEvent.id;
+
+        console.log('repeatEventId', repeatEventId);
+
+        var callbackList = [];
+        callbackList.push(callback, newRepeatCallback(days, eventName, repeatEventId, callbackList));
+
+        console.log('callbackList is ', callbackList);
 
         return newRepeatEvent;
     };
