@@ -82,8 +82,10 @@ var Repeat = (function (Calendar) {
         }
 
         return function () {
-            var currentEvent = Calendar.observer.broadcast(repeatEventId);
-            console.log('currentEvent broadcast', currentEvent);
+            Calendar.prototype.observer.subscribe(function (event) {
+
+            });
+
             var stringDate = new Date(Date.now() + dayMileseconds).toISOString();
             return Calendar.createEvent(eventName, stringDate,  function() {
                 return runCallbacksRepeatsEvents(callbackList);

@@ -26,6 +26,10 @@ var Calendar = (function () {
         return Array.isArray(arr);
     }
 
+    Calendar.prototype.trigger = function () {
+        return true;
+    };
+
     Calendar.prototype.eventTriggered = function (event) {
         console.log(event);
     };
@@ -60,7 +64,8 @@ var Calendar = (function () {
 
         if (closestEventList.length) {
             closestEventList.forEach(function (event) {
-                Calendar.prototype.eventTriggered(Object.assign({}, event));
+                Calendar.prototype.trigger()
+                //Calendar.prototype.eventTriggered(Object.assign({}, event));
                 //Calendar.prototype.observer.subscribe(Object.assign({}, event));
                 event.done = true;
                 return event.callback();
@@ -239,28 +244,54 @@ var Calendar = (function () {
     function Observer() {
         this.events = [];
 
-        this.subscribe = function (event) {
-            //this.events[event.id] = this.events[event.id] || [];
-            this.events.push(event);
+        this.subscribe = function(fn) {
+            this.events.push(fn);
+        };
+        
+        this.unsubscribe = function (fn) {
+            this.events = this.events.filter(function (subscriber) {
+                return (subscriber !== fn);
+            })
         };
 
-        this.broadcast = function (id) {
-            console.log('this.events in broadcast is', this.events);
-
-            if (this.events) {
-                this.events.forEach(function (event) {
-                    console.log('broadcast event id is ', event.id);
-                    console.log('id broadcast is' , id);
-                    if (event.id === id) {
-                        console.log('broadcast events is ', event);
-                        return event;
-                    }
-                });
-            }
+        this.broadcast = function (data) {
+            this.events.forEach(function (subscriber) {
+                return subscriber(data);
+            })
         }
-    };
+    }
+
 
     Calendar.prototype.observer = new Observer();
+
+
+
+
+    // function Observer() {
+    //     this.events = [];
+    //
+    //     this.subscribe = function (event) {
+    //         //this.events[event.id] = this.events[event.id] || [];
+    //         this.events.push(event);
+    //     };
+    //
+    //     this.broadcast = function (id) {
+    //         console.log('this.events in broadcast is', this.events);
+    //
+    //         if (this.events) {
+    //             this.events.forEach(function (event) {
+    //                 console.log('broadcast event id is ', event.id);
+    //                 console.log('id broadcast is' , id);
+    //                 if (event.id === id) {
+    //                     console.log('broadcast events is ', event);
+    //                     return event;
+    //                 }
+    //             });
+    //         }
+    //     }
+    // };
+
+    //Calendar.prototype.observer = new Observer();
 
     return new Calendar();
 })();
