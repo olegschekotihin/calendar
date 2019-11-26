@@ -70,24 +70,20 @@ var Repeat = (function (Calendar) {
 
     /* New repeat callback */
 
-    function newRepeatCallback(days, eventName, repeatEventId, callbackList) {
+    function newRepeatCallback(days, newRepeatEvent, repeatEventId, callbackList) {
 
         if (days) {
             return function () {
                 var stringDate = new Date(findClosestDay(days)).toISOString();
-                return Calendar.createEvent(eventName, stringDate,  function() {
+                return Calendar.createEvent(newRepeatEvent.eventName, stringDate,  function() {
                     return runCallbacksRepeatsEvents(callbackList);
                 });
             };
         }
 
         return function () {
-            Calendar.prototype.observer.subscribe(function (event) {
-
-            });
-
             var stringDate = new Date(Date.now() + dayMileseconds).toISOString();
-            return Calendar.createEvent(eventName, stringDate,  function() {
+            return Calendar.createEvent(newRepeatEvent.eventName, stringDate,  function() {
                 return runCallbacksRepeatsEvents(callbackList);
             });
         };
@@ -121,7 +117,7 @@ var Repeat = (function (Calendar) {
         console.log('repeatEventId', repeatEventId);
 
         var callbackList = [];
-        callbackList.push(callback, newRepeatCallback(days, eventName, repeatEventId, callbackList));
+        callbackList.push(callback, newRepeatCallback(days, newRepeatEvent, repeatEventId, callbackList));
 
         console.log('callbackList is ', callbackList);
 

@@ -241,7 +241,7 @@ var Calendar = (function () {
     };
 
 
-    function Observer() {
+    function Observable() {
         this.events = [];
 
         this.subscribe = function(fn) {
@@ -256,14 +256,20 @@ var Calendar = (function () {
 
         this.broadcast = function (data) {
             this.events.forEach(function (subscriber) {
-                return subscriber(data);
+                return subscriber.notify(data);
             })
         }
     }
 
+    function Observer(callback) {
+        this.notify = function (data) {
+            callback(data);
+        }
+    }
 
+
+    Calendar.prototype.observable = new Observable();
     Calendar.prototype.observer = new Observer();
-
 
 
 
