@@ -26,14 +26,6 @@ var Calendar = (function () {
         return Array.isArray(arr);
     }
 
-    Calendar.prototype.trigger = function () {
-        return true;
-    };
-
-    Calendar.prototype.eventTriggered = function (event) {
-        console.log(event);
-    };
-
     function findClosestEvent() {
         var currentTime = new Date();
         var currentYear = currentTime.getFullYear();
@@ -64,9 +56,7 @@ var Calendar = (function () {
 
         if (closestEventList.length) {
             closestEventList.forEach(function (event) {
-                Calendar.prototype.trigger()
-                //Calendar.prototype.eventTriggered(Object.assign({}, event));
-                //Calendar.prototype.observer.subscribe(Object.assign({}, event));
+                Calendar.prototype.observable.broadcast(Object.assign({}, event));
                 event.done = true;
                 return event.callback();
             })
@@ -119,25 +109,26 @@ var Calendar = (function () {
 
     /* Edit event */
 
-    Calendar.prototype.editEvent = function (id, newEvent) {
+    Calendar.prototype.editEventName = function (id, newEventName) {
         if (!id) {
             throw NOT_CORRECT_ID;
         }
-        if (!newEvent) {
+        if (!newEventName) {
             throw NOT_CORRECT_EVENT;
         }
 
         eventList = eventList.map(function (event) {
             if (event.id === id) {
-                return Object.assign({}, event, {eventName: newEvent});
+                return Object.assign({}, event, {eventName: newEventName});
             }
             return event;
         });
+
     };
 
     /* Edit date */
 
-    Calendar.prototype.editDate = function (id, newEventDate) {
+    Calendar.prototype.editEventDate = function (id, newEventDate) {
         if (!id) {
             throw NOT_CORRECT_ID;
         }
@@ -256,48 +247,12 @@ var Calendar = (function () {
 
         this.broadcast = function (data) {
             this.events.forEach(function (subscriber) {
-                return subscriber.notify(data);
+                return subscriber(data);
             })
         }
     }
 
-    function Observer(callback) {
-        this.notify = function (data) {
-            callback(data);
-        }
-    }
-
-
     Calendar.prototype.observable = new Observable();
-    Calendar.prototype.observer = new Observer();
-
-
-
-    // function Observer() {
-    //     this.events = [];
-    //
-    //     this.subscribe = function (event) {
-    //         //this.events[event.id] = this.events[event.id] || [];
-    //         this.events.push(event);
-    //     };
-    //
-    //     this.broadcast = function (id) {
-    //         console.log('this.events in broadcast is', this.events);
-    //
-    //         if (this.events) {
-    //             this.events.forEach(function (event) {
-    //                 console.log('broadcast event id is ', event.id);
-    //                 console.log('id broadcast is' , id);
-    //                 if (event.id === id) {
-    //                     console.log('broadcast events is ', event);
-    //                     return event;
-    //                 }
-    //             });
-    //         }
-    //     }
-    // };
-
-    //Calendar.prototype.observer = new Observer();
 
     return new Calendar();
 })();

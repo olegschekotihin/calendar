@@ -70,31 +70,44 @@ var Repeat = (function (Calendar) {
 
     /* New repeat callback */
 
-    function newRepeatCallback(days, newRepeatEvent, repeatEventId, callbackList) {
+    function newRepeatCallback(days, newRepeatEvent, callbackList) {
 
         if (days) {
             return function () {
                 var stringDate = new Date(findClosestDay(days)).toISOString();
-                return Calendar.createEvent(newRepeatEvent.eventName, stringDate,  function() {
+                return Calendar.createEvent(repeatEvent.eventName, stringDate,  function() {
                     return runCallbacksRepeatsEvents(callbackList);
                 });
             };
         }
 
         return function () {
+            Calendar.observable.subscribe(function (data) {
+                console.log(data);
+                return data;
+            });
+
+            console.log('obs is', obs);
+            console.log('obs id is', obs.id);
+
+            if(obs.id === newRepeatEvent.id) {
+                var repeatEvent = obs
+            } else {
+                var repeatEvent = newRepeatEvent;
+            }
             var stringDate = new Date(Date.now() + dayMileseconds).toISOString();
-            return Calendar.createEvent(newRepeatEvent.eventName, stringDate,  function() {
+            return Calendar.createEvent(repeatEvent.eventName, stringDate,  function() {
                 return runCallbacksRepeatsEvents(callbackList);
             });
         };
     }
 
-    const oldOne = Calendar.__proto__.eventTriggered;
-    Calendar.__proto__.eventTriggered = function (event) {
-
-        console.log('event triggered', event);
-        oldOne();
-    };
+    // const oldOne = Calendar.__proto__.eventTriggered;
+    // Calendar.__proto__.eventTriggered = function (event) {
+    //
+    //     console.log('event triggered', event);
+    //     oldOne();
+    // };
 
     /* Create repeat event */
 
@@ -117,7 +130,7 @@ var Repeat = (function (Calendar) {
         console.log('repeatEventId', repeatEventId);
 
         var callbackList = [];
-        callbackList.push(callback, newRepeatCallback(days, newRepeatEvent, repeatEventId, callbackList));
+        callbackList.push(callback, newRepeatCallback(days, newRepeatEvent, callbackList));
 
         console.log('callbackList is ', callbackList);
 
