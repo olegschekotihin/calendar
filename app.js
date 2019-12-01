@@ -79,7 +79,7 @@ var Calendar = (function () {
             throw NOT_CORRECT_DATE;
         }
 
-        if (typeof callback !== "function") {
+        if (typeof callback !== "function" || !callback) {
             throw NOT_CORRECT_CALLBACK;
         }
 

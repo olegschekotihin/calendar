@@ -1,5 +1,6 @@
 var Repeat = (function (Calendar) {
 
+    var repetedEvents = [];
     var dayMileseconds = 86400000;
     var NOT_CORRECT_ID = 'Enter the correct id';
     var ARRAY_IS_EMPTY = 'days array is empty';
@@ -16,16 +17,10 @@ var Repeat = (function (Calendar) {
         });
     };
 
-    /* Check array */
-
-    function isValidArray(arr) {
-        return Array.isArray(arr);
-    }
-
     /* Check array of days */
 
     function checkArrayDays(days) {
-        if (!isValidArray(days)) {
+        if (!Array.isArray(days)) {
             console.log(DAY_IS_NOT_ARRAY);
             return false;
         }
@@ -124,30 +119,25 @@ var Repeat = (function (Calendar) {
 
     /* Create repeat event */
 
-    Calendar.createRepeatEvent = function (eventName, eventDate, callback, days) {
+    Calendar.createEvent = function (eventName, eventDate, callback, days) {
 
-        if (!eventName || !eventDate || !callback) {
-            throw INPUT_DATA_IS_NOT_VALID;
+        if (days && Array.isArray(days)) {
+            var repeatEvent = Calendar.createEvent(eventName, eventDate, function () {
+                return runCallbacksRepeatsEvents(callbackList);
+            });
+
+            var repeatEventId = repeatEvent.id;
+
+            console.log('repeatEventId', repeatEventId);
+
+            var callbackList = [];
+            callbackList.push(callback, newRepeatCallback(days, repeatEvent, callbackList));
+
+            console.log('callbackList is ', callbackList);
+
+            return repeatEvent;
         }
-
-        if (days && !checkArrayDays(days)) {
-            throw MAX_LENGTH_IS_NOT_CORRECT;
-        }
-
-        var newRepeatEvent = Calendar.createEvent(eventName, eventDate, function () {
-            return runCallbacksRepeatsEvents(callbackList);
-        });
-
-        var repeatEventId = newRepeatEvent.id;
-
-        console.log('repeatEventId', repeatEventId);
-
-        var callbackList = [];
-        callbackList.push(callback, newRepeatCallback(days, newRepeatEvent, callbackList));
-
-        console.log('callbackList is ', callbackList);
-
-        return newRepeatEvent;
+        Calendar.__proto__.createEvent(eventName, eventDate, callback);
     };
 
     return Calendar;
