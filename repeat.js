@@ -1,6 +1,6 @@
 var Repeat = (function (Calendar) {
 
-    var repetedEvents = [];
+    var repeatedEvents = [];
     var dayMileseconds = 86400000;
     var NOT_CORRECT_ID = 'Enter the correct id';
     var ARRAY_IS_EMPTY = 'days array is empty';
@@ -45,7 +45,7 @@ var Repeat = (function (Calendar) {
     /* Remove event */
 
     function removeRepitedEvent(id) {
-        repetedEvents = repetedEvents.filter(function (event) {
+        repeatedEvents = repeatedEvents.filter(function (event) {
             return event.id !== id
         });
     };
@@ -73,29 +73,32 @@ var Repeat = (function (Calendar) {
         return currentDate.setDate(currentDate.getDate() - currentDay + closestEventDay + 7);
     }
 
-    function findIdForRepeatEvent(id) {
-        var repeatEventId = repetedEvents.find(function (repetedEvent) {
-            return (repetedEvent.id === id);
+    function findRepeatEvent(id) {
+        var repeatEventId = repeatedEvents.find(function (repeatedEvent) {
+            return (repeatedEvent.id === id);
         });
 
-        return repeatEventId.id;
+        return repeatEventId;
     }
 
     /* New repeat callback */
     
     function callbackRepeatEvent() {
         Calendar.observable.subscribe(function (data) {
-            var repeatEventId = findIdForRepeatEvent(data.id);
+            var repeatEvent = findRepeatEvent(data.id);
 
-            if(repeatEventId === data.id) {
+            if(repeatEvent.id === data.id) {
+                // if(repeatEvent.days) {
+                //
+                // }
                 var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
                 var parsedDate = new Date(dateInMilleseconds);
-                var newRepitedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
+                var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
 
-                removeRepitedEvent(repeatEventId);
-                repetedEvents.push(newRepitedEvent);
+                removeRepitedEvent(repeatEvent.id);
+                repeatedEvents.push(newRepeatedEvent);
 
-                return newRepitedEvent;
+                return newRepeatedEvent;
             }
         });
     };
@@ -156,21 +159,23 @@ var Repeat = (function (Calendar) {
     Calendar.createEvent = function (eventName, eventDate, callback, days) {
 
         if (days && Array.isArray(days)) {
-            var repeatEvent = Calendar.__proto__.createEvent(eventName, eventDate, function () {
-                return runCallbacksRepeatsEvents(callbackList);
-            });
+            var repeatEvent = Calendar.__proto__.createEvent(eventName, eventDate, callback);
             console.log(repeatEvent);
             //var repeatEventId = repeatEvent.id;
 
             //console.log('repeatEventId', repeatEventId);
 
-            var callbackList = [];
+            //var callbackList = [];
 
             // callbackList.push(callback, newRepeatCallback(days, repeatEvent, callbackList));
-            callbackList.push(callback);
-            console.log('callbackList is ', callbackList);
+            //callbackList.push(callback);
+            //console.log('callbackList is ', callbackList);
 
-            repetedEvents.push(repeatEvent);
+            //var repeatEventAndDays = {repeatEvent};
+            //repeatEventAndDays.repeatEvent.days = days;
+
+            repeatedEvents.push(repeatEvent);
+            console.log('repeatedEvents', repeatedEvents);
             callbackRepeatEvent();
             return repeatEvent;
         }
