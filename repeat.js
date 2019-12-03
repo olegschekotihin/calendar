@@ -1,6 +1,6 @@
 var Repeat = (function (Calendar) {
 
-    var repeatedEvents = [];
+    var repeatedEventList = [];
     var dayMileseconds = 86400000;
     var NOT_CORRECT_ID = 'Enter the correct id';
     var ARRAY_IS_EMPTY = 'days array is empty';
@@ -45,7 +45,7 @@ var Repeat = (function (Calendar) {
     /* Remove event */
 
     function removeRepitedEvent(id) {
-        repeatedEvents = repeatedEvents.filter(function (event) {
+        repeatedEventList = repeatedEventList.filter(function (event) {
             return event.id !== id
         });
     };
@@ -74,7 +74,7 @@ var Repeat = (function (Calendar) {
     }
 
     function findRepeatEvent(id) {
-        var repeatEventId = repeatedEvents.find(function (repeatedEvent) {
+        var repeatEventId = repeatedEventList.find(function (repeatedEvent) {
             return (repeatedEvent.id === id);
         });
 
@@ -88,15 +88,15 @@ var Repeat = (function (Calendar) {
             var repeatEvent = findRepeatEvent(data.id);
 
             if(repeatEvent.id === data.id) {
-                // if(repeatEvent.days) {
-                //
-                // }
+                if(repeatEvent.id.length) {
+                    console.log('ATATA');
+                }
                 var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
                 var parsedDate = new Date(dateInMilleseconds);
                 var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
 
                 removeRepitedEvent(repeatEvent.id);
-                repeatedEvents.push(newRepeatedEvent);
+                repeatedEventList.push(newRepeatedEvent);
 
                 return newRepeatedEvent;
             }
@@ -171,11 +171,15 @@ var Repeat = (function (Calendar) {
             //callbackList.push(callback);
             //console.log('callbackList is ', callbackList);
 
-            //var repeatEventAndDays = {repeatEvent};
-            //repeatEventAndDays.repeatEvent.days = days;
 
-            repeatedEvents.push(repeatEvent);
-            console.log('repeatedEvents', repeatedEvents);
+            repeatedEventList.push(repeatEvent);
+
+            repeatedEventList.map(function (repeatedevent) {
+
+            });
+
+            console.log('repeatedEvents', repeatedEventList);
+
             callbackRepeatEvent();
             return repeatEvent;
         }
