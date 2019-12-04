@@ -86,10 +86,12 @@ var Repeat = (function (Calendar) {
    Calendar.observable.subscribe(function (data) {
         var repeatEvent = findRepeatEvent(data.id);
 
+        if(repeatEvent.daysToRepeat.length !== 0) {
+                console.log('ATATA');
+        };
+
         if (repeatEvent.id === data.id) {
-            // if(repeatEvent.id.length) {
-            //     console.log('ATATA');
-            // }
+
             var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
             var parsedDate = new Date(dateInMilleseconds);
             var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
@@ -169,7 +171,11 @@ var Repeat = (function (Calendar) {
             //callbackList.push(callback);
             //console.log('callbackList is ', callbackList);
 
-            var repeatedEventAndDays = Object.assign({}, [days], repeatEvent);
+            var daysToRepeat = {
+                daysToRepeat: [days]
+            };
+
+            var repeatedEventAndDays = Object.assign({}, daysToRepeat, repeatEvent);
 
             repeatedEventList.push(repeatedEventAndDays);
 
