@@ -74,45 +74,43 @@ var Repeat = (function (Calendar) {
     }
 
     function findRepeatEvent(id) {
-        var repeatEventId = repeatedEventList.find(function (repeatedEvent) {
+        var repeatEventForId = repeatedEventList.find(function (repeatedEvent) {
             return (repeatedEvent.id === id);
         });
 
-        return repeatEventId;
+        return repeatEventForId;
     }
 
     /* New repeat callback */
-    
-    function callbackRepeatEvent() {
-        Calendar.observable.subscribe(function (data) {
-            var repeatEvent = findRepeatEvent(data.id);
 
-            if(repeatEvent.id === data.id) {
-                if(repeatEvent.id.length) {
-                    console.log('ATATA');
-                }
-                var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
-                var parsedDate = new Date(dateInMilleseconds);
-                var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
+   Calendar.observable.subscribe(function (data) {
+        var repeatEvent = findRepeatEvent(data.id);
 
-                removeRepitedEvent(repeatEvent.id);
-                repeatedEventList.push(newRepeatedEvent);
+        if (repeatEvent.id === data.id) {
+            // if(repeatEvent.id.length) {
+            //     console.log('ATATA');
+            // }
+            var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
+            var parsedDate = new Date(dateInMilleseconds);
+            var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
 
-                return newRepeatedEvent;
-            }
-        });
-    };
+            removeRepitedEvent(repeatEvent.id);
+            repeatedEventList.push(newRepeatedEvent);
+
+            return newRepeatedEvent;
+        }
+    });
 
     function newRepeatCallback(days, newRepeatEvent, callbackList) {
         //return callbackRepeatEvent();
 
-                // if (data.id === newRepeatEvent.id) {
-                //     console.log(data.eventDate.getTime());
-                //     var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
-                //     var parsedDate = new Date(dateInMilleseconds);
-                //     console.log(parseDate);
-                //     return Calendar.createEvent(data.eventName, parsedDate, data.callback);
-                // }
+        // if (data.id === newRepeatEvent.id) {
+        //     console.log(data.eventDate.getTime());
+        //     var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
+        //     var parsedDate = new Date(dateInMilleseconds);
+        //     console.log(parseDate);
+        //     return Calendar.createEvent(data.eventName, parsedDate, data.callback);
+        // }
 
 
         //     if (days) {
@@ -171,16 +169,14 @@ var Repeat = (function (Calendar) {
             //callbackList.push(callback);
             //console.log('callbackList is ', callbackList);
 
+            var repeatedEventAndDays = Object.assign({}, [days], repeatEvent);
 
-            repeatedEventList.push(repeatEvent);
+            repeatedEventList.push(repeatedEventAndDays);
 
-            repeatedEventList.map(function (repeatedevent) {
-
-            });
 
             console.log('repeatedEvents', repeatedEventList);
 
-            callbackRepeatEvent();
+            //callbackRepeatEvent();
             return repeatEvent;
         }
 
