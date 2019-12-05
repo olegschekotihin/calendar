@@ -86,8 +86,20 @@ var Repeat = (function (Calendar) {
    Calendar.observable.subscribe(function (data) {
         var repeatEvent = findRepeatEvent(data.id);
 
-        if(repeatEvent.daysToRepeat.length !== 0) {
-                console.log('ATATA');
+        if(repeatEvent.daysToRepeat !=0 && repeatEvent.id === data.id) {
+            var timeToRepeat = findClosestDay(repeatEvent.daysToRepeat);
+            var parsedDate = new Date(timeToRepeat);
+            console.log('timeToRepeat', timeToRepeat);
+            var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
+
+            var daysToRepeat = {
+                daysToRepeat: repeatEvent.daysToRepeat
+            };
+            var repeatedEventAndDays = Object.assign({}, daysToRepeat, newRepeatedEvent);
+
+
+            removeRepitedEvent(repeatEvent.id);
+            return repeatedEventList.push(repeatedEventAndDays);
         };
 
         if (repeatEvent.id === data.id) {
