@@ -86,7 +86,7 @@ var Repeat = (function (Calendar) {
    Calendar.observable.subscribe(function (data) {
         var repeatEvent = findRepeatEvent(data.id);
 
-        if(repeatEvent.daysToRepeat !=0 && repeatEvent.id === data.id) {
+        if(repeatEvent.daysToRepeat !=0 && repeatEvent.id === data.id ) {
             var timeToRepeat = findClosestDay(repeatEvent.daysToRepeat);
             var parsedDate = new Date(timeToRepeat);
             console.log('timeToRepeat', timeToRepeat);
@@ -97,13 +97,12 @@ var Repeat = (function (Calendar) {
             };
             var repeatedEventAndDays = Object.assign({}, daysToRepeat, newRepeatedEvent);
 
-
             removeRepitedEvent(repeatEvent.id);
-            return repeatedEventList.push(repeatedEventAndDays);
+            repeatedEventList.push(repeatedEventAndDays);
+            return newRepeatedEvent;
         };
 
         if (repeatEvent.id === data.id) {
-
             var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
             var parsedDate = new Date(dateInMilleseconds);
             var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
@@ -114,57 +113,6 @@ var Repeat = (function (Calendar) {
             return newRepeatedEvent;
         }
     });
-
-    function newRepeatCallback(days, newRepeatEvent, callbackList) {
-        //return callbackRepeatEvent();
-
-        // if (data.id === newRepeatEvent.id) {
-        //     console.log(data.eventDate.getTime());
-        //     var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
-        //     var parsedDate = new Date(dateInMilleseconds);
-        //     console.log(parseDate);
-        //     return Calendar.createEvent(data.eventName, parsedDate, data.callback);
-        // }
-
-
-        //     if (days) {
-        //         return function () {
-        //             var stringDate = new Date(findClosestDay(days)).toISOString();
-        //             return Calendar.createEvent(repeatEvent.eventName, stringDate,  function() {
-        //                 return runCallbacksRepeatsEvents(callbackList);
-        //             });
-        //         };
-        //     }
-        //
-        //     return function () {
-        //         Calendar.observable.subscribe(function (data) {
-        //             if( obs === Object && obs.id === newRepeatEvent.id) {
-        //                 var parseDate = new Date(Date.parse(eventDate)) + dayMileseconds;
-        //                 return Calendar.createEvent(data.eventName, parseDate, data.callback);
-        //             }
-        //         });
-        //
-        //         console.log('obs is', obs);
-        //         console.log('obs id is', obs.id);
-        //
-        //         if( obs === Object && obs.id === newRepeatEvent.id) {
-        //             var repeatEvent = obs
-        //         } else {
-        //             var repeatEvent = newRepeatEvent;
-        //         }
-        //         var stringDate = new Date(Date.now() + dayMileseconds).toISOString();
-        //         return Calendar.createEvent(repeatEvent.eventName, stringDate,  function() {
-        //             return runCallbacksRepeatsEvents(callbackList);
-        //         });
-        //     };
-        // }
-
-        // const oldOne = Calendar.__proto__.eventTriggered;
-        // Calendar.__proto__.eventTriggered = function (event) {
-        //
-        //     console.log('event triggered', event);
-        //     oldOne();
-    };
 
     /* Create repeat event */
 

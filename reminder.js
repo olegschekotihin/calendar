@@ -100,5 +100,9 @@ var Reminder = (function (Calendar) {
         runRemindToAllEvent(valueTime, timeFlag);
     };
 
+    Calendar.observable.subscribe(function (data) {
+
+    });
+
     return Calendar;
 })(Calendar);
