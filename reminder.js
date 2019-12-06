@@ -66,7 +66,9 @@ var Reminder = (function (Calendar) {
             var parseTimeToEvent = new Date(timeToEvent - remindTimeToAllEvents);
             var timeToRemind = parseTimeToEvent.toString();
 
-            return Calendar.createEvent('Remind to event: ' + event.eventName, timeToRemind, remindCallback)
+            if(event.done === false) {
+                return Calendar.createEvent('Remind to event: ' + event.eventName, timeToRemind, remindCallback)
+            }
         })
     }
 

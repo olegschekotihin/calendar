@@ -86,7 +86,11 @@ var Repeat = (function (Calendar) {
    Calendar.observable.subscribe(function (data) {
         var repeatEvent = findRepeatEvent(data.id);
 
-        if(repeatEvent.daysToRepeat !=0 && repeatEvent.id === data.id ) {
+        if(!repeatEvent) {
+            return;
+        }
+
+        if(repeatEvent.id === data.id && repeatEvent.daysToRepeat !=0 && repeatEvent) {
             var timeToRepeat = findClosestDay(repeatEvent.daysToRepeat);
             var parsedDate = new Date(timeToRepeat);
             console.log('timeToRepeat', timeToRepeat);
@@ -102,7 +106,7 @@ var Repeat = (function (Calendar) {
             return newRepeatedEvent;
         };
 
-        if (repeatEvent.id === data.id) {
+        if (repeatEvent.id === data.id && repeatEvent) {
             var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
             var parsedDate = new Date(dateInMilleseconds);
             var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
@@ -112,6 +116,8 @@ var Repeat = (function (Calendar) {
 
             return newRepeatedEvent;
         }
+
+        return console.log('Event is`n repeat')
     });
 
     /* Create repeat event */
