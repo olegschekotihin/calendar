@@ -9,33 +9,20 @@ var Repeat = (function (Calendar) {
     var DAY_IS_NOT_ARRAY = 'The days must be in array!';
     var MAX_LENGTH_IS_NOT_CORRECT = 'Max length of days array is 7 and values from 0 to 7!';
 
-    /* Run callback events */
-
-    var runCallbacksRepeatsEvents = function (callbackList) {
-        console.log("callbackList", callbackList);
-        callbackList.forEach(function (callbackItem) {
-            console.log("callbackItem", callbackItem);
-            callbackItem();
-        });
-    };
-
     /* Check array of days */
 
     function checkArrayDays(days) {
         if (!Array.isArray(days)) {
-            console.log(DAY_IS_NOT_ARRAY);
-            return false;
+            throw DAY_IS_NOT_ARRAY;
         }
 
         if (!days.length) {
-            console.log(ARRAY_IS_EMPTY);
-            return false;
+            throw ARRAY_IS_EMPTY;
         }
 
         days.forEach(function (days) {
             if (days > 6 || days < 0 || days > 7) {
-                console.log(MAX_LENGTH_IS_NOT_CORRECT);
-                return false;
+                throw MAX_LENGTH_IS_NOT_CORRECT;
             }
         });
 
@@ -53,6 +40,7 @@ var Repeat = (function (Calendar) {
     /* Find closest day on number */
 
     function findClosestDay(days) {
+        console.log('days', days);
         var currentDate = new Date();
         var currentDay = new Date().getDay();
         var closestEventDay = null;
@@ -73,6 +61,8 @@ var Repeat = (function (Calendar) {
         return currentDate.setDate(currentDate.getDate() - currentDay + closestEventDay + 7);
     }
 
+    /* Find repeat event for id */
+    //TODO
     function findRepeatEvent(id) {
         var repeatEventForId = repeatedEventList.find(function (repeatedEvent) {
             return (repeatedEvent.id === id);
@@ -81,17 +71,14 @@ var Repeat = (function (Calendar) {
         return repeatEventForId;
     }
 
-    /* New repeat callback */
+    /* Callback for repeat event */
 
-   Calendar.observable.subscribe(function (data) {
+    Calendar.observable.subscribe(function (data) {
         var repeatEvent = findRepeatEvent(data.id);
 
-        if(!repeatEvent) {
-            return;
-        }
-
-        if(repeatEvent.id === data.id && repeatEvent.daysToRepeat !=0 && repeatEvent) {
-            var timeToRepeat = findClosestDay(repeatEvent.daysToRepeat);
+        if (repeatEvent && repeatEvent.id === data.id && repeatEvent.daysToRepeat !== 0) {
+            console.log('repeatEvent.daysToRepeat', repeatEvent.daysToRepeat[0]);
+            var timeToRepeat = findClosestDay(repeatEvent.daysToRepeat[0]);
             var parsedDate = new Date(timeToRepeat);
             console.log('timeToRepeat', timeToRepeat);
             var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
@@ -106,7 +93,7 @@ var Repeat = (function (Calendar) {
             return newRepeatedEvent;
         };
 
-        if (repeatEvent.id === data.id && repeatEvent) {
+        if (repeatEvent && repeatEvent.id === data.id) {
             var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
             var parsedDate = new Date(dateInMilleseconds);
             var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
@@ -116,8 +103,6 @@ var Repeat = (function (Calendar) {
 
             return newRepeatedEvent;
         }
-
-        return console.log('Event is`n repeat')
     });
 
     /* Create repeat event */
@@ -125,17 +110,9 @@ var Repeat = (function (Calendar) {
     Calendar.createEvent = function (eventName, eventDate, callback, days) {
 
         if (days && Array.isArray(days)) {
+            checkArrayDays(days);
             var repeatEvent = Calendar.__proto__.createEvent(eventName, eventDate, callback);
             console.log(repeatEvent);
-            //var repeatEventId = repeatEvent.id;
-
-            //console.log('repeatEventId', repeatEventId);
-
-            //var callbackList = [];
-
-            // callbackList.push(callback, newRepeatCallback(days, repeatEvent, callbackList));
-            //callbackList.push(callback);
-            //console.log('callbackList is ', callbackList);
 
             var daysToRepeat = {
                 daysToRepeat: [days]
@@ -144,11 +121,6 @@ var Repeat = (function (Calendar) {
             var repeatedEventAndDays = Object.assign({}, daysToRepeat, repeatEvent);
 
             repeatedEventList.push(repeatedEventAndDays);
-
-
-            console.log('repeatedEvents', repeatedEventList);
-
-            //callbackRepeatEvent();
             return repeatEvent;
         }
 

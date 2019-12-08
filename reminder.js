@@ -3,6 +3,8 @@ var Reminder = (function (Calendar) {
     var INPUT_DATA_IS_NOT_VALID = 'input data is not valid';
     var NOT_CORRECT_TIMEFLAG = 'time flag is not correct, please use "d" or "h" or "m"';
 
+    var remindEventList = [];
+
     var dayTimeFlag = 'd';
     var hourTimeFlag = 'h';
     var minuteTimeFlag = 'm';
@@ -58,7 +60,7 @@ var Reminder = (function (Calendar) {
     }
 
     function runRemindToAllEvent(valueTime, timeFlag) {
-        var eventList = Calendar.showAllEvent();
+        var eventList = Calendar.__proto__.showAllEvent();
 
         eventList.forEach(function (event) {
             var timeToEvent = (event.eventDate).getTime();
@@ -67,7 +69,9 @@ var Reminder = (function (Calendar) {
             var timeToRemind = parseTimeToEvent.toString();
 
             if(event.done === false) {
-                return Calendar.createEvent('Remind to event: ' + event.eventName, timeToRemind, remindCallback)
+                var remindEvent = Calendar.createEvent('Remind to event: ' + event.eventName, timeToRemind, remindCallback);
+                remindEventList.push(remindEvent);
+                return remindEvent;
             }
         })
     }
@@ -88,13 +92,33 @@ var Reminder = (function (Calendar) {
         var eventForId = searchEventByID(id);
         var timeToRemind = new Date(findTimeToRemind(id, valueTime, timeFlag));
         var parseTimeToRemind = timeToRemind.toString();
+        var remindEvent = Calendar.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
 
-        Calendar.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
+        remindEventList.push(remindEvent);
+        return remindEvent;
+
     };
 
-    /* Remind for all event */
+    /* Create remind event for id */
 
-    Calendar.remindToAllEvent = function (valueTime, timeFlag) {
+    Calendar.createRemindEvent = function (id, valueTime, timeFlag) {
+        if (!id || !valueTime || !timeFlag) {
+            return console.log(INPUT_DATA_IS_NOT_VALID);
+        }
+
+        var eventForId = searchEventByID(id);
+        var timeToRemind = new Date(findTimeToRemind(id, valueTime, timeFlag));
+        var parseTimeToRemind = timeToRemind.toString();
+
+        var remindEvent = Calendar.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
+
+        remindEventList.push(remindEvent);
+        return remindEvent;
+    };
+
+    /* Create remind event for all event */
+
+    Calendar.createRemindToAllEvent = function (valueTime, timeFlag) {
         if (!valueTime || !timeFlag) {
             throw INPUT_DATA_IS_NOT_VALID;
         }
@@ -102,9 +126,13 @@ var Reminder = (function (Calendar) {
         runRemindToAllEvent(valueTime, timeFlag);
     };
 
-    Calendar.observable.subscribe(function (data) {
 
-    });
+
+    // Calendar.observable.subscribe(function (data) {
+    //     if(data) {
+    //
+    //     }
+    // });
 
     return Calendar;
 })(Calendar);
