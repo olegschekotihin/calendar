@@ -95,6 +95,14 @@ var Reminder = (function (Calendar) {
         var remindEvent = Calendar.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
 
         remindEventList.push(remindEvent);
+
+
+        Calendar.observable.subscribe(function (data) {
+            if(data) {
+
+            }
+        });
+
         return remindEvent;
 
     };
@@ -128,11 +136,11 @@ var Reminder = (function (Calendar) {
 
 
 
-    // Calendar.observable.subscribe(function (data) {
-    //     if(data) {
-    //
-    //     }
-    // });
+    Calendar.observable.subscribe(function (data) {
+        if(data) {
+
+        }
+    });
 
     return Calendar;
 })(Calendar);
