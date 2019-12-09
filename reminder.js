@@ -20,6 +20,19 @@ var Reminder = (function (Calendar) {
         return Calendar.findById(id)[0];
     }
 
+    function searchRemindEventById(data) {
+        remindEventList.find(function (event) {
+            return (data.id === event.id);
+        })
+    }
+
+    function getAllEvent() {
+        var allEvent = Calendar.__proto__.showAllEvent();
+        var remindEventList = [].concat(allEvent);
+
+        return remindEventList;
+    };
+
     /* Get time to remind*/
 
     function getTimeToRemind(valueTime, timeFlag) {
@@ -98,8 +111,14 @@ var Reminder = (function (Calendar) {
 
 
         Calendar.observable.subscribe(function (data) {
-            if(data) {
+            var remindEventForId = searchRemindEventById(data);
 
+            if(remindEventForId && data) {
+                var eventForId = searchEventByID(id);
+                var timeToRemind = new Date(findTimeToRemind(id, valueTime, timeFlag));
+                var parseTimeToRemind = timeToRemind.toString();
+                var remindEvent = Calendar.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
+                return remindEvent;
             }
         });
 
@@ -131,16 +150,17 @@ var Reminder = (function (Calendar) {
             throw INPUT_DATA_IS_NOT_VALID;
         }
 
+        console.log(getAllEvent());
+
         runRemindToAllEvent(valueTime, timeFlag);
     };
 
 
-
-    Calendar.observable.subscribe(function (data) {
-        if(data) {
-
-        }
-    });
+    // Calendar.observable.subscribe(function (data) {
+    //     if(data) {
+    //
+    //     }
+    // });
 
     return Calendar;
 })(Calendar);
