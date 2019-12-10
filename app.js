@@ -56,9 +56,9 @@ var Calendar = (function () {
 
         if (closestEventList.length) {
             closestEventList.forEach(function (event) {
+                Calendar.prototype.observable.broadcast(Object.assign({}, event));
                 event.done = true;
-                event.callback();
-                return Calendar.prototype.observable.broadcast(Object.assign({}, event));
+                return event.callback();
             })
         }
     }

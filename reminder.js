@@ -110,8 +110,14 @@ var Reminder = (function (Calendar) {
 
 
         Calendar.observable.subscribe(function (data) {
-            if(data) {
+            var remindEventForId = searchRemindEventById(data);
 
+            if(remindEventForId && data) {
+                var eventForId = searchEventByID(id);
+                var timeToRemind = new Date(findTimeToRemind(id, valueTime, timeFlag));
+                var parseTimeToRemind = timeToRemind.toString();
+                var remindEvent = Calendar.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
+                return remindEvent;
             }
         });
 
@@ -142,6 +148,8 @@ var Reminder = (function (Calendar) {
         if (!valueTime || !timeFlag) {
             throw INPUT_DATA_IS_NOT_VALID;
         }
+
+        console.log(getAllEvent());
 
         runRemindToAllEvent(valueTime, timeFlag);
     };
