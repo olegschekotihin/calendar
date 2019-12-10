@@ -20,6 +20,18 @@ var Reminder = (function (Calendar) {
         return Calendar.findById(id)[0];
     }
 
+    /* Find remind event for id */
+
+    function searchRemindEventById(id) {
+        var resultEventSearch = remindEventList.find(function (event) {
+            return (event.id === id);
+        });
+
+        return resultEventSearch
+    }
+
+    /* End find remind event for id */
+
     /* Get time to remind*/
 
     function getTimeToRemind(valueTime, timeFlag) {
@@ -141,6 +153,19 @@ var Reminder = (function (Calendar) {
 
         }
     });
+
+    var changedRemindEvent = Calendar.__proto__.editEventDate;
+
+    Calendar.__proto__.editEventDate = function(id, newEventDate) {
+        var remindEventForId = searchRemindEventById(id);
+
+        if(remindEventForId && remindEventForId.id === data.id && remindEventList !== 0) {
+            console.log('Remind event is TRUE');
+        }
+
+        console.log('Reminder event is event id', id, newEventDate);
+        return changedRemindEvent(id, newEventDate);
+    };
 
     return Calendar;
 })(Calendar);
