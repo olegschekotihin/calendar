@@ -158,7 +158,7 @@ var Calendar = (function () {
 
     /* Show all event */
 
-    Calendar.prototype.showAllEvent = function showAllEvent() {
+    Calendar.prototype.showAllEvent = function() {
         return eventList.map(function (event) {
             return Object.assign({}, event);
         });
