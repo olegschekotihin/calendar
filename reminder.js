@@ -155,7 +155,7 @@ var Reminder = (function (Calendar) {
         var timeToRemind = new Date(findTimeToRemind(id, valueTime, timeFlag));
         var parseTimeToRemind = timeToRemind.toString();
 
-        var remindEvent = Calendar.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
+        var remindEvent = Calendar.__proto__.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
 
         remindEventList.push(remindEvent);
         return remindEvent;
@@ -173,7 +173,7 @@ var Reminder = (function (Calendar) {
         runRemindToAllEvent(valueTime, timeFlag);
     };
 
-    var changedRemindEvent = Calendar.__proto__.editEventDate;
+    var changedEvent = Calendar.__proto__.editEventDate;
 
     Calendar.__proto__.editEventDate = function(id, newEventDate) {
         var remindEventForId = searchRemindEventById(id);
@@ -192,7 +192,7 @@ var Reminder = (function (Calendar) {
         }
 
         console.log('Reminder event is event id', id, newEventDate);
-        return changedRemindEvent(id, newEventDate);
+        return changedEvent(id, newEventDate);
     };
 
     return Calendar;
