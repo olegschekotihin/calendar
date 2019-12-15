@@ -31,7 +31,7 @@ var Reminder = (function (Calendar) {
     function searchRemindEventById(id) {
         console.log('remindEventList', remindEventList);
         var resultEventSearch = remindEventList.find(function (event) {
-            return (event.id === id);
+            return (event.parentId === id);
         });
 
         return resultEventSearch;
@@ -39,7 +39,7 @@ var Reminder = (function (Calendar) {
 
     /* Check param of edit remind event */
 
-    function checkEditRemindEvent(id, newEventDate) {
+    function checkEditRemindEvent(id, newEventDate, parsedNewEventDay) {
         if (!id) {
             throw NOT_CORRECT_ID;
         }
@@ -155,10 +155,17 @@ var Reminder = (function (Calendar) {
         var timeToRemind = new Date(findTimeToRemind(id, valueTime, timeFlag));
         var parseTimeToRemind = timeToRemind.toString();
 
-        var remindEvent = Calendar.__proto__.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
+        var parentEvent = {
+          parentId: id
+        };
 
-        remindEventList.push(remindEvent);
-        return remindEvent;
+        var remindEvent = Calendar.__proto__.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
+        var remindEventAndParentId = Object.assign({}, parentEvent, remindEvent);
+
+        var remindEventforList = Object.assign({}, parentEvent, remindEvent);
+
+        remindEventList.push(remindEventforList);
+        return remindEventAndParentId;
     };
 
     /* Create remind event for all event */
@@ -172,19 +179,18 @@ var Reminder = (function (Calendar) {
 
         runRemindToAllEvent(valueTime, timeFlag);
     };
-
+    //TODO Name
     var changedEvent = Calendar.__proto__.editEventDate;
 
     Calendar.__proto__.editEventDate = function(id, newEventDate) {
         var remindEventForId = searchRemindEventById(id);
         console.log(remindEventForId);
-        checkEditRemindEvent(id, newEventDate);
+        var parsedNewEventDay = new Date(Date.parse(newEventDate));
+        checkEditRemindEvent(id, newEventDate, parsedNewEventDay);
 
         if(remindEventForId && remindEventForId.id === id && remindEventList !== 0) {
-            var parsedNewEventDay = new Date(Date.parse(newEventDate));
-
             remindEventList = remindEventList.map(function (event) {
-                if (event.id === id) {
+                if (event.parentId === id) {
                     return Object.assign({}, event, {eventDate: parsedNewEventDay});
                 }
                 return event;

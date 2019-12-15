@@ -124,7 +124,7 @@ var Repeat = (function (Calendar) {
             return repeatEvent;
         }
 
-        Calendar.__proto__.createEvent(eventName, eventDate, callback);
+        return Calendar.__proto__.createEvent(eventName, eventDate, callback);
     };
 
     return Calendar;
