@@ -188,18 +188,31 @@ var Reminder = (function (Calendar) {
         var parsedNewEventDay = new Date(Date.parse(newEventDate));
         checkEditRemindEvent(id, newEventDate, parsedNewEventDay);
 
-        if(remindEventForId && remindEventForId.id === id && remindEventList !== 0) {
-            remindEventList = remindEventList.map(function (event) {
-                if (event.parentId === id) {
-                    return Object.assign({}, event, {eventDate: parsedNewEventDay});
-                }
-                return event;
-            });
+        if(remindEventForId && remindEventForId.parentId === id && remindEventList !== 0) {
+            var newTimeToRemindEvent = newTimeToRemind(id, newEventDate);
+            var remindEventId = searchRemindEventById(id);
+
+            return changedEvent(remindEventId.parentId, newTimeToRemindEvent);
         }
 
         console.log('Reminder event is event id', id, newEventDate);
         return changedEvent(id, newEventDate);
     };
+
+    function newTimeToRemind(id, newEventDate) {
+        var oldEvent = findEventForId(id);
+        console.log('oldEvent.eventDate', oldEvent.eventDate);
+        var parsedOldEventTime = Date.parse(oldEvent.eventDate);
+        console.log('parsedOldEventTime', parsedOldEventTime);
+        var parsedNewEventTime = Date.parse(newEventDate);
+        var remindEvent = searchRemindEventById(id);
+        var parsedTimeToRemind = Date.parse(remindEvent.eventDate);
+        var newTimeToEvent = parsedNewEventTime - parsedOldEventTime;
+        var parsedNewTimeToRemindEvent = parsedTimeToRemind + newTimeToEvent;
+        var newTimeToRemindEvent = new Date(parsedNewTimeToRemindEvent);
+
+        return newTimeToRemindEvent;
+    }
 
     return Calendar;
 })(Calendar);
