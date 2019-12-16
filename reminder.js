@@ -192,7 +192,7 @@ var Reminder = (function (Calendar) {
             var newTimeToRemindEvent = newTimeToRemind(id, newEventDate);
             var remindEventId = searchRemindEventById(id);
 
-            return changedEvent(remindEventId.parentId, newTimeToRemindEvent);
+           changedEvent(remindEventId.id, newTimeToRemindEvent);
         }
 
         console.log('Reminder event is event id', id, newEventDate);
