@@ -122,11 +122,20 @@ var Reminder = (function (Calendar) {
     /* Remind to all event */
 
     function runRemindToAllEvent(valueTime, timeFlag) {
-        var eventList = findClosestEvent();
-
         var closestEvent = findClosestEvent();
 
         console.log('closestEvent', closestEvent);
+
+        var timeToEvent = (closestEvent.eventDate).getTime();
+        var remindTimeToAllEvents = getTimeToRemind(valueTime, timeFlag);
+        var parseTimeToEvent = new Date(timeToEvent - remindTimeToAllEvents);
+        var timeToRemind = parseTimeToEvent.toString();
+
+        if(closestEvent.done === false) {
+            var remindEvent = Calendar.createEvent('Remind to event: ' + closestEvent.eventName, timeToRemind, remindCallback);
+            remindEventList.push(remindEvent);
+            return remindEvent;
+        }
 
         // eventList.forEach(function (event) {
         //     var timeToEvent = (event.eventDate).getTime();
