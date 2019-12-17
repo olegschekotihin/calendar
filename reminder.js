@@ -90,21 +90,56 @@ var Reminder = (function (Calendar) {
         throw NOT_CORRECT_TIMEFLAG;
     }
 
-    function runRemindToAllEvent(valueTime, timeFlag) {
-        var eventList = Calendar.__proto__.showAllEvent();
+    /* Find closest event*/
 
-        eventList.forEach(function (event) {
-            var timeToEvent = (event.eventDate).getTime();
-            var remindTimeToAllEvents = getTimeToRemind(valueTime, timeFlag);
-            var parseTimeToEvent = new Date(timeToEvent - remindTimeToAllEvents);
-            var timeToRemind = parseTimeToEvent.toString();
+    function findClosestEvent() {
+        var currentTime = new Date();
+        var currentYear = currentTime.getFullYear();
+        var currentMonth = currentTime.getMonth();
+        var currentDay = currentTime.getDay();
+        var currentMinutes = currentTime.getMinutes();
+        var currentSeconds = currentTime.getSeconds();
 
-            if(event.done === false) {
-                var remindEvent = Calendar.createEvent('Remind to event: ' + event.eventName, timeToRemind, remindCallback);
-                remindEventList.push(remindEvent);
-                return remindEvent;
+        var allEventsList = Calendar.showAllEvent();
+
+        var closestEventList = allEventsList.filter(function (event) {
+            var eventYear = event.eventDate.getFullYear();
+            var eventMonth = event.eventDate.getMonth();
+            var eventDay = event.eventDate.getDay();
+            var eventMinutes = event.eventDate.getMinutes();
+            var eventSeconds = event.eventDate.getSeconds();
+
+            if (currentYear === eventYear && currentMonth === eventMonth
+                && currentDay === eventDay && currentMinutes >= eventMinutes
+                && event.done === false) {
+                return event;
             }
-        })
+        });
+
+        return closestEventList;
+    }
+
+    /* Remind to all event */
+
+    function runRemindToAllEvent(valueTime, timeFlag) {
+        var eventList = findClosestEvent();
+
+        var closestEvent = findClosestEvent();
+
+        console.log('closestEvent', closestEvent);
+
+        // eventList.forEach(function (event) {
+        //     var timeToEvent = (event.eventDate).getTime();
+        //     var remindTimeToAllEvents = getTimeToRemind(valueTime, timeFlag);
+        //     var parseTimeToEvent = new Date(timeToEvent - remindTimeToAllEvents);
+        //     var timeToRemind = parseTimeToEvent.toString();
+        //
+        //     if(event.done === false) {
+        //         var remindEvent = Calendar.createEvent('Remind to event: ' + event.eventName, timeToRemind, remindCallback);
+        //         remindEventList.push(remindEvent);
+        //         return remindEvent;
+        //     }
+        // })
     }
 
     /* Remind callback */
@@ -179,8 +214,9 @@ var Reminder = (function (Calendar) {
 
         runRemindToAllEvent(valueTime, timeFlag);
     };
+
     //TODO Name
-    var changedEvent = Calendar.__proto__.editEventDate;
+    var changeEvent = Calendar.__proto__.editEventDate;
 
     Calendar.__proto__.editEventDate = function(id, newEventDate) {
         var remindEventForId = searchRemindEventById(id);
@@ -192,18 +228,16 @@ var Reminder = (function (Calendar) {
             var newTimeToRemindEvent = newTimeToRemind(id, newEventDate);
             var remindEventId = searchRemindEventById(id);
 
-           changedEvent(remindEventId.id, newTimeToRemindEvent);
+           Calendar.editEventDate(remindEventId.id, newTimeToRemindEvent);
         }
 
         console.log('Reminder event is event id', id, newEventDate);
-        return changedEvent(id, newEventDate);
+        return changeEvent(id, newEventDate);
     };
 
     function newTimeToRemind(id, newEventDate) {
         var oldEvent = findEventForId(id);
-        console.log('oldEvent.eventDate', oldEvent.eventDate);
         var parsedOldEventTime = Date.parse(oldEvent.eventDate);
-        console.log('parsedOldEventTime', parsedOldEventTime);
         var parsedNewEventTime = Date.parse(newEventDate);
         var remindEvent = searchRemindEventById(id);
         var parsedTimeToRemind = Date.parse(remindEvent.eventDate);
