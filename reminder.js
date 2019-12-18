@@ -102,21 +102,19 @@ var Reminder = (function (Calendar) {
 
         var allEventsList = Calendar.showAllEvent();
 
-        var closestEventList = allEventsList.filter(function (event) {
-            var eventYear = event.eventDate.getFullYear();
-            var eventMonth = event.eventDate.getMonth();
-            var eventDay = event.eventDate.getDay();
-            var eventMinutes = event.eventDate.getMinutes();
-            var eventSeconds = event.eventDate.getSeconds();
+        var closestEvent;
 
-            if (currentYear === eventYear && currentMonth === eventMonth
-                && currentDay === eventDay && currentMinutes >= eventMinutes
-                && event.done === false) {
-                return event;
+        allEventsList.filter(function (event) {
+            if(closestEvent === undefined) {
+                return closestEvent = event;
+            }
+
+            if(event.done === false && new Date(event.eventDate) < new Date(closestEvent.eventDate)) {
+                return closestEvent = event;
             }
         });
-
-        return closestEventList;
+        console.log(closestEvent);
+        return closestEvent;
     }
 
     /* Remind to all event */
