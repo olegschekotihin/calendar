@@ -134,19 +134,6 @@ var Reminder = (function (Calendar) {
             remindEventList.push(remindEvent);
             return remindEvent;
         }
-
-        // eventList.forEach(function (event) {
-        //     var timeToEvent = (event.eventDate).getTime();
-        //     var remindTimeToAllEvents = getTimeToRemind(valueTime, timeFlag);
-        //     var parseTimeToEvent = new Date(timeToEvent - remindTimeToAllEvents);
-        //     var timeToRemind = parseTimeToEvent.toString();
-        //
-        //     if(event.done === false) {
-        //         var remindEvent = Calendar.createEvent('Remind to event: ' + event.eventName, timeToRemind, remindCallback);
-        //         remindEventList.push(remindEvent);
-        //         return remindEvent;
-        //     }
-        // })
     }
 
     /* Remind callback */
@@ -154,37 +141,6 @@ var Reminder = (function (Calendar) {
     function remindCallback() {
         return console.log('Remind to ' + this.eventName);
     }
-    //
-    // /* Remind event for id */
-    //
-    // Calendar.remindEvent = function (id, valueTime, timeFlag) {
-    //     if (!id || !valueTime || !timeFlag) {
-    //         throw INPUT_DATA_IS_NOT_VALID;
-    //     }
-    //
-    //     var eventForId = findEventForId(id);
-    //     var timeToRemind = new Date(findTimeToRemind(id, valueTime, timeFlag));
-    //     var parseTimeToRemind = timeToRemind.toString();
-    //     var remindEvent = Calendar.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
-    //
-    //     remindEventList.push(remindEvent);
-    //
-    //
-    //     // Calendar.observable.subscribe(function (data) {
-    //     //     var remindEventForId = searchRemindEventById(data);
-    //     //
-    //     //     if(remindEventForId && data) {
-    //     //         var eventForId = searchEventByID(id);
-    //     //         var timeToRemind = new Date(findTimeToRemind(id, valueTime, timeFlag));
-    //     //         var parseTimeToRemind = timeToRemind.toString();
-    //     //         var remindEvent = Calendar.createEvent('Remind to event: ' + eventForId.eventName, parseTimeToRemind, remindCallback);
-    //     //         return remindEvent;
-    //     //     }
-    //     // });
-    //
-    //     return remindEvent;
-    //
-    // };
 
     /* Create remind event for id */
 
@@ -227,7 +183,6 @@ var Reminder = (function (Calendar) {
 
     Calendar.__proto__.editEventDate = function(id, newEventDate) {
         var remindEventForId = searchRemindEventById(id);
-        console.log(remindEventForId);
         var parsedNewEventDay = new Date(Date.parse(newEventDate));
         checkEditRemindEvent(id, newEventDate, parsedNewEventDay);
 
@@ -238,7 +193,6 @@ var Reminder = (function (Calendar) {
            Calendar.editEventDate(remindEventId.id, newTimeToRemindEvent);
         }
 
-        console.log('Reminder event is event id', id, newEventDate);
         return changeEvent(id, newEventDate);
     };
 
