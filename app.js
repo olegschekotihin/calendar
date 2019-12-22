@@ -31,6 +31,7 @@ var Calendar = (function () {
         var currentYear = currentTime.getFullYear();
         var currentMonth = currentTime.getMonth();
         var currentDay = currentTime.getDay();
+        var currentHour = currentTime.getHours();
         var currentMinutes = currentTime.getMinutes();
         var currentSeconds = currentTime.getSeconds();
 
@@ -38,11 +39,12 @@ var Calendar = (function () {
             var eventYear = event.eventDate.getFullYear();
             var eventMonth = event.eventDate.getMonth();
             var eventDay = event.eventDate.getDay();
+            var eventHour = event.eventDate.getHours();
             var eventMinutes = event.eventDate.getMinutes();
             var eventSeconds = event.eventDate.getSeconds();
 
             if (currentYear === eventYear && currentMonth === eventMonth
-                && currentDay === eventDay && currentMinutes >= eventMinutes
+                && currentDay === eventDay && currentHour === eventHour && currentMinutes >= eventMinutes
                 && event.done === false) {
                 return event;
             }
