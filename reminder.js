@@ -13,7 +13,12 @@ var Reminder = (function (Calendar) {
     var hourMileseconds = 3600000;
     var minuteMileseconds = 60000;
 
-    var allEventList = Calendar.showAllEvent();
+    var closestEvent;
+    var allEventsList;
+
+    // var allEventsList = function () {
+    //     return Calendar.showAllEvent();
+    // };
 
     /* Find event for id */
 
@@ -50,6 +55,19 @@ var Reminder = (function (Calendar) {
         return resultEventSearch;
     }
 
+    /* Remove event */
+
+    function removeParentRepeatEvent(id) {
+        console.log(id);
+        if (!id || isNaN(id)) {
+            throw ('alert');
+        }
+
+        allEventsList = allEventsList.filter(function (event) {
+            return event.id !== id
+        });
+    };
+
 
     /* Check param of edit remind event */
 
@@ -62,8 +80,6 @@ var Reminder = (function (Calendar) {
             throw NOT_CORRECT_DATE;
         }
     }
-
-    /* End of check of edit remind event */
 
     /* Get time to remind*/
 
@@ -108,9 +124,9 @@ var Reminder = (function (Calendar) {
 
     function findClosestEvent() {
         var currentTime = new Date();
-        var allEventsList = Calendar.showAllEvent();
-
-        var closestEvent;
+        allEventsList = Calendar.showAllEvent();
+        console.log('allEventsList is', allEventsList);
+        //var closestEvent;
 
         allEventsList.filter(function (event) {
             if(closestEvent === undefined) {
@@ -141,6 +157,7 @@ var Reminder = (function (Calendar) {
             var remindEvent = Calendar.createEvent('Remind to event: ' + closestEvent.eventName, timeToRemind, remindCallback);
             var dataToRemindForAllEvent = {
               isRemindToAllEvent: true,
+              parentEventToAllRemind: closestEvent.id,
               valueTime: valueTime,
               timeFlag: timeFlag
             };
@@ -226,12 +243,15 @@ var Reminder = (function (Calendar) {
     }
 
 
-
     Calendar.observable.subscribe(function (data) {
         var remindEvent = searchRemindEventById(data.id);
 
         if(remindEvent && remindEvent.id === data.id && remindEvent.isRemindToAllEvent === true && data.done === false) {
             console.log('observer remind ');
+            var eventToRemind = searchRemindEventById(data.id);
+            console.log('eventToRemind', eventToRemind);
+            removeParentRepeatEvent(eventToRemind.parentEventToAllRemind);
+            Calendar.removeEvent(data.id);
             return Calendar.createRemindToAllEvent(remindEvent.valueTime, remindEvent.timeFlag);
         }
     });
