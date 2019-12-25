@@ -123,7 +123,6 @@ var Reminder = (function (Calendar) {
     /* Find closest event*/
 
     function findClosestEvent(id) {
-        allEventsList = Calendar.showAllEvent();
         console.log('allEventsList is', allEventsList);
         if(id) {
             removeParentRepeatEvent(id);
@@ -207,6 +206,7 @@ var Reminder = (function (Calendar) {
             throw INPUT_DATA_IS_NOT_VALID;
         }
 
+        allEventsList = Calendar.showAllEvent();
         runRemindToAllEvent(valueTime, timeFlag, id);
     };
 
@@ -249,7 +249,7 @@ var Reminder = (function (Calendar) {
             console.log('observer remind ');
             console.log('eventToRemind', remindEvent);
             //removeParentRepeatEvent(remindEvent.parentEventToAllRemind);
-            Calendar.createRemindToAllEvent(remindEvent.valueTime, remindEvent.timeFlag, remindEvent.parentEventToAllRemind);
+            runRemindToAllEvent(remindEvent.valueTime, remindEvent.timeFlag, remindEvent.parentEventToAllRemind);
             return Calendar.removeEvent(data.id);
         }
     });
