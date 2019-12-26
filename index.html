@@ -34,5 +34,25 @@
   <section>
     <p id="time-now"></p>
   </section>
+  <script>
+    var date1 = new Date();
+    var date2 = new Date();
+    var date3 = new Date();
+    date1.setMinutes(date1.getMinutes() + 2);
+    date2.setMinutes(date2.getMinutes() + 3);
+    date3.setMinutes(date3.getMinutes() + 4);
+
+    Calendar.createEvent('Event1', date1, function () {
+        console.log('Event1')
+    });
+
+    Calendar.createEvent('Event2', date2, function () {
+        console.log('Event2')
+    });
+
+    Calendar.createEvent('Event3', date3, function () {
+        console.log('Event3')
+    });
+  </script>
 </body>
 </html>

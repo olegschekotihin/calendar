@@ -6,11 +6,13 @@ var Calendar = (function () {
     var NOT_CORRECT_DATE = 'Please set a correct date';
     var NOT_CORRECT_ID = 'Enter the correct id';
     var NOT_CORRECT_CALLBACK = 'Callback must be a function';
+    var idInterval = 10000000;
 
     /* Generate random id*/
 
     function generateId() {
-        return new Date().getMilliseconds();
+        return Math.floor((Math.random() * idInterval) + 1);
+        //new Date().getMilliseconds();
     }
 
     function Calendar() {
@@ -58,9 +60,9 @@ var Calendar = (function () {
 
         if (closestEventList.length) {
             closestEventList.forEach(function (event) {
-                Calendar.prototype.observable.broadcast(Object.assign({}, event));
                 event.done = true;
-                return event.callback();
+                event.callback();
+                return Calendar.prototype.observable.broadcast(Object.assign({}, event));
             })
         }
     }
