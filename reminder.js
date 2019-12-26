@@ -248,6 +248,7 @@ var Reminder = (function (Calendar) {
         if(remindEvent && remindEvent.id === data.id && remindEvent.isRemindToAllEvent === true && data.done === false) {
             console.log('observer remind ');
             console.log('eventToRemind', remindEvent);
+            Calendar.removeEvent(data.id);
             //removeParentRepeatEvent(remindEvent.parentEventToAllRemind);
             runRemindToAllEvent(remindEvent.valueTime, remindEvent.timeFlag, remindEvent.parentEventToAllRemind);
             return Calendar.removeEvent(data.id);
