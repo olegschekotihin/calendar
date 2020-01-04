@@ -22,12 +22,6 @@ var Calendar = (function () {
         }, sec);
     }
 
-    /* Check array */
-
-    function isValidArray(arr) {
-        return Array.isArray(arr);
-    }
-
     function findClosestEvent() {
         var currentTime = new Date();
         var currentYear = currentTime.getFullYear();
@@ -162,7 +156,7 @@ var Calendar = (function () {
 
     /* Show all event */
 
-    Calendar.prototype.showAllEvent = function() {
+    Calendar.prototype.getAllEvent = function() {
         return eventList.map(function (event) {
             return Object.assign({}, event);
         });
@@ -170,7 +164,7 @@ var Calendar = (function () {
 
     /* Show event list for period*/
 
-    Calendar.prototype.showEventsListForPeriod = function (startDate, stopDate) {
+    Calendar.prototype.getEventsListForPeriod = function (startDate, stopDate) {
         if (!stopDate) {
             stopDate = startDate;
         }
@@ -193,7 +187,7 @@ var Calendar = (function () {
 
     /* Show event list for month*/
 
-    Calendar.prototype.showEventsListForMonth = function () {
+    Calendar.prototype.getEventsListForMonth = function () {
         var currentDate = new Date();
         var eventListsByMonth = eventList.filter(function (event) {
             if ((event.eventDate.getMonth() === currentDate.getMonth() &&
@@ -206,7 +200,7 @@ var Calendar = (function () {
 
     /* Show event list for week*/
 
-    Calendar.prototype.showEventsListForWeek = function () {
+    Calendar.prototype.getEventsListForWeek = function () {
         var currentDate = new Date();
         var startDayOfAWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(),
             currentDate.getDate() - currentDate.getDay() + 1);
@@ -224,7 +218,7 @@ var Calendar = (function () {
 
     /* Show event list for day*/
 
-    Calendar.prototype.showEventsListForDay = function () {
+    Calendar.prototype.getEventsListForDay = function () {
         var currentDate = new Date();
         return eventList.map(function (event) {
             if ((event.eventDate.getDate() === currentDate.getDate() &&
