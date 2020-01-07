@@ -6,6 +6,7 @@ var Calendar = (function () {
     var NOT_CORRECT_DATE = 'Please set a correct date';
     var NOT_CORRECT_ID = 'Enter the correct id';
     var NOT_CORRECT_CALLBACK = 'Callback must be a function';
+    var INPUT_DATA_IS_NOT_VALID = 'input data is not valid';
     var idInterval = 10000000;
 
     /* Generate random id*/
@@ -103,6 +104,47 @@ var Calendar = (function () {
         eventList = eventList.filter(function (event) {
             return event.id !== id
         });
+    };
+
+    /* Edit event*/
+
+    Calendar.prototype.editEvent = function (id, eventName, eventDate, eventCallback) {
+        if (!id) {
+            throw NOT_CORRECT_ID;
+        }
+
+        var parsedNewEventDay = new Date(Date.parse(eventDate));
+        // if (!newEventDate || isNaN(parsedNewEventDay)) {
+        //     throw NOT_CORRECT_DATE;
+        // }
+        console.log(parsedNewEventDay);
+        if(!eventName && !eventDate || isNaN(parsedNewEventDay) && !eventCallback) {
+            throw INPUT_DATA_IS_NOT_VALID;
+        }
+        if(eventName) {
+            eventList = eventList.map(function (event) {
+                if (event.id === id) {
+                    return Object.assign({}, event, {eventName: eventName});
+                }
+                return event;
+            });
+        }
+        if(eventDate) {
+            eventList = eventList.map(function (event) {
+                if (event.id === id) {
+                    return Object.assign({}, event, {eventDate: parsedNewEventDay});
+                }
+                return event;
+            });
+        }
+        if(typeof callback === "function" && eventCallback) {
+            eventList = eventList.map(function (event) {
+                if (event.id === id) {
+                    return Object.assign({}, event, {callback: eventCallback});
+                }
+                return event;
+            });
+        }
     };
 
     /* Edit event */
