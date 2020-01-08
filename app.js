@@ -5,6 +5,7 @@ var Calendar = (function () {
     var NOT_CORRECT_EVENT = 'Please set an correct event';
     var NOT_CORRECT_DATE = 'Please set a correct date';
     var NOT_CORRECT_ID = 'Enter the correct id';
+    var CALLBACK_IS_EMPTY = 'Callback is empty';
     var NOT_CORRECT_CALLBACK = 'Callback must be a function';
     var INPUT_DATA_IS_NOT_VALID = 'input data is not valid';
     var idInterval = 10000000;
@@ -186,6 +187,27 @@ var Calendar = (function () {
         });
     };
 
+    /* Edit callback */
+
+    Calendar.prototype.editEventCallback = function (id, newCallback) {
+        if (!id) {
+            throw NOT_CORRECT_ID;
+        }
+        if (!newCallback) {
+            throw CALLBACK_IS_EMPTY;
+        }
+        if(typeof newCallback !== "function") {
+            throw NOT_CORRECT_CALLBACK;
+        }
+
+        eventList = eventList.map(function (event) {
+            if (event.id === id) {
+                return Object.assign({}, event, {callback: newCallback});
+            }
+            return event;
+        });
+    };
+
     /* Find event by id */
 
     Calendar.prototype.findById = function (id) {
@@ -196,7 +218,7 @@ var Calendar = (function () {
         return eventListId;
     };
 
-    /* Show all event */
+    /* Get all event */
 
     Calendar.prototype.getAllEvent = function() {
         return eventList.map(function (event) {
@@ -204,7 +226,7 @@ var Calendar = (function () {
         });
     };
 
-    /* Show event list for period*/
+    /* Get event list for period*/
 
     Calendar.prototype.getEventsListForPeriod = function (startDate, stopDate) {
         if (!stopDate) {
@@ -227,7 +249,7 @@ var Calendar = (function () {
         return eventListForPeriod;
     };
 
-    /* Show event list for month*/
+    /* Get event list for month*/
 
     Calendar.prototype.getEventsListForMonth = function () {
         var currentDate = new Date();
@@ -240,7 +262,7 @@ var Calendar = (function () {
         return eventListsByMonth;
     };
 
-    /* Show event list for week*/
+    /* Get event list for week*/
 
     Calendar.prototype.getEventsListForWeek = function () {
         var currentDate = new Date();
@@ -258,7 +280,7 @@ var Calendar = (function () {
         return eventListByWeek;
     };
 
-    /* Show event list for day*/
+    /* Get event list for day*/
 
     Calendar.prototype.getEventsListForDay = function () {
         var currentDate = new Date();
@@ -271,6 +293,7 @@ var Calendar = (function () {
         });
     };
 
+    /* Observer */
 
     function Observable() {
         this.events = [];

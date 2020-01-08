@@ -209,9 +209,6 @@ var Reminder = (function (Calendar) {
         var remindEventForId = searchRemindParentEventById(id);
         var parsedNewEventDay = new Date(Date.parse(newEventDate));
         checkEditRemindEvent(id, newEventDate, parsedNewEventDay);
-        var remindEvent = searchRemindParentEventById(id);
-
-
         var findededitedEvent  = allEventsList.filter(function (event) {
             return event.id === id
         });
@@ -219,7 +216,7 @@ var Reminder = (function (Calendar) {
         console.log('remindEventList', remindEventList);
 
         if(remindEventList && findededitedEvent.id === id) {
-            runRemindToAllEvent(remindEvent.valueTime, remindEvent.timeFlag, remindEvent.parentEventToAllRemind);
+            runRemindToAllEvent(remindEventForId.valueTime, remindEventForId.timeFlag, remindEventForId.parentEventToAllRemind);
         }
 
         if(remindEventForId && remindEventForId.parentId === id && remindEventList !== 0) {
