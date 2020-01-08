@@ -34,7 +34,9 @@ var Reminder = (function (Calendar) {
 
     function searchRemindParentEventById(id) {
         var resultEventSearch = remindEventList.find(function (event) {
-            return (event.parentId === id);
+            if(event.parentEventToAllRemind === id) {
+                return Object.assign({}, event);
+            }
         });
 
         return resultEventSearch;
@@ -206,26 +208,40 @@ var Reminder = (function (Calendar) {
     var changeEvent = Calendar.__proto__.editEventDate;
 
     Calendar.__proto__.editEventDate = function(id, newEventDate) {
-        var remindEventForId = searchRemindParentEventById(id);
-        var parsedNewEventDay = new Date(Date.parse(newEventDate));
-        checkEditRemindEvent(id, newEventDate, parsedNewEventDay);
-        var findededitedEvent  = allEventsList.filter(function (event) {
+        var findedEditedEvent  = allEventsList.filter(function (event) {
             return event.id === id
         });
-
+        var remindEventForId = searchRemindParentEventById(id);
         console.log('remindEventList', remindEventList);
+        console.log('remindEventForId', remindEventForId);
+        var parsedNewEventDay = new Date(Date.parse(newEventDate));
 
-        if(remindEventList && findededitedEvent.id === id) {
+        if(findedEditedEvent) {
+            Calendar.removeEvent(remindEventForId.id);
             runRemindToAllEvent(remindEventForId.valueTime, remindEventForId.timeFlag, remindEventForId.parentEventToAllRemind);
         }
 
-        if(remindEventForId && remindEventForId.parentId === id && remindEventList !== 0) {
-            var newTimeToRemindEvent = newTimeToRemind(id, newEventDate);
-            var remindEventId = searchRemindParentEventById(id);
+        if(allEventsList !== 0) {
+            var remindEventForId = searchRemindParentEventById(id);
+            var parsedNewEventDay = new Date(Date.parse(newEventDate));
+            checkEditRemindEvent(id, newEventDate, parsedNewEventDay);
+            // var findedEditedEvent  = allEventsList.filter(function (event) {
+            //     return event.id === id
+            // });
+            //
+            // console.log('remindEventList', remindEventList);
+            //
+            // if(remindEventList && findedEditedEvent.id === id) {
+            //     runRemindToAllEvent(remindEventForId.valueTime, remindEventForId.timeFlag, remindEventForId.parentEventToAllRemind);
+            // }
 
-           Calendar.editEventDate(remindEventId.id, newTimeToRemindEvent);
+            if(remindEventForId && remindEventForId.parentId === id && remindEventList !== 0) {
+                var newTimeToRemindEvent = newTimeToRemind(id, newEventDate);
+                var remindEventId = searchRemindParentEventById(id);
+
+                Calendar.editEventDate(remindEventId.id, newTimeToRemindEvent);
+            }
         }
-
         return changeEvent(id, newEventDate);
     };
 
