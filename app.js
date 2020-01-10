@@ -109,44 +109,44 @@ var Calendar = (function () {
 
     /* Edit event*/
 
-    Calendar.prototype.editEvent = function (id, eventName, eventDate, eventCallback) {
-        if (!id) {
-            throw NOT_CORRECT_ID;
-        }
-
-        var parsedNewEventDay = new Date(Date.parse(eventDate));
-        // if (!newEventDate || isNaN(parsedNewEventDay)) {
-        //     throw NOT_CORRECT_DATE;
-        // }
-        console.log(parsedNewEventDay);
-        if(!eventName && !eventDate || isNaN(parsedNewEventDay) && !eventCallback) {
-            throw INPUT_DATA_IS_NOT_VALID;
-        }
-        if(eventName) {
-            eventList = eventList.map(function (event) {
-                if (event.id === id) {
-                    return Object.assign({}, event, {eventName: eventName});
-                }
-                return event;
-            });
-        }
-        if(eventDate) {
-            eventList = eventList.map(function (event) {
-                if (event.id === id) {
-                    return Object.assign({}, event, {eventDate: parsedNewEventDay});
-                }
-                return event;
-            });
-        }
-        if(typeof callback === "function" && eventCallback) {
-            eventList = eventList.map(function (event) {
-                if (event.id === id) {
-                    return Object.assign({}, event, {callback: eventCallback});
-                }
-                return event;
-            });
-        }
-    };
+    // Calendar.prototype.editEvent = function (id, eventName, eventDate, eventCallback) {
+    //     if (!id) {
+    //         throw NOT_CORRECT_ID;
+    //     }
+    //
+    //     var parsedNewEventDay = new Date(Date.parse(eventDate));
+    //     // if (!newEventDate || isNaN(parsedNewEventDay)) {
+    //     //     throw NOT_CORRECT_DATE;
+    //     // }
+    //     console.log(parsedNewEventDay);
+    //     if(!eventName && !eventDate || isNaN(parsedNewEventDay) && !eventCallback) {
+    //         throw INPUT_DATA_IS_NOT_VALID;
+    //     }
+    //     if(eventName) {
+    //         eventList = eventList.map(function (event) {
+    //             if (event.id === id) {
+    //                 return Object.assign({}, event, {eventName: eventName});
+    //             }
+    //             return event;
+    //         });
+    //     }
+    //     if(eventDate) {
+    //         eventList = eventList.map(function (event) {
+    //             if (event.id === id) {
+    //                 return Object.assign({}, event, {eventDate: parsedNewEventDay});
+    //             }
+    //             return event;
+    //         });
+    //     }
+    //     if(typeof callback === "function" && eventCallback) {
+    //         eventList = eventList.map(function (event) {
+    //             if (event.id === id) {
+    //                 return Object.assign({}, event, {callback: eventCallback});
+    //             }
+    //             return event;
+    //         });
+    //     }
+    // };
 
     /* Edit event */
 

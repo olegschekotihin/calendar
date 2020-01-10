@@ -81,7 +81,7 @@ var Repeat = (function (Calendar) {
             var timeToRepeat = findClosestDay(repeatEvent.daysToRepeat[0]);
             var parsedDate = new Date(timeToRepeat);
             console.log('timeToRepeat', timeToRepeat);
-            var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
+            var newRepeatedEvent = Calendar.createEvent(data.eventName, parsedDate, data.callback);
 
             var daysToRepeat = {
                 daysToRepeat: repeatEvent.daysToRepeat
@@ -96,7 +96,7 @@ var Repeat = (function (Calendar) {
         if (repeatEvent && repeatEvent.id === data.id) {
             var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
             var parsedDate = new Date(dateInMilleseconds);
-            var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
+            var newRepeatedEvent = Calendar.createEvent(data.eventName, parsedDate, data.callback);
 
             removeRepitedEvent(repeatEvent.id);
             repeatedEventList.push(newRepeatedEvent);
