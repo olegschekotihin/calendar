@@ -102,6 +102,8 @@ var Calendar = (function () {
             throw NOT_CORRECT_ID;
         }
 
+        checkById(id);
+
         eventList = eventList.filter(function (event) {
             return event.id !== id
         });
@@ -154,6 +156,9 @@ var Calendar = (function () {
         if (!id) {
             throw NOT_CORRECT_ID;
         }
+
+        checkById(id);
+
         if (!newEventName) {
             throw NOT_CORRECT_EVENT;
         }
@@ -164,7 +169,6 @@ var Calendar = (function () {
             }
             return event;
         });
-
     };
 
     /* Edit date */
@@ -173,6 +177,9 @@ var Calendar = (function () {
         if (!id) {
             throw NOT_CORRECT_ID;
         }
+
+        checkById(id);
+
         var parsedNewEventDay = new Date(Date.parse(newEventDate));
 
         if (!newEventDate || isNaN(parsedNewEventDay)) {
@@ -200,6 +207,8 @@ var Calendar = (function () {
             throw NOT_CORRECT_CALLBACK;
         }
 
+        checkById(id);
+
         eventList = eventList.map(function (event) {
             if (event.id === id) {
                 return Object.assign({}, event, {callback: newCallback});
@@ -208,14 +217,16 @@ var Calendar = (function () {
         });
     };
 
-    /* Find event by id */
+    /* Check event by id */
 
-    Calendar.prototype.findById = function (id) {
+    function checkById(id) {
         var eventListId = eventList.find(function (event) {
             return (event.id === id);
         });
 
-        return eventListId;
+        if(!eventListId) {
+            throw NOT_CORRECT_ID;
+        }
     };
 
     /* Get all event */
