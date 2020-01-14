@@ -295,13 +295,15 @@ var Calendar = (function () {
 
     Calendar.prototype.getEventsListForDay = function () {
         var currentDate = new Date();
-        return eventList.map(function (event) {
+        var evenListForDay =  eventList.filter(function (event) {
             if ((event.eventDate.getDate() === currentDate.getDate() &&
                 event.eventDate.getMonth() === currentDate.getMonth() &&
                 event.eventDate.getFullYear() === currentDate.getFullYear())) {
                 return Object.assign({}, event);
             }
         });
+
+        return evenListForDay;
     };
 
     /* Observer */
