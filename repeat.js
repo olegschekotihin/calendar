@@ -108,7 +108,6 @@ var Repeat = (function (Calendar) {
     /* Create repeat event */
 
     Calendar.createEvent = function (eventName, eventDate, callback, days) {
-
         if (days && Array.isArray(days)) {
             checkArrayDays(days);
             var repeatEvent = Calendar.__proto__.createEvent(eventName, eventDate, callback);

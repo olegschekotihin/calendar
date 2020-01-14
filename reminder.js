@@ -209,13 +209,13 @@ var Reminder = (function (Calendar) {
 
     /* Create remind event for all event */
 
-    Calendar.createRemindToAllEvent = function (valueTime, timeFlag, id) {
+    Calendar.createRemindToAllEvent = function (valueTime, timeFlag) {
         if (!valueTime || !timeFlag) {
             throw INPUT_DATA_IS_NOT_VALID;
         }
 
         allEventsList = Calendar.getAllEvent();
-        runRemindToAllEvent(valueTime, timeFlag, id);
+        runRemindToAllEvent(valueTime, timeFlag);
     };
 
     /* Check remind event if date event was edit */
