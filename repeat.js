@@ -8,6 +8,7 @@ var Repeat = (function (Calendar) {
     var INPUT_DATA_IS_NOT_VALID = 'input data is not valid';
     var DAY_IS_NOT_ARRAY = 'The days must be in array!';
     var MAX_LENGTH_IS_NOT_CORRECT = 'Max length of days array is 7 and values from 0 to 7!';
+    var eventTime;
 
     /* Check array of days */
 
@@ -125,6 +126,20 @@ var Repeat = (function (Calendar) {
 
         return Calendar.__proto__.createEvent(eventName, eventDate, callback);
     };
+
+    /* Parse event date */
+
+    function parseEventDate(eventDate, days) {
+        if(typeof eventDate === "string") {
+            eventTime = eventDate.split('T');
+        }
+        if(typeof eventDate === "number") {
+            var parsedEventDay = new Date(eventDate).getDay();
+            var parsedEventHour = new Date(eventDate).getHours();
+            var parsedEventMinutes = new Date(eventDate).getMinutes();
+            var parsedEventSeconds = new Date(eventDate).getSeconds();
+        }
+    }
 
     return Calendar;
 })(Calendar);

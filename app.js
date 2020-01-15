@@ -9,6 +9,7 @@ var Calendar = (function () {
     var NOT_CORRECT_CALLBACK = 'Callback must be a function';
     var INPUT_DATA_IS_NOT_VALID = 'input data is not valid';
     var idInterval = 10000000;
+    var date;
 
     /* Generate random id*/
 
@@ -63,6 +64,22 @@ var Calendar = (function () {
         }
     }
 
+    function checkEventDate(eventDate) {
+        if(typeof eventDate === "string") {
+            date = new Date(Date.parse(eventDate));
+            if (isNaN(date)) {
+                throw NOT_CORRECT_DATE;
+            }
+        }
+        if(typeof eventDate === "number") {
+            date = new Date(eventDate);
+        }
+
+        if(typeof eventDate === "object") {
+            date = eventDate;
+        }
+    }
+
     /* Create new event */
 
     Calendar.prototype.createEvent = function (eventName, eventDate, callback) {
@@ -73,11 +90,7 @@ var Calendar = (function () {
             throw NOT_CORRECT_DATE;
         }
 
-        var date = new Date(Date.parse(eventDate));
-
-        if (isNaN(date)) {
-            throw NOT_CORRECT_DATE;
-        }
+        checkEventDate(eventDate);
 
         if (typeof callback !== "function" || !callback) {
             throw NOT_CORRECT_CALLBACK;
@@ -179,7 +192,7 @@ var Calendar = (function () {
         }
 
         checkById(id);
-
+        checkEventDate(newEventDate);
         var parsedNewEventDay = new Date(Date.parse(newEventDate));
 
         if (!newEventDate || isNaN(parsedNewEventDay)) {
@@ -188,7 +201,7 @@ var Calendar = (function () {
 
         eventList = eventList.map(function (event) {
             if (event.id === id) {
-                return Object.assign({}, event, {eventDate: parsedNewEventDay});
+                return Object.assign({}, event, {eventDate: date});
             }
             return event;
         });
