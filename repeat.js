@@ -131,6 +131,24 @@ var Repeat = (function (Calendar) {
 
     function parseEventDate(eventDate, days) {
         if(typeof eventDate === "string") {
+            var currentTime = new Date();
+            var currentDay = currentTime.getDay();
+            var parsedStringDate = new Date(Date.parse(eventDate);
+            var parsedEventDay = parsedStringDate.getDay();
+
+            if(currentDay !== parsedEventDay) {
+                days.forEach(function (day) {
+                    return (eventDay === day)
+                })
+            }
+
+            var eventYear = parsedStringDate.getFullYear();
+            var eventMonth = parsedStringDate.getMonth();
+            var eventDay = parsedStringDate.getDay();
+            var eventHour = parsedStringDate.getHours();
+            var eventMinutes = parsedStringDate.getMinutes();
+            var eventSeconds = parsedStringDate.getSeconds();
+            console.log("eventDate.split('T')", eventDate.split('T'));
             eventTime = eventDate.split('T');
         }
         if(typeof eventDate === "number") {
