@@ -78,11 +78,19 @@ var Repeat = (function (Calendar) {
         var repeatEvent = findRepeatEvent(data.id);
 
         if (repeatEvent && repeatEvent.id === data.id && repeatEvent.daysToRepeat !== 0) {
-            console.log('repeatEvent.daysToRepeat', repeatEvent.daysToRepeat[0]);
-            var timeToRepeat = findClosestDay(repeatEvent.daysToRepeat[0]);
-            var parsedDate = new Date(timeToRepeat);
-            console.log('timeToRepeat', timeToRepeat);
-            var newRepeatedEvent = Calendar.createEvent(data.eventName, parsedDate, data.callback);
+            var currentDate = new Date();
+            var currentDay = currentDate.getDay();
+            var repeatEventDay = repeatEvent.daysToRepeat.find(function (el) {
+               return (el === currentDay)
+            });
+            if(!repeatEventDay) {
+
+            }
+            parseEventDate(data.eventDate, repeatEvent.daysToRepeat, data.done);
+            // var timeToRepeat = findClosestDay(repeatEvent.daysToRepeat[0]);
+            // var parsedDate = new Date(timeToRepeat);
+            //console.log('timeToRepeat', timeToRepeat);
+            var newRepeatedEvent = Calendar.__proto__.createEvent(data.eventName, eventTime, data.callback);
 
             var daysToRepeat = {
                 daysToRepeat: repeatEvent.daysToRepeat
@@ -97,7 +105,7 @@ var Repeat = (function (Calendar) {
         if (repeatEvent && repeatEvent.id === data.id) {
             var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
             var parsedDate = new Date(dateInMilleseconds);
-            var newRepeatedEvent = Calendar.createEvent(data.eventName, parsedDate, data.callback);
+            var newRepeatedEvent = Calendar.Calendar.__proto__.createEvent(data.eventName, parsedDate, data.callback);
 
             removeRepitedEvent(repeatEvent.id);
             repeatedEventList.push(newRepeatedEvent);
@@ -111,7 +119,9 @@ var Repeat = (function (Calendar) {
     Calendar.createEvent = function (eventName, eventDate, callback, days) {
         if (days && Array.isArray(days)) {
             checkArrayDays(days);
-            var repeatEvent = Calendar.__proto__.createEvent(eventName, eventDate, callback);
+            parseEventDate(eventDate, days);
+            console.log('eventTime', eventTime);
+            var repeatEvent = Calendar.__proto__.createEvent(eventName, eventTime, callback);
             console.log(repeatEvent);
 
             var daysToRepeat = {
@@ -129,27 +139,54 @@ var Repeat = (function (Calendar) {
 
     /* Parse event date */
 
-    function parseEventDate(eventDate, days) {
+    function parseEventDate(eventDate, days, done) {
         if(typeof eventDate === "string") {
-            var currentTime = new Date();
-            var currentDay = currentTime.getDay();
-            var parsedStringDate = new Date(Date.parse(eventDate);
+            var currentDate = new Date();
+            var currentDay = currentDate.getDay();
+            var parsedStringDate = new Date(Date.parse(eventDate));
             var parsedEventDay = parsedStringDate.getDay();
-
-            if(currentDay !== parsedEventDay) {
-                days.forEach(function (day) {
-                    return (eventDay === day)
-                })
-            }
-
-            var eventYear = parsedStringDate.getFullYear();
-            var eventMonth = parsedStringDate.getMonth();
-            var eventDay = parsedStringDate.getDay();
             var eventHour = parsedStringDate.getHours();
             var eventMinutes = parsedStringDate.getMinutes();
             var eventSeconds = parsedStringDate.getSeconds();
-            console.log("eventDate.split('T')", eventDate.split('T'));
-            eventTime = eventDate.split('T');
+
+
+            var isTryDay = days.find(function (day) {
+                return (currentDay === day)
+            });
+
+            var sortDay = days.sort();
+            var minDay = days.length > 1 ? sortDay[0] : days[0];
+
+            if(done && done === true) {
+                var tryDAy = days.find(function (el) {
+                    return (el !== currentDay)
+                });
+
+                return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+                    currentDate.getDate() - currentDate.getDay() + tryDAy, eventHour, eventMinutes, eventSeconds);
+            }
+
+            if(!isTryDay) {
+                return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+                    currentDate.getDate() - currentDate.getDay() + minDay, eventHour, eventMinutes, eventSeconds);
+            }
+
+            return eventTime = eventDate;
+
+            // if(currentDay !== parsedEventDay) {
+            //     days.forEach(function (day) {
+            //         return (eventDay === day)
+            //     })
+            // }
+
+            // var eventYear = parsedStringDate.getFullYear();
+            // var eventMonth = parsedStringDate.getMonth();
+            // var eventDay = parsedStringDate.getDay();
+            // var eventHour = parsedStringDate.getHours();
+            // var eventMinutes = parsedStringDate.getMinutes();
+            // var eventSeconds = parsedStringDate.getSeconds();
+            // console.log("eventDate.split('T')", eventDate.split('T'));
+            // eventTime = eventDate.split('T');
         }
         if(typeof eventDate === "number") {
             var parsedEventDay = new Date(eventDate).getDay();
