@@ -87,15 +87,12 @@ var Repeat = (function (Calendar) {
 
             }
             parseEventDate(data.eventDate, repeatEvent.daysToRepeat, data.done);
-            // var timeToRepeat = findClosestDay(repeatEvent.daysToRepeat[0]);
-            // var parsedDate = new Date(timeToRepeat);
-            //console.log('timeToRepeat', timeToRepeat);
-            console.log('eventTime', eventTime);
             var newRepeatedEvent = Calendar.createEvent(data.eventName, eventTime, data.callback);
 
             var daysToRepeat = {
                 daysToRepeat: repeatEvent.daysToRepeat
             };
+
             var repeatedEventAndDays = Object.assign({}, daysToRepeat, newRepeatedEvent);
 
             removeRepitedEvent(repeatEvent.id);
@@ -144,9 +141,7 @@ var Repeat = (function (Calendar) {
         var currentDate = new Date();
         var currentDay = currentDate.getDay();
 
-        if(typeof eventDate === "string") {
-            var currentDate = new Date();
-            var currentDay = currentDate.getDay();
+        if(typeof eventDate === "string" && Date.parse(eventDate)) {
             var parsedStringDate = new Date(Date.parse(eventDate));
             var parsedEventDay = parsedStringDate.getDay();
             var eventHour = parsedStringDate.getHours();
@@ -167,35 +162,35 @@ var Repeat = (function (Calendar) {
             }
 
             return eventTime = eventDate;
-
-            // if(currentDay !== parsedEventDay) {
-            //     days.forEach(function (day) {
-            //         return (eventDay === day)
-            //     })
-            // }
-
-            // var eventYear = parsedStringDate.getFullYear();
-            // var eventMonth = parsedStringDate.getMonth();
-            // var eventDay = parsedStringDate.getDay();
-            // var eventHour = parsedStringDate.getHours();
-            // var eventMinutes = parsedStringDate.getMinutes();
-            // var eventSeconds = parsedStringDate.getSeconds();
-            // console.log("eventDate.split('T')", eventDate.split('T'));
-            // eventTime = eventDate.split('T');
         }
-        if(typeof eventDate === "number") {
-            var parsedEventDay = new Date(eventDate).getDay();
-            var parsedEventHour = new Date(eventDate).getHours();
-            var parsedEventMinutes = new Date(eventDate).getMinutes();
-            var parsedEventSeconds = new Date(eventDate).getSeconds();
+        if(typeof eventDate === "number" && new Date(eventDate)) {
+            var parsedNumberDate = new Date(eventDate);
+
+            var eventHour = parsedNumberDate.getHours();
+            var eventMinutes = parsedNumberDate.getMinutes();
+            var eventSeconds = parsedNumberDate.getSeconds();
+
+            var isTryDay = days.find(function (day) {
+                return (currentDay === day)
+            });
+
+            var sortDay = days.sort();
+            var minDay = days.length > 1 ? sortDay[0] : days[0];
+
+            if(!isTryDay) {
+                return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+                    currentDate.getDate() - currentDate.getDay() + minDay, eventHour, eventMinutes, eventSeconds);
+            }
+
+            return eventTime = eventDate;
         }
-        if(typeof eventDate === "object") {
+        if(typeof eventDate === "object" && eventDate.getTime()) {
             var eventHour = eventDate.getHours();
             var eventMinutes = eventDate.getMinutes();
             var eventSeconds = eventDate.getSeconds();
             console.log('eventTime 1', eventTime);
 
-            if(done && done === true) {
+            if(done === true) {
                 var tryDay = days[0].find(function (day) {
                     if(day !== currentDay) {
                         return day;

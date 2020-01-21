@@ -65,18 +65,16 @@ var Calendar = (function () {
     }
 
     function checkEventDate(eventDate) {
-        if(typeof eventDate === "string") {
+        if(typeof eventDate === "string" && Date.parse(eventDate)) {
             date = new Date(Date.parse(eventDate));
-            if (isNaN(date)) {
-                throw NOT_CORRECT_DATE;
-            }
-        }
-        if(typeof eventDate === "number") {
-            date = new Date(eventDate);
         }
 
-        if(typeof eventDate === "object") {
-            date = eventDate;
+        if(typeof eventDate === "number" && new Date(eventDate)) {
+                date = new Date(eventDate);
+        }
+
+        if(typeof eventDate === "object" && eventDate.getTime()) {
+                date = eventDate;
         }
     }
 
@@ -193,6 +191,7 @@ var Calendar = (function () {
 
         checkById(id);
         checkEventDate(newEventDate);
+
         var parsedNewEventDay = new Date(Date.parse(newEventDate));
 
         if (!newEventDate || isNaN(parsedNewEventDay)) {
