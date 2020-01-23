@@ -77,6 +77,20 @@ var Calendar = (function () {
                 date = eventDate;
         }
     }
+    //
+    // function editEvent(id) {
+    //     eventList = eventList.map(function (event) {
+    //         if (event.id === id) {
+    //             return Object.assign({}, event, {eventName: newEventName});
+    //         }
+    //     });
+    //
+    //     var editedEvent = eventList.find(function (event) {
+    //         return event.id === id;
+    //     });
+    //
+    //     return editedEvent;
+    // }
 
     /* Create new event */
 
@@ -174,12 +188,6 @@ var Calendar = (function () {
             throw NOT_CORRECT_EVENT;
         }
 
-        eventList = eventList.map(function (event) {
-            if (event.id === id) {
-                return Object.assign({}, event, {eventName: newEventName});
-            }
-        });
-
         //TODO
     };
 
@@ -203,7 +211,6 @@ var Calendar = (function () {
             if (event.id === id) {
                 return Object.assign({}, event, {eventDate: date});
             }
-            return event;
         });
     };
 
@@ -226,7 +233,6 @@ var Calendar = (function () {
             if (event.id === id) {
                 return Object.assign({}, event, {callback: newCallback});
             }
-            return event;
         });
     };
 

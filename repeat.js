@@ -81,9 +81,9 @@ var Repeat = (function (Calendar) {
             var currentDate = new Date();
             var currentDay = currentDate.getDay();
             var repeatEventDay = repeatEvent.daysToRepeat.find(function (el) {
-               return (el === currentDay)
+                return (el === currentDay)
             });
-            if(!repeatEventDay) {
+            if (!repeatEventDay) {
 
             }
             parseEventDate(data.eventDate, repeatEvent.daysToRepeat, data.done);
@@ -98,7 +98,8 @@ var Repeat = (function (Calendar) {
             removeRepitedEvent(repeatEvent.id);
             repeatedEventList.push(repeatedEventAndDays);
             return newRepeatedEvent;
-        };
+        }
+        ;
 
         if (repeatEvent && repeatEvent.id === data.id) {
             var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
@@ -139,13 +140,13 @@ var Repeat = (function (Calendar) {
         var currentDate = new Date();
         var currentDay = currentDate.getDay();
 
-        if(typeof eventDate === "string" || typeof eventDate === "number" && Date.parse(eventDate)) {
+        if (typeof eventDate === "string" || typeof eventDate === "number" && Date.parse(eventDate)) {
             var parsedStringDate = new Date(Date.parse(eventDate));
             var eventHour = parsedStringDate.getHours();
             var eventMinutes = parsedStringDate.getMinutes();
             var eventSeconds = parsedStringDate.getSeconds();
 
-            if(parsedStringDate < currentDate) {
+            if (parsedStringDate < currentDate) {
                 parsedStringDate = new Date(currentDate.getFullYear(), currentDate.getMonth(),
                     currentDate.getDate(), eventHour, eventMinutes, eventSeconds)
             }
@@ -157,14 +158,14 @@ var Repeat = (function (Calendar) {
             var sortDay = days.sort();
             var minDay = days.length > 1 ? sortDay[0] : days[0];
 
-            if(!isTryDay && minDay > currentDay) {
+            if (!isTryDay && minDay > currentDay) {
                 return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
                     currentDate.getDate() - currentDate.getDay() + minDay, eventHour, eventMinutes, eventSeconds);
             }
 
-            if(!isTryDay && minDay < currentDay) {
+            if (!isTryDay && minDay < currentDay) {
                 return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
-                    currentDate.getDate() + (7 -currentDate.getDay()) + minDay, eventHour, eventMinutes, eventSeconds);
+                    currentDate.getDate() + (7 - currentDate.getDay()) + minDay, eventHour, eventMinutes, eventSeconds);
             }
 
             return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
@@ -192,14 +193,14 @@ var Repeat = (function (Calendar) {
         //     return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
         //         currentDate.getDate(), eventHour, eventMinutes, eventSeconds);
         // }
-        if(typeof eventDate === "object" && eventDate.getTime()) {
+        if (typeof eventDate === "object" && eventDate.getTime()) {
             var eventHour = eventDate.getHours();
             var eventMinutes = eventDate.getMinutes();
             var eventSeconds = eventDate.getSeconds();
 
-            if(done === true) {
+            if (done === true) {
                 var tryDay = days[0].find(function (day) {
-                    if(day !== currentDay) {
+                    if (day !== currentDay) {
                         return day;
                     }
                 });
@@ -211,6 +212,29 @@ var Repeat = (function (Calendar) {
             return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
                 currentDate.getDate(), eventHour, eventMinutes, eventSeconds);
         }
+    }
+
+    function searchClosestDay(eventDate, days, currentDate) {
+        var closestDay;
+        var parsedEventDate = new Date(Date.parse(eventDate));
+        var currentDay = currentDate.getDay();
+        var daysList = days.filter(function (day) {
+            if (day === currentDay && currentDate >= parsedEventDate) {
+                return day;
+            }
+            if (day !== currentDay) {
+                var x = day - currentDay;
+
+                if (x < 0) {
+                    return x = x + 7;
+                }
+
+                return x;
+            }
+        });
+
+        return closestDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDay() + x,
+            parsedEventDate.getHours(), parsedEventDate.getMinutes(), parsedEventDate.getSeconds());
     }
 
     return Calendar;
