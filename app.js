@@ -178,8 +178,9 @@ var Calendar = (function () {
             if (event.id === id) {
                 return Object.assign({}, event, {eventName: newEventName});
             }
-            return event;
         });
+
+        //TODO
     };
 
     /* Edit date */

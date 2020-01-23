@@ -63,7 +63,7 @@ var Repeat = (function (Calendar) {
     }
 
     /* Find repeat event for id */
-    //TODO
+
     function findRepeatEvent(id) {
         var repeatEventForId = repeatedEventList.find(function (repeatedEvent) {
             return (repeatedEvent.id === id);
@@ -118,9 +118,7 @@ var Repeat = (function (Calendar) {
         if (days && Array.isArray(days)) {
             checkArrayDays(days);
             parseEventDate(eventDate, days);
-            console.log('eventTime', eventTime);
-            var repeatEvent = Calendar.__proto__.createEvent(eventName, eventTime, callback);
-            console.log(repeatEvent);
+            var repeatEvent = Calendar.createEvent(eventName, eventTime, callback);
 
             var daysToRepeat = {
                 daysToRepeat: [days]
@@ -141,13 +139,16 @@ var Repeat = (function (Calendar) {
         var currentDate = new Date();
         var currentDay = currentDate.getDay();
 
-        if(typeof eventDate === "string" && Date.parse(eventDate)) {
+        if(typeof eventDate === "string" || typeof eventDate === "number" && Date.parse(eventDate)) {
             var parsedStringDate = new Date(Date.parse(eventDate));
-            var parsedEventDay = parsedStringDate.getDay();
             var eventHour = parsedStringDate.getHours();
             var eventMinutes = parsedStringDate.getMinutes();
             var eventSeconds = parsedStringDate.getSeconds();
 
+            if(parsedStringDate < currentDate) {
+                parsedStringDate = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+                    currentDate.getDate(), eventHour, eventMinutes, eventSeconds)
+            }
 
             var isTryDay = days.find(function (day) {
                 return (currentDay === day)
@@ -156,39 +157,45 @@ var Repeat = (function (Calendar) {
             var sortDay = days.sort();
             var minDay = days.length > 1 ? sortDay[0] : days[0];
 
-            if(!isTryDay) {
+            if(!isTryDay && minDay > currentDay) {
                 return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
                     currentDate.getDate() - currentDate.getDay() + minDay, eventHour, eventMinutes, eventSeconds);
             }
 
-            return eventTime = eventDate;
-        }
-        if(typeof eventDate === "number" && new Date(eventDate)) {
-            var parsedNumberDate = new Date(eventDate);
-
-            var eventHour = parsedNumberDate.getHours();
-            var eventMinutes = parsedNumberDate.getMinutes();
-            var eventSeconds = parsedNumberDate.getSeconds();
-
-            var isTryDay = days.find(function (day) {
-                return (currentDay === day)
-            });
-
-            var sortDay = days.sort();
-            var minDay = days.length > 1 ? sortDay[0] : days[0];
-
-            if(!isTryDay) {
+            if(!isTryDay && minDay < currentDay) {
                 return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
-                    currentDate.getDate() - currentDate.getDay() + minDay, eventHour, eventMinutes, eventSeconds);
+                    currentDate.getDate() + (7 -currentDate.getDay()) + minDay, eventHour, eventMinutes, eventSeconds);
             }
 
-            return eventTime = eventDate;
+            return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+                currentDate.getDate(), eventHour, eventMinutes, eventSeconds);
         }
+        // if(typeof eventDate === "number" && new Date(eventDate)) {
+        //     var parsedNumberDate = new Date(eventDate);
+        //
+        //     var eventHour = parsedNumberDate.getHours();
+        //     var eventMinutes = parsedNumberDate.getMinutes();
+        //     var eventSeconds = parsedNumberDate.getSeconds();
+        //
+        //     var isTryDay = days.find(function (day) {
+        //         return (currentDay === day)
+        //     });
+        //
+        //     var sortDay = days.sort();
+        //     var minDay = days.length > 1 ? sortDay[0] : days[0];
+        //
+        //     if(!isTryDay) {
+        //         return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+        //             currentDate.getDate() - currentDate.getDay() + minDay, eventHour, eventMinutes, eventSeconds);
+        //     }
+        //
+        //     return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+        //         currentDate.getDate(), eventHour, eventMinutes, eventSeconds);
+        // }
         if(typeof eventDate === "object" && eventDate.getTime()) {
             var eventHour = eventDate.getHours();
             var eventMinutes = eventDate.getMinutes();
             var eventSeconds = eventDate.getSeconds();
-            console.log('eventTime 1', eventTime);
 
             if(done === true) {
                 var tryDay = days[0].find(function (day) {
@@ -201,7 +208,8 @@ var Repeat = (function (Calendar) {
                     currentDate.getDate() - currentDate.getDay() + tryDay, eventHour, eventMinutes, eventSeconds);
             }
 
-            return eventTime = eventDate;
+            return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+                currentDate.getDate(), eventHour, eventMinutes, eventSeconds);
         }
     }
 
