@@ -77,20 +77,28 @@ var Calendar = (function () {
                 date = eventDate;
         }
     }
-    //
-    // function editEvent(id) {
-    //     eventList = eventList.map(function (event) {
-    //         if (event.id === id) {
-    //             return Object.assign({}, event, {eventName: newEventName});
-    //         }
-    //     });
-    //
-    //     var editedEvent = eventList.find(function (event) {
-    //         return event.id === id;
-    //     });
-    //
-    //     return editedEvent;
-    // }
+
+    function editEvent(id, newEventName, newEventDate, newCallback) {
+        if(!newEventName && !newEventDate && !newCallback) {
+            throw INPUT_DATA_IS_NOT_VALID;
+        }
+
+        if(newEventName && typeof newEventName === "string") {
+            eventList = eventList.map(function (event) {
+                if (event.id === id) {
+                    return Object.assign({}, event, {eventName: newEventName});
+                }
+            });
+        }
+
+        if(newEventDate && typeof new Date(Date.parse(newEventDate)) === "o")
+
+        var editedEvent = eventList.find(function (event) {
+            return event.id === id;
+        });
+
+        return editedEvent;
+    }
 
     /* Create new event */
 
@@ -188,7 +196,17 @@ var Calendar = (function () {
             throw NOT_CORRECT_EVENT;
         }
 
-        //TODO
+        var editedEvent;
+
+        eventList = eventList.map(function (event) {
+            if (event.id === id) {
+                editedEvent = Object.assign({}, event, {eventName: newEventName});
+                return editedEvent;
+            }
+            return event;
+        });
+
+        return editedEvent;
     };
 
     /* Edit date */
@@ -333,7 +351,7 @@ var Calendar = (function () {
         this.subscribe = function(fn) {
             this.events.push(fn);
         };
-        
+
         this.unsubscribe = function (fn) {
             this.events = this.events.filter(function (subscriber) {
                 return (subscriber !== fn);

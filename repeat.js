@@ -218,6 +218,7 @@ var Repeat = (function (Calendar) {
         var closestDay;
         var parsedEventDate = new Date(Date.parse(eventDate));
         var currentDay = currentDate.getDay();
+
         var daysList = days.filter(function (day) {
             if (day === currentDay && currentDate >= parsedEventDate) {
                 return day;
