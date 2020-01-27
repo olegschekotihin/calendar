@@ -72,7 +72,7 @@ var Reminder = (function (Calendar) {
         allEventsList = allEventsList.filter(function (event) {
             return event.id !== id
         });
-    };
+    }
 
 
     /* Check param of edit remind event */
@@ -140,7 +140,7 @@ var Reminder = (function (Calendar) {
                 return closestEvent = event;
             }
         });
-        //console.log(closestEvent);
+
         return closestEvent;
     }
 
@@ -191,7 +191,7 @@ var Reminder = (function (Calendar) {
             parentEventName: eventForId.eventName
         };
 
-        var remindEvent = Calendar.__proto__.createEvent('Remind to event: ' + eventForId.eventName, parsedTimeToRemind, remindCallback);
+        var remindEvent = Calendar.createEvent('Remind to event: ' + eventForId.eventName, parsedTimeToRemind, remindCallback);
         var remindEventAndParentId = Object.assign({}, parentEvent, remindEvent);
 
         var remindEventforList = Object.assign({}, parentEvent, remindEvent);
