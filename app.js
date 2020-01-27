@@ -219,6 +219,8 @@ var Calendar = (function () {
         checkById(id);
         checkEventDate(newEventDate);
 
+        var editedEvent;
+
         var parsedNewEventDay = new Date(Date.parse(newEventDate));
 
         if (!newEventDate || isNaN(parsedNewEventDay)) {
@@ -227,9 +229,13 @@ var Calendar = (function () {
 
         eventList = eventList.map(function (event) {
             if (event.id === id) {
-                return Object.assign({}, event, {eventDate: date});
+                editedEvent = Object.assign({}, event, {eventDate: date});
+                return editedEvent;
             }
+            return event;
         });
+
+        return editedEvent;
     };
 
     /* Edit callback */
@@ -246,12 +252,17 @@ var Calendar = (function () {
         }
 
         checkById(id);
+        var editedEvent;
 
         eventList = eventList.map(function (event) {
             if (event.id === id) {
-                return Object.assign({}, event, {callback: newCallback});
+                editedEvent = Object.assign({}, event, {callback: newCallback});
+                return editedEvent;
             }
+            return event;
         });
+
+        return editedEvent;
     };
 
     /* Check event by id */

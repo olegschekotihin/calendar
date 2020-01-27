@@ -150,23 +150,25 @@ var Repeat = (function (Calendar) {
         //         currentDate.getDate(), eventHour, eventMinutes, eventSeconds);
         // }
         if (typeof eventDate === "object" && eventDate.getTime()) {
-            var eventHour = eventDate.getHours();
-            var eventMinutes = eventDate.getMinutes();
-            var eventSeconds = eventDate.getSeconds();
+            // var eventHour = eventDate.getHours();
+            // var eventMinutes = eventDate.getMinutes();
+            // var eventSeconds = eventDate.getSeconds();
+            //
+            // if (done === true) {
+            //     var tryDay = days[0].find(function (day) {
+            //         if (day !== currentDay) {
+            //             return day;
+            //         }
+            //     });
+            //
+            //     return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+            //         currentDate.getDate() - currentDate.getDay() + tryDay, eventHour, eventMinutes, eventSeconds);
+            // }
+            //
+            // return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
+            //     currentDate.getDate(), eventHour, eventMinutes, eventSeconds);
 
-            if (done === true) {
-                var tryDay = days[0].find(function (day) {
-                    if (day !== currentDay) {
-                        return day;
-                    }
-                });
-
-                return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
-                    currentDate.getDate() - currentDate.getDay() + tryDay, eventHour, eventMinutes, eventSeconds);
-            }
-
-            return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(),
-                currentDate.getDate(), eventHour, eventMinutes, eventSeconds);
+            getNewEventDate(eventDate, days, currentDate);
         }
     }
 
@@ -188,6 +190,7 @@ var Repeat = (function (Calendar) {
         var parsedEventDate = new Date(Date.parse(eventDate));
         var currentDay = currentDate.getDay();
         var closestDay = 6;
+
         days.filter(function (day) {
             if ((day === currentDay && currentDate > parsedEventDate) || (day !== currentDay) || (done && done === true)) {
                 return closestDay = searchClosestDay(day, currentDay, closestDay);
@@ -216,16 +219,8 @@ var Repeat = (function (Calendar) {
 
         if (repeatEvent && repeatEvent.id === data.id && repeatEvent.daysToRepeat !== 0) {
             var currentDate = new Date();
-            var currentDay = currentDate.getDay();
 
             getNewEventDate(data.eventDate, repeatEvent.daysToRepeat[0], currentDate, data.done);
-
-            // var repeatEventDay = repeatEvent.daysToRepeat.find(function (el) {
-            //     return (el === currentDay)
-            // });
-            // if (!repeatEventDay) {
-            //
-            // }
             var newRepeatedEvent = Calendar.createEvent(data.eventName, eventTime, data.callback);
 
             var daysToRepeat = {
@@ -239,16 +234,16 @@ var Repeat = (function (Calendar) {
             return newRepeatedEvent;
         }
 
-        if (repeatEvent && repeatEvent.id === data.id) {
-            var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
-            var parsedDate = new Date(dateInMilleseconds);
-            var newRepeatedEvent = Calendar.createEvent(data.eventName, parsedDate, data.callback);
-
-            removeRepitedEvent(repeatEvent.id);
-            repeatedEventList.push(newRepeatedEvent);
-
-            return newRepeatedEvent;
-        }
+        // if (repeatEvent && repeatEvent.id === data.id) {
+        //     var dateInMilleseconds = data.eventDate.getTime() + dayMileseconds;
+        //     var parsedDate = new Date(dateInMilleseconds);
+        //     var newRepeatedEvent = Calendar.createEvent(data.eventName, parsedDate, data.callback);
+        //
+        //     removeRepitedEvent(repeatEvent.id);
+        //     repeatedEventList.push(newRepeatedEvent);
+        //
+        //     return newRepeatedEvent;
+        // }
     });
 
 
