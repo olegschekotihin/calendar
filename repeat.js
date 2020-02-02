@@ -24,8 +24,9 @@ var Repeat = (function (Calendar) {
         var repeatEvent = nativeCreateEvent(eventName, nextEventDate, callback);
 
         var repeatedEventAndDays = Object.assign({}, {
-            daysToRepeat: [days]
-        }, repeatEvent); // TODO
+            daysToRepeat: [days],
+            id: repeatEvent.id
+        }); // TODO
 
         repeatedEventList.push(repeatedEventAndDays);
         return repeatEvent;
@@ -79,19 +80,26 @@ var Repeat = (function (Calendar) {
         // var closestDay = getClosestDay(eventDate, days);
         // TODO use reduce
         var closestDay = 6;
-        days.forEach(function (day) {
+        //
+        //
+        // var sum = days.reduce(function (total, day) {
+        //
+        // });
+
+
+        closestDay = days.forEach(function (day) {
             if ((day === currentDay && currentDate > parsedEventDate) || (day !== currentDay) || (done && done === true)) {
-                closestDay = searchClosestDay(day, currentDay, closestDay);
+                return searchClosestDay(day, currentDay, closestDay);
             }
 
             if(day === currentDay && currentDate <= parsedEventDate) {
-                closestDay = day
+                return day;
             }
         });
 
-        var isUnderstandableName = currentDay === closestDay && currentDate <= parsedEventDate;
+        var isTryDay = currentDay === closestDay && currentDate <= parsedEventDate;
 
-        return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), (isUnderstandableName ? currentDate.getDate() : currentDate.getDate() + closestDay),
+        return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), (isTryDay ? currentDate.getDate() : currentDate.getDate() + closestDay),
             parsedEventDate.getHours(), parsedEventDate.getMinutes(), parsedEventDate.getSeconds());
     }
 
@@ -99,22 +107,20 @@ var Repeat = (function (Calendar) {
     Calendar.observable.subscribe(function (data) {
         var repeatEvent = findRepeatEvent(data.id);
 
-        if (!repeatEvent.daysToRepeat) { // TODO add condition
-            return;
+        if (repeatEvent && repeatEvent.id === data.id && repeatEvent.daysToRepeat !== 0) {
+            var eventTime = getNextRepeatedEventDate(data.eventDate, repeatEvent.daysToRepeat[0], data.done);
+            var newRepeatedEvent = nativeCreateEvent(data.eventName, eventTime, data.callback);
+
+            var repeatedEventAndDays = Object.assign({}, {
+                daysToRepeat: repeatEvent.daysToRepeat,
+                id: newRepeatedEvent.id
+            });
+
+            Calendar.removeEvent(data.id);
+            removeRepitedEvent(repeatEvent.id);
+            repeatedEventList.push(repeatedEventAndDays);
+            return newRepeatedEvent;
         }
-
-        var eventTime = getNextRepeatedEventDate(data.eventDate, repeatEvent.daysToRepeat[0], data.done);
-        var newRepeatedEvent = nativeCreateEvent(data.eventName, eventTime, data.callback);
-
-        var repeatedEventAndDays = Object.assign({}, {
-            daysToRepeat: repeatEvent.daysToRepeat,
-            id: newRepeatedEvent.id
-        });
-
-        Calendar.removeEvent(data.id);
-        removeRepitedEvent(repeatEvent.id);
-        repeatedEventList.push(repeatedEventAndDays);
-        return newRepeatedEvent;
     });
 
     /* Find repeat event for id */
