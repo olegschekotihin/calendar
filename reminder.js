@@ -26,13 +26,18 @@ var Reminder = (function (Calendar) {
         var timeToRemind = new Date(findTimeToRemind(id, valueTime, timeFlag));
         var parsedTimeToRemind = timeToRemind.toString();
 
-        var parentEvent = {
-            parentId: id,
-            parentEventName: eventForId.eventName
-        };
+        // var parentEvent = {
+        //     parentId: id,
+        //     parentEventName: eventForId.eventName,
+        // };
 
         var remindEvent = Calendar.createEvent('Remind to event: ' + eventForId.eventName, parsedTimeToRemind, remindCallback);
-        var remindEventforList = Object.assign({}, parentEvent, remindEvent.id);
+        var remindEventforList = Object.assign({}, {
+            parentId: id,
+            parentEventName: eventForId.eventName,
+            id: remindEvent.id
+        });
+        //var remindEventforList = Object.assign({}, parentEvent, remindEvent.id);
         remindEventList.push(remindEventforList);
         return remindEventforList;
     };
@@ -52,7 +57,6 @@ var Reminder = (function (Calendar) {
 
         return searchEventForId;
     }
-
 
     /* Find time to remind */
 
@@ -106,15 +110,22 @@ var Reminder = (function (Calendar) {
 
         if (closestEvent.done === false) {
             var remindEvent = Calendar.createEvent('Remind to event: ' + closestEvent.eventName, timeToRemind, remindCallback);
-            var dataToRemindForAllEvent = {
+            // var dataToRemindForAllEvent = {
+            //     isRemindToAllEvent: true,
+            //     parentEventName: closestEvent.eventName,
+            //     parentEventToAllRemind: closestEvent.id,
+            //     valueTime: valueTime,
+            //     timeFlag: timeFlag
+            // };
+            var remindEventForAll = Object.assign({},{
                 isRemindToAllEvent: true,
                 parentEventName: closestEvent.eventName,
                 parentEventToAllRemind: closestEvent.id,
                 valueTime: valueTime,
-                timeFlag: timeFlag
-            };
-
-            var remindEventForAll = Object.assign({}, dataToRemindForAllEvent, remindEvent);
+                timeFlag: timeFlag,
+                id: remindEvent.id
+            });
+            //var remindEventForAll = Object.assign({}, dataToRemindForAllEvent, remindEvent);
             remindEventList.push(remindEventForAll);
             return remindEvent;
         }
