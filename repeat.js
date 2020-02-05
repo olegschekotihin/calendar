@@ -87,13 +87,13 @@ var Repeat = (function (Calendar) {
         // });
 
 
-        closestDay = days.forEach(function (day) {
+        days.forEach(function (day) {
             if ((day === currentDay && currentDate > parsedEventDate) || (day !== currentDay) || (done && done === true)) {
-                return searchClosestDay(day, currentDay, closestDay);
+                return closestDay = searchClosestDay(day, currentDay, closestDay);
             }
 
             if(day === currentDay && currentDate <= parsedEventDate) {
-                return day;
+                return closestDay = day;
             }
         });
 

@@ -2,6 +2,7 @@ var Reminder = (function (Calendar) {
     var NOT_CORRECT_TIMEVALUE = 'Time value must be number'
     var INPUT_DATA_IS_NOT_VALID = 'input data is not valid';
     var NOT_CORRECT_TIMEFLAG = 'time flag is not correct, please use "d" or "h" or "m"';
+    var EVENT_LIST_IS_EMPTY = 'vent list is empty';
 
     var remindEventList = [];
 
@@ -80,7 +81,7 @@ var Reminder = (function (Calendar) {
     /* Remind callback */
 
     function remindCallback() {
-        return console.log(this.eventName);
+        console.log(this.eventName);
     }
 
     /* Create remind event for all event */
@@ -100,7 +101,7 @@ var Reminder = (function (Calendar) {
         var closestEvent = findClosestEvent(id);
 
         if (closestEvent === undefined) {
-            return console.log('Event list is empty');
+            throw EVENT_LIST_IS_EMPTY;
         }
 
         var timeToEvent = (closestEvent.eventDate).getTime();
@@ -139,13 +140,13 @@ var Reminder = (function (Calendar) {
             closestEvent = undefined;
         }
 
-        allEventsList.filter(function (event) {
+        allEventsList.forEach(function (event) {
             if (closestEvent === undefined) {
                 closestEvent = event;
             }
 
             if (event.done === false && new Date(event.eventDate) < new Date(closestEvent.eventDate) && event.isRemindToAllEvent !== true) {
-                return closestEvent = event;
+                closestEvent = event;
             }
         });
 
@@ -173,9 +174,11 @@ var Reminder = (function (Calendar) {
 
         if (timeFlag === dayTimeFlag) {
             return valueTime * dayMileseconds;
-        } else if (timeFlag === hourTimeFlag) {
+        }
+        if (timeFlag === hourTimeFlag) {
             return valueTime * hourMileseconds;
-        } else if (timeFlag === minuteTimeFlag) {
+        }
+        if (timeFlag === minuteTimeFlag) {
             return valueTime * minuteMileseconds;
         }
 
@@ -219,7 +222,7 @@ var Reminder = (function (Calendar) {
 
     function checkRemindDateToAllEvent(id) {
         if (allEventsList) {
-            var findedEditedEvent = allEventsList.filter(function (event) {
+            var findedEditedEvent = allEventsList.find(function (event) {
                 return event.id === id
             });
             var remindEventForId = findRemindEvent(id, ['parentEventToAllRemind']);
@@ -267,7 +270,7 @@ var Reminder = (function (Calendar) {
 
     function checkRemindNameToAllEvent(id, newEventName) {
         if(allEventsList) {
-            var findedEditedEvent = allEventsList.filter(function (event) {
+            var findedEditedEvent = allEventsList.find(function (event) {
                 return event.id === id
             });
             var remindEventForId = findRemindEvent(id, ['parentEventToAllRemind']);
