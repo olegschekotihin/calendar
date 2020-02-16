@@ -19,7 +19,7 @@ var Calendar = (function () {
     }
 
     /**
-     *
+     * Run calendar
      * @constructor
      */
     function Calendar() {
@@ -30,6 +30,9 @@ var Calendar = (function () {
         }, second);
     }
 
+    /**
+     * Run closest event
+     */
     function runClosestEvent() {
         var closestEventList = findClosestEvent();
 
@@ -42,6 +45,10 @@ var Calendar = (function () {
         }
     }
 
+    /**
+     * Find closest event
+     * @returns {Array.<*>}
+     */
     function findClosestEvent() {
         var currentTime = new Date();
         var currentYear = currentTime.getFullYear();
@@ -70,9 +77,9 @@ var Calendar = (function () {
     /**
      * Create new event
      *
-     * @param {String} eventName - New event name
-     * @param eventDate
-     * @param callback
+     * @param {String} eventName - new event name
+     * @param eventDate - new event date
+     * @param callback - new event callback
      * @returns {{eventName: *, callback: *, id: number, done: boolean, eventDate: *}}
      */
     Calendar.prototype.createEvent = function (eventName, eventDate, callback) {
@@ -100,6 +107,11 @@ var Calendar = (function () {
         return newEvent;
     };
 
+    /**
+     * Parse event date
+     * @param eventDate
+     * @returns {*}
+     */
     function parseEventDate(eventDate) {
         var date;
         if(typeof eventDate === "string" && Date.parse(eventDate)) {
@@ -117,7 +129,10 @@ var Calendar = (function () {
         return date;
     }
 
-    /* Remove event */
+    /**
+     * Remove event
+     * @param id - event id
+     */
     Calendar.prototype.removeEvent = function (id) {
         if (!id || isNaN(id)) {
             throw NOT_CORRECT_ID;
@@ -130,7 +145,11 @@ var Calendar = (function () {
         });
     };
 
-    /* Edit event */
+    /**
+     * Edit event name
+     * @param id - event id
+     * @param newEventName - new event name
+     */
     Calendar.prototype.editEventName = function (id, newEventName) {
         if (!id) {
             throw NOT_CORRECT_ID;
@@ -145,6 +164,13 @@ var Calendar = (function () {
         return editEvent(id, 'eventName', newEventName);
     };
 
+    /**
+     * Edit event
+     * @param id - event id
+     * @param propName - property name
+     * @param newValue - new property value
+     * @returns {*}
+     */
     function editEvent(id, propName, newValue){
         var editedEvent;
 
@@ -159,8 +185,12 @@ var Calendar = (function () {
         return editedEvent;
     }
 
-    /* Edit date */
-
+    /**
+     * Edit event date
+     * @param id - event id
+     * @param newEventDate - new event date
+     * @returns {*}
+     */
     Calendar.prototype.editEventDate = function (id, newEventDate) {
         if (!id) {
             throw NOT_CORRECT_ID;
@@ -176,7 +206,12 @@ var Calendar = (function () {
         return editEvent(id, 'eventDate', date);
     };
 
-    /* Edit callback */
+    /**
+     * Edit event callback
+     * @param id - event id
+     * @param newCallback - new event callback
+     * @returns {*}
+     */
     Calendar.prototype.editEventCallback = function (id, newCallback) {
         var error = validateEventId(id);
         if (error) throw error;
@@ -200,7 +235,11 @@ var Calendar = (function () {
         return editedEvent;
     };
 
-    /* Check event by id */
+    /**
+     * Check event by id
+     * @param id - event id
+     * @returns {*}
+     */
     function validateEventId(id) {
         if (!id) {
             return NOT_CORRECT_ID;
@@ -217,14 +256,22 @@ var Calendar = (function () {
         return null;
     };
 
-    /* Get all event */
+    /**
+     * Get all event
+     * @returns {Array}
+     */
     Calendar.prototype.getAllEvent = function() {
         return eventList.map(function (event) {
             return Object.assign({}, event);
         });
     };
 
-    /* Get event list for period*/
+    /**
+     * Get event list for period
+     * @param startDate - start day of period
+     * @param stopDate - end day of period
+     * @returns {Array.<*>}
+     */
     Calendar.prototype.getEventsListForPeriod = function (startDate, stopDate) {
         if (!stopDate) {
             stopDate = startDate;
@@ -246,8 +293,10 @@ var Calendar = (function () {
         return eventListForPeriod;
     };
 
-    /* Get event list for month*/
-
+    /**
+     * Get event list for month
+     * @returns {Array.<*>}
+     */
     Calendar.prototype.getEventsListForMonth = function () {
         var currentDate = new Date();
         var eventListsByMonth = eventList.filter(function (event) {
@@ -259,8 +308,10 @@ var Calendar = (function () {
         return eventListsByMonth;
     };
 
-    /* Get event list for week*/
-
+    /**
+     * Get event list for week
+     * @returns {Array.<*>}
+     */
     Calendar.prototype.getEventsListForWeek = function () {
         var currentDate = new Date();
         var startDayOfAWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(),
@@ -277,8 +328,10 @@ var Calendar = (function () {
         return eventListByWeek;
     };
 
-    /* Get event list for day*/
-
+    /**
+     * Get event list for day
+     * @returns {Array.<*>}
+     */
     Calendar.prototype.getEventsListForDay = function () {
         var currentDate = new Date();
         var evenListForDay =  eventList.filter(function (event) {
@@ -292,8 +345,10 @@ var Calendar = (function () {
         return evenListForDay;
     };
 
-    /* Observer */
-
+    /**
+     * Observer
+     * @constructor
+     */
     function Observable() {
         this.events = [];
 

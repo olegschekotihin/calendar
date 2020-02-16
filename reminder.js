@@ -1,8 +1,8 @@
 var Reminder = (function (Calendar) {
     var NOT_CORRECT_TIMEVALUE = 'Time value must be number'
-    var INPUT_DATA_IS_NOT_VALID = 'input data is not valid';
-    var NOT_CORRECT_TIMEFLAG = 'time flag is not correct, please use "d" or "h" or "m"';
-    var EVENT_LIST_IS_EMPTY = 'vent list is empty';
+    var INPUT_DATA_IS_NOT_VALID = 'Input data is not valid';
+    var NOT_CORRECT_TIMEFLAG = 'Time flag is not correct, please use "d" or "h" or "m"';
+    var EVENT_LIST_IS_EMPTY = 'Event list is empty';
 
     var remindEventList = [];
 
@@ -17,8 +17,13 @@ var Reminder = (function (Calendar) {
     var closestEvent;
     var allEventsList;
 
-    /* Create remind event for id */
-
+    /**
+     * Create remind for event
+     * @param id - event id
+     * @param valueTime - time value
+     * @param timeFlag - time flag
+     * @returns {*}
+     */
     Calendar.createRemindEvent = function (id, valueTime, timeFlag) {
         if (!id || !valueTime || !timeFlag) {
             throw INPUT_DATA_IS_NOT_VALID;
@@ -44,8 +49,8 @@ var Reminder = (function (Calendar) {
     };
 
     /**
-     *
-     * @param id
+     * Find event for id
+     * @param id - event id
      */
     function findEventForId(id) {
         var allEvent = Calendar.getAllEvent();
@@ -59,8 +64,13 @@ var Reminder = (function (Calendar) {
         return searchEventForId;
     }
 
-    /* Find time to remind */
-
+    /**
+     * Find time to remind
+     * @param id - event id
+     * @param valueTime - value time
+     * @param timeFlag - time flag
+     * @returns {number}
+     */
     function findTimeToRemind(id, valueTime, timeFlag) {
         var eventForId = findEventForId(id);
         var parsEventForIdTime = (eventForId.eventDate).getTime();
@@ -78,14 +88,18 @@ var Reminder = (function (Calendar) {
     }
 
 
-    /* Remind callback */
-
+    /**
+     * Callback for remind event
+     */
     function remindCallback() {
         console.log(this.eventName);
     }
 
-    /* Create remind event for all event */
-
+    /**
+     * Create remind event for all event
+     * @param valueTime - value time
+     * @param timeFlag - time flag
+     */
     Calendar.createRemindToAllEvent = function (valueTime, timeFlag) {
         if (!valueTime || !timeFlag) {
             throw INPUT_DATA_IS_NOT_VALID;
@@ -95,8 +109,12 @@ var Reminder = (function (Calendar) {
         runRemindToAllEvent(valueTime, timeFlag);
     };
 
-    /* Remind to all event */
-
+    /**
+     * Remind for all event
+     * @param valueTime - value time
+     * @param timeFlag - time flag
+     * @param id - event id
+     */
     function runRemindToAllEvent(valueTime, timeFlag, id) {
         var closestEvent = findClosestEvent(id);
 
@@ -132,8 +150,11 @@ var Reminder = (function (Calendar) {
         }
     }
 
-    /* Find closest event*/
-
+    /**
+     * Find closest event
+     * @param id - event id
+     * @returns {*}
+     */
     function findClosestEvent(id) {
         if (id) {
             removeParentRepeatEvent(id);
@@ -153,8 +174,10 @@ var Reminder = (function (Calendar) {
         return closestEvent;
     }
 
-    /* Remove event */
-
+    /**
+     * Remove parent event for repeat event
+     * @param id - event id
+     */
     function removeParentRepeatEvent(id) {
         if (!id || isNaN(id)) {
             throw NOT_CORRECT_ID;
@@ -165,8 +188,12 @@ var Reminder = (function (Calendar) {
         });
     }
 
-    /* Get time to remind*/
-
+    /**
+     * Get time to remind
+     * @param valueTime - value time
+     * @param timeFlag - time flag
+     * @returns {number}
+     */
     function getTimeToRemind(valueTime, timeFlag) {
         if (isNaN(valueTime)) {
             throw NOT_CORRECT_TIMEVALUE;
@@ -185,8 +212,12 @@ var Reminder = (function (Calendar) {
         throw INPUT_DATA_IS_NOT_VALID;
     }
 
-    /* Find event for id */
-
+    /**
+     * Find remind event
+     * @param id - remind event id
+     * @param propName - property name
+     * @returns {*}
+     */
     function findRemindEvent(id, propName) {
         var resultEventSearch = remindEventList.find(function (event) {
             if (event[propName] === id) {
@@ -197,8 +228,12 @@ var Reminder = (function (Calendar) {
         return resultEventSearch;
     }
 
-    /* Check param of edit remind event */
-
+    /**
+     * Check param of edit remind event
+     * @param id - event id
+     * @param newEventDate - new event date
+     * @param parsedNewEventDay - parsed new event day
+     */
     function checkEditRemindEvent(id, newEventDate, parsedNewEventDay) {
         if (!id) {
             throw NOT_CORRECT_ID;
@@ -209,8 +244,9 @@ var Reminder = (function (Calendar) {
         }
     }
 
-
-    /* Edit event date */
+    /**
+     * Edit event date
+     */
     var nativeEditEventDate = Calendar.__proto__.editEventDate;
     Calendar.editEventDate = function (id, newEventDate) {
         checkRemindDateToAllEvent(id);
@@ -218,8 +254,10 @@ var Reminder = (function (Calendar) {
         return nativeEditEventDate(id, newEventDate);
     };
 
-    /* Check remind event if date event was edit */
-
+    /**
+     * Check remind event if date event was edit
+     * @param id - event id
+     */
     function checkRemindDateToAllEvent(id) {
         if (allEventsList) {
             var findedEditedEvent = allEventsList.find(function (event) {
@@ -233,6 +271,11 @@ var Reminder = (function (Calendar) {
         }
     }
 
+    /**
+     * Check remind event date for event
+     * @param id - event id
+     * @param newEventDate
+     */
     function checkRemindDateToEvent(id, newEventDate) {
         var remindEventForId = findRemindEvent(id, ['parentId']);
         var parsedNewEventDay = new Date(Date.parse(newEventDate));
@@ -246,6 +289,12 @@ var Reminder = (function (Calendar) {
         }
     }
 
+    /**
+     * New time to remind
+     * @param id - event id
+     * @param newEventDate - new event date
+     * @returns {Date}
+     */
     function newTimeToRemind(id, newEventDate) {
         var oldEvent = findEventForId(id);
         var parsedOldEventTime = Date.parse(oldEvent.eventDate);
@@ -259,8 +308,9 @@ var Reminder = (function (Calendar) {
         return newTimeToRemindEvent;
     }
 
-    /* Edit event name */
-
+    /**
+     * Edit event name
+     */
     var nativeEditEventName = Calendar.__proto__.editEventName;
     Calendar.editEventName = function (id, newEventName) {
         checkRemindNameToAllEvent(id, newEventName);
@@ -268,6 +318,11 @@ var Reminder = (function (Calendar) {
         return nativeEditEventName(id, newEventName);
     };
 
+    /**
+     * Check remind event name to all event
+     * @param id - event id
+     * @param newEventName
+     */
     function checkRemindNameToAllEvent(id, newEventName) {
         if(allEventsList) {
             var findedEditedEvent = allEventsList.find(function (event) {
@@ -281,6 +336,11 @@ var Reminder = (function (Calendar) {
         }
     }
 
+    /**
+     * Check remind event name for event
+     * @param id
+     * @param newEventName
+     */
     function checkRemindNameToEvent(id, newEventName) {
         if(remindEventList) {
             var remindEventForId = findRemindEvent(id, ['parentId']);
@@ -293,6 +353,9 @@ var Reminder = (function (Calendar) {
         }
     }
 
+    /**
+     * Callback for remind event(observer)
+     */
     Calendar.observable.subscribe(function (data) {
         var remindEvent = findRemindEvent(data.id, ['id']);
 

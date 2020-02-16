@@ -7,7 +7,13 @@ var Repeat = (function (Calendar) {
 
     var nativeCreateEvent = Calendar.createEvent;
 
-    /* Create repeat event */
+    /**
+     * Create repeat event
+     * @param eventName - new event name
+     * @param eventDate - new event date
+     * @param callback - new event callback
+     * @param days - array of days for repeat
+     */
     Calendar.createEvent = function (eventName, eventDate, callback, days) {
         if (!days || !Array.isArray(days)) {
             return nativeCreateEvent(eventName, eventDate, callback);
@@ -32,8 +38,12 @@ var Repeat = (function (Calendar) {
         return repeatEvent;
     };
 
-    /* Check array of days */
-    function checkArrayDays(days) { // TODO
+    /**
+     * Check array of days
+     * @param days - days for repeat
+     * @returns {boolean}
+     */
+    function checkArrayDays(days) {
         if (!Array.isArray(days)) {
             throw DAY_IS_NOT_ARRAY;
         }
@@ -51,13 +61,23 @@ var Repeat = (function (Calendar) {
         return true;
     }
 
-    /* Remove event */
+    /**
+     * Remove repeated event
+     * @param id - id of repeated event
+     */
     function removeRepitedEvent(id) {
         repeatedEventList = repeatedEventList.filter(function (event) {
             return event.id !== id
         });
     }
 
+    /**
+     * Search closest day
+     * @param day - day for repeated
+     * @param currentDay - current day
+     * @param closestDay - closest day
+     * @returns {*}
+     */
     function searchClosestDay(day, currentDay, closestDay) {
         var daysDifference = day - currentDay;
 
@@ -72,6 +92,13 @@ var Repeat = (function (Calendar) {
         return closestDay;
     }
 
+    /**
+     * Get next repeated event date
+     * @param eventDate - event date
+     * @param days - days for repeat
+     * @param done - flag for event
+     * @returns {Date}
+     */
     function getNextRepeatedEventDate(eventDate, days, done) {
         var currentDate = new Date();
         var parsedEventDate = new Date(Date.parse(eventDate));
@@ -103,7 +130,9 @@ var Repeat = (function (Calendar) {
             parsedEventDate.getHours(), parsedEventDate.getMinutes(), parsedEventDate.getSeconds());
     }
 
-    /* Callback for repeat event */
+    /**
+     * Callback for repeated event
+     */
     Calendar.observable.subscribe(function (data) {
         var repeatEvent = findRepeatEvent(data.id);
 
@@ -123,7 +152,11 @@ var Repeat = (function (Calendar) {
         }
     });
 
-    /* Find repeat event for id */
+    /**
+     * Find repeat event
+     * @param id - event id
+     * @returns {*}
+     */
     function findRepeatEvent(id) {
         var repeatEventForId = repeatedEventList.find(function (repeatedEvent) {
             return (repeatedEvent.id === id);
@@ -131,7 +164,6 @@ var Repeat = (function (Calendar) {
 
         return repeatEventForId;
     }
-
 
     return Calendar;
 })(Calendar);
