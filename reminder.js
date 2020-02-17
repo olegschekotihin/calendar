@@ -31,19 +31,12 @@ var Reminder = (function (Calendar) {
         var eventForId = findEventForId(id);
         var timeToRemind = new Date(findTimeToRemind(id, valueTime, timeFlag));
         var parsedTimeToRemind = timeToRemind.toString();
-
-        // var parentEvent = {
-        //     parentId: id,
-        //     parentEventName: eventForId.eventName,
-        // };
-
         var remindEvent = Calendar.createEvent('Remind to event: ' + eventForId.eventName, parsedTimeToRemind, remindCallback);
         var remindEventforList = Object.assign({}, {
             parentId: id,
             parentEventName: eventForId.eventName,
             id: remindEvent.id
         });
-        //var remindEventforList = Object.assign({}, parentEvent, remindEvent.id);
         remindEventList.push(remindEventforList);
         return remindEventforList;
     };
@@ -129,13 +122,6 @@ var Reminder = (function (Calendar) {
 
         if (closestEvent.done === false) {
             var remindEvent = Calendar.createEvent('Remind to event: ' + closestEvent.eventName, timeToRemind, remindCallback);
-            // var dataToRemindForAllEvent = {
-            //     isRemindToAllEvent: true,
-            //     parentEventName: closestEvent.eventName,
-            //     parentEventToAllRemind: closestEvent.id,
-            //     valueTime: valueTime,
-            //     timeFlag: timeFlag
-            // };
             var remindEventForAll = Object.assign({},{
                 isRemindToAllEvent: true,
                 parentEventName: closestEvent.eventName,
@@ -144,7 +130,6 @@ var Reminder = (function (Calendar) {
                 timeFlag: timeFlag,
                 id: remindEvent.id
             });
-            //var remindEventForAll = Object.assign({}, dataToRemindForAllEvent, remindEvent);
             remindEventList.push(remindEventForAll);
             return remindEvent;
         }
@@ -198,7 +183,6 @@ var Reminder = (function (Calendar) {
         if (isNaN(valueTime)) {
             throw NOT_CORRECT_TIMEVALUE;
         }
-
         if (timeFlag === dayTimeFlag) {
             return valueTime * dayMileseconds;
         }

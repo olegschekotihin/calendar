@@ -371,6 +371,7 @@ var Calendar = (function () {
 
     Calendar.prototype.observable = new Observable();
     Calendar.prototype.NOT_CORRECT_ID = NOT_CORRECT_ID;
+    Calendar.prototype.NOT_CORRECT_DATE = NOT_CORRECT_DATE;
     Calendar.prototype.parseEventDate = parseEventDate;
 
     return new Calendar();

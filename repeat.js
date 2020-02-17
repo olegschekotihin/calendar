@@ -23,7 +23,7 @@ var Repeat = (function (Calendar) {
 
         var date = Calendar.parseEventDate(eventDate);
         if (!date) {
-            throw 'e';
+            throw NOT_CORRECT_DATE;
         }
         var nextEventDate = getNextRepeatedEventDate(eventDate, days);
 
@@ -32,7 +32,7 @@ var Repeat = (function (Calendar) {
         var repeatedEventAndDays = Object.assign({}, {
             daysToRepeat: [days],
             id: repeatEvent.id
-        }); // TODO
+        });
 
         repeatedEventList.push(repeatedEventAndDays);
         return repeatEvent;
@@ -103,16 +103,7 @@ var Repeat = (function (Calendar) {
         var currentDate = new Date();
         var parsedEventDate = new Date(Date.parse(eventDate));
         var currentDay = currentDate.getDay();
-
-        // var closestDay = getClosestDay(eventDate, days);
-        // TODO use reduce
         var closestDay = 6;
-        //
-        //
-        // var sum = days.reduce(function (total, day) {
-        //
-        // });
-
 
         days.forEach(function (day) {
             if ((day === currentDay && currentDate > parsedEventDate) || (day !== currentDay) || (done && done === true)) {
