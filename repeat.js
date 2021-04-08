@@ -1,0 +1,160 @@
+var Repeat = (function (Calendar) {
+
+    var repeatedEventList = [];
+    var ARRAY_IS_EMPTY = 'days array is empty';
+    var DAY_IS_NOT_ARRAY = 'The days must be in array!';
+    var MAX_LENGTH_IS_NOT_CORRECT = 'Max length of days array is 7 and values from 0 to 7!';
+
+    var nativeCreateEvent = Calendar.createEvent;
+
+    /**
+     * Create repeat event
+     * @param eventName - new event name
+     * @param eventDate - new event date
+     * @param callback - new event callback
+     * @param days - array of days for repeat
+     */
+    Calendar.createEvent = function (eventName, eventDate, callback, days) {
+        if (!days || !Array.isArray(days)) {
+            return nativeCreateEvent(eventName, eventDate, callback);
+        }
+
+        checkArrayDays(days);
+
+        var date = Calendar.parseEventDate(eventDate);
+        if (!date) {
+            throw NOT_CORRECT_DATE;
+        }
+        var nextEventDate = getNextRepeatedEventDate(eventDate, days);
+
+        var repeatEvent = nativeCreateEvent(eventName, nextEventDate, callback);
+
+        var repeatedEventAndDays = Object.assign({}, {
+            daysToRepeat: [days],
+            id: repeatEvent.id
+        });
+
+        repeatedEventList.push(repeatedEventAndDays);
+        return repeatEvent;
+    };
+
+    /**
+     * Check array of days
+     * @param days - days for repeat
+     * @returns {boolean}
+     */
+    function checkArrayDays(days) {
+        if (!Array.isArray(days)) {
+            throw DAY_IS_NOT_ARRAY;
+        }
+
+        if (!days.length) {
+            throw ARRAY_IS_EMPTY;
+        }
+
+        days.forEach(function (days) {
+            if (days > 6 || days < 0 || days > 7) {
+                throw MAX_LENGTH_IS_NOT_CORRECT;
+            }
+        });
+
+        return true;
+    }
+
+    /**
+     * Remove repeated event
+     * @param id - id of repeated event
+     */
+    function removeRepitedEvent(id) {
+        repeatedEventList = repeatedEventList.filter(function (event) {
+            return event.id !== id
+        });
+    }
+
+    /**
+     * Search closest day
+     * @param day - day for repeated
+     * @param currentDay - current day
+     * @param closestDay - closest day
+     * @returns {*}
+     */
+    function searchClosestDay(day, currentDay, closestDay) {
+        var daysDifference = day - currentDay;
+
+        if (daysDifference < 0) {
+            closestDay = daysDifference + 7;
+        }
+
+        if(daysDifference > 0 && daysDifference < closestDay) {
+            closestDay = daysDifference
+        }
+
+        return closestDay;
+    }
+
+    /**
+     * Get next repeated event date
+     * @param eventDate - event date
+     * @param days - days for repeat
+     * @param done - flag for event
+     * @returns {Date}
+     */
+    function getNextRepeatedEventDate(eventDate, days, done) {
+        var currentDate = new Date();
+        var parsedEventDate = new Date(Date.parse(eventDate));
+        var currentDay = currentDate.getDay();
+        var closestDay = 6;
+
+        days.forEach(function (day) {
+            if ((day === currentDay && currentDate > parsedEventDate) || (day !== currentDay) || (done && done === true)) {
+                return closestDay = searchClosestDay(day, currentDay, closestDay);
+            }
+
+            if(day === currentDay && currentDate <= parsedEventDate) {
+                return closestDay = day;
+            }
+        });
+
+        var isTryDay = currentDay === closestDay && currentDate <= parsedEventDate;
+
+        return eventTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), (isTryDay ? currentDate.getDate() : currentDate.getDate() + closestDay),
+            parsedEventDate.getHours(), parsedEventDate.getMinutes(), parsedEventDate.getSeconds());
+    }
+
+    /**
+     * Callback for repeated event
+     */
+    Calendar.observable.subscribe(function (data) {
+        var repeatEvent = findRepeatEvent(data.id);
+
+        if (repeatEvent && repeatEvent.id === data.id && repeatEvent.daysToRepeat !== 0) {
+            var eventTime = getNextRepeatedEventDate(data.eventDate, repeatEvent.daysToRepeat[0], data.done);
+            var newRepeatedEvent = nativeCreateEvent(data.eventName, eventTime, data.callback);
+
+            var repeatedEventAndDays = Object.assign({}, {
+                daysToRepeat: repeatEvent.daysToRepeat,
+                id: newRepeatedEvent.id
+            });
+
+            Calendar.removeEvent(data.id);
+            removeRepitedEvent(repeatEvent.id);
+            repeatedEventList.push(repeatedEventAndDays);
+            return newRepeatedEvent;
+        }
+    });
+
+    /**
+     * Find repeat event
+     * @param id - event id
+     * @returns {*}
+     */
+    function findRepeatEvent(id) {
+        var repeatEventForId = repeatedEventList.find(function (repeatedEvent) {
+            return (repeatedEvent.id === id);
+        });
+
+        return repeatEventForId;
+    }
+
+    return Calendar;
+})(Calendar);

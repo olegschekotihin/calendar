@@ -1,0 +1,58 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="app.js"></script>
+  <script src="repeat.js"></script>
+  <script src="reminder.js"></script>
+  <script>
+      function startTime() {
+        var time = new Date();
+        var y = time.getFullYear();
+        var mon = time.getMonth() + 1;
+        var d = time.getDate();
+        var h = time.getHours();
+        var m = time.getMinutes();
+        var s = time.getSeconds();
+        //d = checkTime(d);
+        m = checkTime(m);
+        s = checkTime(s);
+        document.getElementById('time-now').innerHTML =
+            y + ":" + mon + ":" + d + "<br/>" + h + ":" + m + ":" + s;
+        var t = setTimeout(startTime, 500);
+    }
+    function checkTime(i) {
+        if (i < 10) {i = "0" + i};
+        return i;
+    }
+  </script>
+</head>
+<body onload="startTime()">
+  <section>
+    <p id="time-now"></p>
+  </section>
+  <script>
+    var date1 = new Date();
+    var date2 = new Date();
+    var date3 = new Date();
+    date1.setMinutes(date1.getMinutes() + 2);
+    date2.setMinutes(date2.getMinutes() + 3);
+    date3.setMinutes(date3.getMinutes() + 4);
+
+    Calendar.createEvent('Event1', date1, function () {
+        console.log('Event1')
+    });
+
+    Calendar.createEvent('Event2', date2, function () {
+        console.log('Event2')
+    });
+
+    Calendar.createEvent('Event3', date3, function () {
+        console.log('Event3')
+    });
+  </script>
+</body>
+</html>
